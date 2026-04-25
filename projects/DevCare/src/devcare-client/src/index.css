@@ -1,31 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
 /* ─── Design Tokens ─── */
 :root {
-  --color-primary: #0d9488;
-  --color-primary-strong: #0f766e;
-  --color-accent: #6366f1;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
+  --color-primary: #1E88E5;
+  --color-primary-strong: #0D47A1;
+  --color-accent: #4CAF50;
+  --color-success: #43A047;
+  --color-warning: #FB8C00;
+  --color-danger: #E53935;
 
-  --color-text: #1e293b;
-  --color-text-muted: #64748b;
-  --color-bg: #f2faf8;
+  --color-text: #263238;
+  --color-text-muted: #607D8B;
+  --color-bg: #FFFFFF;
   --color-surface: #ffffff;
-  --color-surface-soft: #f0fdf4;
-  --color-border: #e2e8f0;
+  --color-surface-soft: #f1f8e9;
+  /* Light version of secondary */
+  --color-border: #ECEFF1;
 
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Poppins', system-ui, -apple-system, sans-serif;
 }
 
 /* ─── Base ─── */
-@font-face {
-  font-family: 'Inter';
-  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-}
-
 *,
 *::before,
 *::after {
@@ -77,12 +73,12 @@ body {
   cursor: pointer;
   text-decoration: none;
   transition: all 0.25s ease;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 2px 8px rgba(30, 136, 229, 0.25);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 6px 20px rgba(30, 136, 229, 0.35);
 }
 
 .btn-primary:disabled {
@@ -112,6 +108,30 @@ body {
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: var(--color-surface-soft);
+}
+
+.btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: var(--color-primary-strong);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(13, 71, 161, 0.25);
+}
+
+.btn-dark:hover {
+  background: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(13, 71, 161, 0.35);
 }
 
 /* ─── Cards ─── */
@@ -162,7 +182,7 @@ body {
 .auth-tab-active {
   background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 2px 6px rgba(30, 136, 229, 0.3);
 }
 
 .auth-label {
@@ -188,7 +208,7 @@ body {
 
 .auth-input:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+  box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.12);
 }
 
 .auth-message {

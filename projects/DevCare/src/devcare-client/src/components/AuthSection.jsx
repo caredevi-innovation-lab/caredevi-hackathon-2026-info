@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/Devcare-logo.png'
 
 import { loginUser, registerUser } from '../api/authApi'
 
@@ -7,8 +8,10 @@ const REFRESH_TOKEN_KEY = 'devcare_refresh_token'
 const USERNAME_KEY = 'devcare_username'
 const ROLE_KEY = 'devcare_role'
 
-function AuthSection({ onAuthSuccess }) {
-  const [mode, setMode] = useState('login')
+function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
+  const [localMode, setLocalMode] = useState('login')
+  const mode = propsMode || localMode
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -105,151 +108,161 @@ function AuthSection({ onAuthSuccess }) {
   }
 
   function switchMode(nextMode) {
-    setMode(nextMode)
+    if (onModeChange) {
+      onModeChange(nextMode)
+    } else {
+      setLocalMode(nextMode)
+    }
     setError('')
     setSuccess('')
   }
 
   return (
-    <section id="contact" className="site-container pb-20">
-      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-        <article className="elevated-card rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] px-6 py-10 sm:px-9">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--color-primary)]">
-            {mode === 'register' ? 'Create Account' : 'Welcome Back'}
-          </p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-            {mode === 'register'
-              ? 'Register your healthcare demo account'
-              : 'Login to your dashboard'}
-          </h2>
-          <p className="mt-4 max-w-2xl text-base text-[var(--color-text-muted)] sm:text-lg">
-            {mode === 'register'
-              ? 'Create a simple JWT-backed account for your hackathon demo.'
-              : 'Use your JWT credentials to access the dashboard page.'}
-          </p>
-        </article>
+    <article className="elevated-card rounded-[2rem] border border-[var(--color-border)] bg-[var(--color-surface)] p-8 sm:p-12 shadow-2xl">
+      <h3 className="text-2xl font-bold text-[var(--color-primary-strong)] mb-2">
+        {mode === 'register' ? 'Join DevCare' : 'Welcome Back'}
+      </h3>
+      <p className="text-[var(--color-text-muted)] text-[13px] mb-8">
+        {mode === 'register' 
+          ? 'Get started with smarter, guided recovery from the comfort of your home.' 
+          : 'Continue your recovery journey with DevCare.'}
+      </p>
 
-        <article className="elevated-card rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 sm:p-8">
-          <div className="mb-5 flex items-center gap-2 rounded-full bg-[var(--color-surface-soft)] p-1">
-            <button
-              type="button"
-              className={`auth-tab ${mode === 'login' ? 'auth-tab-active' : ''}`}
-              onClick={() => switchMode('login')}
-            >
-              Login
-            </button>
-            <button
-              type="button"
-              className={`auth-tab ${mode === 'register' ? 'auth-tab-active' : ''}`}
-              onClick={() => switchMode('register')}
-            >
-              Register
-            </button>
-          </div>
-
-          <form className="space-y-4" onSubmit={handleSubmit}>
-                <label className="auth-label" htmlFor={mode === 'register' ? 'username' : 'email'}>
-                  {mode === 'register' ? 'Username' : 'Email'}
+      <form className="space-y-5" onSubmit={handleSubmit}>
+            {mode === 'register' && (
+              <>
+                <label className="auth-label" htmlFor="username">
+                  Username
                 </label>
                 <input
-                  id={mode === 'register' ? 'username' : 'email'}
-                  name={mode === 'register' ? 'username' : 'email'}
-                  type={mode === 'register' ? 'text' : 'email'}
-                  value={mode === 'register' ? form.username : form.email}
+                  id="username"
+                  name="username"
+                  type="text"
+                  value={form.username}
                   onChange={updateField}
                   className="auth-input"
-                  placeholder={mode === 'register' ? 'Enter username' : 'name@example.com'}
-                  autoComplete={mode === 'register' ? 'username' : 'email'}
+                  placeholder="Your Username"
+                  autoComplete="username"
                   required
                 />
+              </>
+            )}
+
+            <label className="auth-label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={updateField}
+              className="auth-input"
+              placeholder="Your Email Address"
+              autoComplete="email"
+              required
+            />
 
 
-                {mode === 'register' && (
-                  <>
-                    <label className="auth-label" htmlFor="email">
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={form.email}
-                      onChange={updateField}
-                      className="auth-input"
-                      placeholder="name@example.com"
-                      autoComplete="email"
-                      required
-                    />
+            {mode === 'register' && (
+              <>
+                <label className="auth-label">I AM A...</label>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, role: 'patient' }))}
+                    className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                      form.role === 'patient' 
+                      ? 'bg-[#E3F2FD] border-[#1E88E5] text-[#1E88E5]' 
+                      : 'bg-white border-[#ECEFF1] text-[#607D8B] hover:border-[#CFD8DC]'
+                    }`}
+                  >
+                    <svg className="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span className="font-bold text-xs">Patient</span>
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({ ...f, role: 'doctor' }))}
+                    className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all ${
+                      form.role === 'doctor' 
+                      ? 'bg-[#E3F2FD] border-[#1E88E5] text-[#1E88E5]' 
+                      : 'bg-white border-[#ECEFF1] text-[#607D8B] hover:border-[#CFD8DC]'
+                    }`}
+                  >
+                    <svg className="w-5 h-5 mb-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <span className="font-bold text-xs">Doctor</span>
+                  </button>
+                </div>
+              </>
+            )}
 
-                    <label className="auth-label" htmlFor="role">
-                      Register as
-                    </label>
-                    <select
-                      id="role"
-                      name="role"
-                      value={form.role}
-                      onChange={updateField}
-                      className="auth-input"
-                      required
-                    >
-                      <option value="patient">Patient</option>
-                      <option value="doctor">Doctor</option>
-                    </select>
-                  </>
-                )}
+            <label className="auth-label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={updateField}
+              className="auth-input"
+              placeholder="••••••••"
+              autoComplete={
+                mode === 'register' ? 'new-password' : 'current-password'
+              }
+              required
+            />
 
-                <label className="auth-label" htmlFor="password">
-                  Password
+            {mode === 'register' && (
+              <>
+                <label className="auth-label" htmlFor="confirmPassword">
+                  Confirm Password
                 </label>
                 <input
-                  id="password"
-                  name="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
-                  value={form.password}
+                  value={form.confirmPassword}
                   onChange={updateField}
                   className="auth-input"
-                  placeholder="Enter password"
-                  autoComplete={
-                    mode === 'register' ? 'new-password' : 'current-password'
-                  }
+                  placeholder="••••••••"
+                  autoComplete="new-password"
                   required
                 />
+              </>
+            )}
 
-                {mode === 'register' && (
-                  <>
-                    <label className="auth-label" htmlFor="confirmPassword">
-                      Confirm Password
-                    </label>
-                    <input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      value={form.confirmPassword}
-                      onChange={updateField}
-                      className="auth-input"
-                      placeholder="Re-enter password"
-                      autoComplete="new-password"
-                      required
-                    />
-                  </>
-                )}
+            {error && <p className="auth-message auth-message-error">{error}</p>}
+            {success && (
+              <p className="auth-message auth-message-success">{success}</p>
+            )}
 
-                {error && <p className="auth-message auth-message-error">{error}</p>}
-                {success && (
-                  <p className="auth-message auth-message-success">{success}</p>
-                )}
+            <button type="submit" className="btn-dark w-full py-4 rounded-xl flex items-center justify-center gap-2 group" disabled={loading}>
+              {loading
+                ? 'Please wait...'
+                : mode === 'register'
+                  ? <>Register Account <span className="group-hover:translate-x-1 transition-transform">→</span></>
+                  : <>Log In <span className="group-hover:translate-x-1 transition-transform">→</span></>}
+            </button>
+          </form>
 
-                <button type="submit" className="btn-primary w-full" disabled={loading}>
-                  {loading
-                    ? 'Please wait...'
-                    : mode === 'register'
-                      ? 'Create account'
-                      : 'Login'}
-                </button>
-              </form>
-        </article>
-      </div>
-    </section>
+          <div className="mt-8 text-center">
+            <p className="text-sm text-[#607D8B]">
+              {mode === 'register' ? 'Already have an account? ' : "Don't have an account? "}
+              <button 
+                onClick={() => switchMode(mode === 'register' ? 'login' : 'register')}
+                className="text-[#1E88E5] font-bold hover:underline"
+              >
+                {mode === 'register' ? 'Log in' : 'Create one'}
+              </button>
+            </p>
+          </div>
+    </article>
   )
 }
 

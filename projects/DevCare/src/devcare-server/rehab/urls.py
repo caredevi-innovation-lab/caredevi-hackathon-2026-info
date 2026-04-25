@@ -1,16 +1,21 @@
 from django.urls import path
+
 from .views import (
-    ExerciseListView, 
-    RehabPlanCreateView, 
-    RehabPlanDetailView, 
-    CompleteSessionView,
-    PatientSessionHistoryView
+    ExerciseTemplateListView,
+    RehabPlanCreateView,
+    RehabPlanDetailView,
+    SessionCompleteView,
+    SessionStartView,
 )
 
 urlpatterns = [
-    path('exercises/', ExerciseListView.as_view(), name='exercise-list'),
-    path('plans/', RehabPlanCreateView.as_view(), name='rehab-plan-create'),
-    path('plans/<int:pk>/', RehabPlanDetailView.as_view(), name='rehab-plan-detail'),
-    path('sessions/<int:pk>/complete/', CompleteSessionView.as_view(), name='complete-session'),
-    path('patients/<int:patient_id>/sessions/', PatientSessionHistoryView.as_view(), name='patient-session-history'),
+    path("exercises/", ExerciseTemplateListView.as_view(), name="rehab-exercises-list"),
+    path("plans/", RehabPlanCreateView.as_view(), name="rehab-plan-create"),
+    path("plans/<int:plan_id>/", RehabPlanDetailView.as_view(), name="rehab-plan-detail"),
+    path("sessions/start/", SessionStartView.as_view(), name="rehab-session-start"),
+    path(
+        "sessions/<int:session_id>/complete/",
+        SessionCompleteView.as_view(),
+        name="rehab-session-complete",
+    ),
 ]

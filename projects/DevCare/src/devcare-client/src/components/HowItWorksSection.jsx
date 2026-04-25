@@ -1,53 +1,73 @@
+import React from 'react';
+
 const steps = [
   {
-    title: 'Connect data streams',
-    description:
-      'Bring together EHR records, triage forms, and live monitoring feeds in one place.',
+    number: '01',
+    title: 'Connect Your Camera',
+    description: 'Use any standard webcam or smartphone camera. No expensive hardware or sensors required.',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+      </svg>
+    )
   },
   {
-    title: 'Run AI analysis',
-    description:
-      'Apply your model to prioritize risk, detect anomalies, and suggest practical actions.',
+    number: '02',
+    title: 'Perform Exercises',
+    description: 'Follow guided therapy sessions while our AI tracks your form and provides real-time feedback.',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+    )
   },
   {
-    title: 'Support care decisions',
-    description:
-      'Present clear recommendations and alerts that clinicians can review quickly.',
-  },
-]
+    number: '03',
+    title: 'Track Recovery',
+    description: 'Review detailed biomechanical reports and share progress with your clinician automatically.',
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    )
+  }
+];
 
 function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="site-container py-14 sm:py-16">
-      <div className="rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-6 sm:p-10">
-        <div className="mb-8 max-w-3xl">
-          <p className="text-sm font-bold uppercase tracking-[0.16em] text-[var(--color-primary)]">
-            How It Works
+    <section id="how-it-works" className="site-container py-20 sm:py-28">
+      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+        <div className="max-w-xl text-left">
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-3">
+            Process
           </p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-            Three simple steps for a strong hackathon demo
+          <h2 className="text-3xl font-bold sm:text-4xl text-[var(--color-primary-strong)]">
+            How DevCare Transforms Your Recovery
           </h2>
         </div>
+        <p className="max-w-sm text-left text-[var(--color-text-muted)] text-sm">
+          Simple, effective, and evidence-based. Our three-step process ensures you get clinical-grade care at home.
+        </p>
+      </div>
 
-        <div className="grid gap-5 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <article
-              key={step.title}
-              className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5"
-            >
-              <p className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
-                {index + 1}
-              </p>
-              <h3 className="mt-4 text-xl font-bold">{step.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[var(--color-text-muted)] sm:text-base">
-                {step.description}
-              </p>
-            </article>
-          ))}
-        </div>
+      <div className="grid gap-8 md:grid-cols-3">
+        {steps.map((step) => (
+          <div key={step.number} className="relative group">
+            <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#E3F2FD] text-[#1E88E5] transition-transform group-hover:scale-110">
+              {step.icon}
+            </div>
+            <div className="absolute top-0 right-0 text-6xl font-black text-[#F1F5F9] -z-10 select-none">
+              {step.number}
+            </div>
+            <h3 className="text-xl font-bold mb-3 text-[#263238]">{step.title}</h3>
+            <p className="text-[var(--color-text-muted)] text-sm leading-relaxed">
+              {step.description}
+            </p>
+          </div>
+        ))}
       </div>
     </section>
-  )
+  );
 }
 
-export default HowItWorksSection
+export default HowItWorksSection;

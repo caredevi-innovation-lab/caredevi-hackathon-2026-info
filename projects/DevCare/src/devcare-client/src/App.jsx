@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import ProtectedRoute from './components/ProtectedRoute'
+import AuthPage from './pages/AuthPage'
 import DashboardPage from './pages/DashboardPage'
 import DoctorDashboardPage from './pages/DoctorDashboardPage'
 import LandingPage from './pages/LandingPage'
@@ -10,6 +11,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<AuthPage initialMode="login" />} />
+      <Route path="/register" element={<AuthPage initialMode="register" />} />
       <Route
         path="/dashboard"
         element={

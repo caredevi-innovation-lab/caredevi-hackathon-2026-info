@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
+import logo from '../assets/Devcare-logo.png'
+
 const ACCESS_TOKEN_KEY = 'devcare_access_token'
 const ROLE_KEY = 'devcare_role'
 
@@ -54,8 +56,8 @@ function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgba(242,250,248,0.9)] backdrop-blur">
       <nav className="site-container flex h-16 items-center justify-between">
-        <Link to="/" className="text-xl font-bold tracking-tight">
-          DevCare AI
+        <Link to="/" className="flex items-center gap-2">
+          <img src={logo} alt="DevCare Logo" className="h-10 w-auto" />
         </Link>
 
         <ul className="hidden items-center gap-8 md:flex">
@@ -105,9 +107,14 @@ function Navbar() {
               )}
             </div>
           ) : (
-            <a href="#auth" className="btn-primary">
-              Get Started
-            </a>
+            <div className="flex items-center gap-5">
+              <Link to="/login" className="nav-link font-semibold">
+                Login
+              </Link>
+              <Link to="/register" className="btn-primary px-5 py-2">
+                Register
+              </Link>
+            </div>
           )}
       </nav>
     </header>
