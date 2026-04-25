@@ -52,7 +52,17 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class RoleTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # If the frontend sends 'email' instead of 'username', map it.
+        self.fields['email'] = serializers.EmailField(write_only=True, required=False)
+        self.fields['username'].required = False
+
     def validate(self, attrs):
+        # If 'email' is provided but 'username' is not, use 'email' as the username.
+        if 'email' in attrs and not attrs.get('username'):
+            attrs['username'] = attrs['email']
+        
         data = super().validate(attrs)
         profile, _ = UserProfile.objects.get_or_create(
             user=self.user,
@@ -65,4 +75,4 @@ class RoleTokenObtainPairSerializer(TokenObtainPairSerializer):
             'email': self.user.email,
             'role': profile.role,
         }
-        return data
+        return data
