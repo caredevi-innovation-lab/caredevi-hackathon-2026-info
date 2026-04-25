@@ -1,0 +1,110 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #d4fc79, #96e6a1);
+}
+
+.home {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 350px;
+  text-align: center;
+}
+
+h1 {
+  color: green;
+}
+
+.features {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+button {
+  padding: 10px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+input, select {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.result-card {
+  width: 400px;
+}
+
+.food-page-card {
+  width: 720px;
+  max-width: 95%;
+}
+
+.badge {
+  display: inline-block;
+  background: #ecfdf5;
+  color: #15803d;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin: 25px 0;
+}
+
+.option-grid button {
+  padding: 16px;
+  font-size: 15px;
+  border-radius: 14px;
+}
+
+#mealResults {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.meal-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 18px;
+  border-radius: 18px;
+  margin: 12px 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+.meal-card h3 {
+  margin: 0 0 8px;
+  color: #15803d;
+}
+
+.back-btn {
+  background: #374151;
+  margin-top: 20px;
+}
+
+.back-btn:hover {
+  background: #111827;
+}

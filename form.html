@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="home">
+  <div class="card">
+
+    <h1>Your Info</h1>
+
+    <form id="nutritionForm">
+
+      <input type="number" id="age" placeholder="Age" required>
+
+      <div class="row">
+        <input type="number" id="feet" placeholder="Height ft" required>
+        <input type="number" id="inches" placeholder="Height in" required>
+      </div>
+
+      <input type="number" id="weight" placeholder="Weight (kg)" required>
+
+      <select id="gender" required>
+        <option value="">Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+
+      <select id="goal" required>
+        <option value="">Goal</option>
+        <option value="lose">Lose Weight</option>
+        <option value="maintain">Maintain</option>
+        <option value="gain">Gain Muscle</option>
+      </select>
+
+      <select id="activity" required>
+        <option value="">Activity</option>
+        <option value="1.2">Low</option>
+        <option value="1.55">Moderate</option>
+        <option value="1.9">High</option>
+      </select>
+
+      <button type="submit">Calculate</button>
+
+    </form>
+
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>

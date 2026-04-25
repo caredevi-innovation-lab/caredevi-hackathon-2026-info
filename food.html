@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>What Should I Eat?</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="home">
+  <div class="card food-page-card">
+
+    <p class="badge">🍽 Smart Food Guide</p>
+    <h1>What should I eat?</h1>
+    <p>Choose your situation and FuelMate will suggest meals that fit your body and goal.</p>
+
+    <div class="option-grid">
+      <button onclick="showMeals('hungry')">I’m Hungry</button>
+      <button onclick="showMeals('workout')">Just Worked Out</button>
+      <button onclick="showMeals('energy')">Low Energy</button>
+      <button onclick="showMeals('budget')">Cheap Meal</button>
+      <button onclick="showMeals('breakfast')">Breakfast</button>
+      <button onclick="showMeals('dinner')">Dinner</button>
+    </div>
+
+    <div id="mealResults"></div>
+
+    <button class="back-btn" onclick="window.location.href='result.html'">Back to Plan</button>
+
+  </div>
+</div>
+
+<script src="js/food.js"></script>
+</body>
+</html>

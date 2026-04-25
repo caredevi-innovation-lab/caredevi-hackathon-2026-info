@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Result</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="home">
+
+  <div class="card result-card">
+
+    <h1>Your Plan</h1>
+
+    <div id="results"></div>
+
+    <canvas id="macroChart"></canvas>
+
+    <h2>⏰ Meal Reminder</h2>
+    <p id="mealReminder"></p>
+
+    <h2>🍽 What should I eat?</h2>
+
+    <button onclick="eatNow('hungry')">Hungry</button>
+    <button onclick="eatNow('workout')">Workout</button>
+    <button onclick="eatNow('energy')">Low Energy</button>
+
+    <div id="eatSuggestion"></div>
+
+    <button onclick="goBack()">Back</button>
+
+  </div>
+
+</div>
+
+<script src="js/calculator.js"></script>
+
+</body>
+</html>
