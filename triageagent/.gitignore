@@ -10,3 +10,4 @@ venv/
 dist/
 build/
 .DS_Store
+backend/data/chroma_db/

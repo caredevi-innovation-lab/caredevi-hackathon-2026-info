@@ -1,1 +1,60 @@
-[]
+[
+  {
+    "id": "hospital-001",
+    "name": "Central Texas Heart & Vascular Center",
+    "latitude": 29.8833,
+    "longitude": -97.9414,
+    "capabilities": ["cath_lab", "cardiology", "icu", "surgery", "blood_bank", "er_basic"],
+    "current_er_wait_minutes": 8,
+    "phone_number": "+1-512-555-0101"
+  },
+  {
+    "id": "hospital-002",
+    "name": "University Medical Center — Neuroscience Institute",
+    "latitude": 30.2672,
+    "longitude": -97.7431,
+    "capabilities": ["comprehensive_stroke_center", "neurology", "neurosurgery", "icu", "surgery", "er_basic"],
+    "current_er_wait_minutes": 12,
+    "phone_number": "+1-512-555-0202"
+  },
+  {
+    "id": "hospital-003",
+    "name": "Trauma Regional Medical Center",
+    "latitude": 29.4246,
+    "longitude": -98.4951,
+    "capabilities": ["level_1_trauma", "surgery", "blood_bank", "burn_unit", "icu", "er_basic"],
+    "current_er_wait_minutes": 15,
+    "phone_number": "+1-210-555-0303"
+  },
+  {
+    "id": "hospital-004",
+    "name": "Children's Hospital of Central Texas",
+    "latitude": 30.3080,
+    "longitude": -97.8923,
+    "capabilities": ["pediatric_er", "picu", "surgery", "er_basic"],
+    "current_er_wait_minutes": 10,
+    "phone_number": "+1-512-555-0404"
+  },
+  {
+    "id": "hospital-005",
+    "name": "San Marcos Community Hospital",
+    "latitude": 29.8936,
+    "longitude": -97.9305,
+    "capabilities": ["er_basic", "icu"],
+    "current_er_wait_minutes": 5,
+    "phone_number": "+1-512-555-0505"
+  },
+  {
+    "id": "hospital-006",
+    "name": "Brackenridge Academic Medical Center",
+    "latitude": 30.2849,
+    "longitude": -97.7341,
+    "capabilities": [
+      "cath_lab", "cardiology", "comprehensive_stroke_center", "neurology", "neurosurgery",
+      "level_1_trauma", "surgery", "blood_bank", "burn_unit", "icu",
+      "pediatric_er", "picu", "labor_and_delivery", "obstetrics", "psychiatric_emergency", "er_basic"
+    ],
+    "current_er_wait_minutes": 25,
+    "phone_number": "+1-512-555-0606"
+  }
+]

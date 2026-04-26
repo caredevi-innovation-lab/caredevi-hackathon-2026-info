@@ -1,0 +1,41 @@
+ANAPHYLAXIS EMERGENCY TRIAGE PROTOCOL — ESI 1-2
+
+RECOGNITION (≥2 of the following after allergen exposure, or hypotension alone after known allergen):
+Skin/mucosa: urticaria (hives), flushing, pruritus, angioedema (swelling of lips/tongue/throat/face).
+Respiratory: dyspnea, wheeze, stridor, hypoxemia, bronchospasm.
+Cardiovascular: hypotension (SBP <90 or >30% drop from baseline), tachycardia, dizziness, syncope, chest pain.
+GI: nausea, vomiting, cramping, diarrhea (less specific).
+
+GRADING:
+Grade 1: skin symptoms only — monitor closely, may progress.
+Grade 2: skin + one systemic symptom — treat as anaphylaxis.
+Grade 3: severe multi-system involvement — ESI 1.
+Grade 4: cardiovascular arrest.
+
+EPINEPHRINE — ALWAYS FIRST LINE (no contraindications in true anaphylaxis):
+Adults: 0.3-0.5 mg (0.3-0.5 mL of 1:1000) IM in lateral thigh. Repeat every 5-15 minutes if no improvement.
+Children: 0.01 mg/kg (max 0.5 mg) IM lateral thigh.
+IV epinephrine: ONLY if anaphylactic shock unresponsive to IM + IV fluids. 1:10,000 concentration. Requires cardiac monitoring — risk of arrhythmia.
+Auto-injector (EpiPen): 0.3mg adult, 0.15mg pediatric <30kg.
+
+ADJUNCT TREATMENTS (after epinephrine):
+IV fluids: 1-2L NS bolus for hypotension.
+Diphenhydramine (Benadryl): 25-50mg IV/IM — treats urticaria but NOT anaphylaxis. Do not substitute for epinephrine.
+H2 blocker (ranitidine/famotidine): adjunct for skin symptoms.
+Corticosteroids (methylprednisolone 125mg IV): prevent/reduce biphasic reaction. Onset delayed 4-6h.
+Albuterol nebulizer: for bronchospasm.
+Glucagon: 1-5mg IV for patients on beta-blockers (epinephrine less effective due to receptor blockade).
+
+BIPHASIC REACTION RISK:
+Occurs 4-12 hours after initial reaction in 5-20% of cases. Risk factors: severe initial reaction, delayed epinephrine, large allergen dose.
+Observation period: minimum 4-8 hours for moderate-severe reactions. 24 hours if severe or biphasic risk factors.
+Discharge criteria: resolution of all symptoms, stable vitals >4 hours, epinephrine auto-injector prescribed, allergy referral arranged.
+
+ALLERGEN HISTORY CRITICAL:
+Common triggers: peanuts, tree nuts, shellfish, fish, milk, eggs, wheat (food); penicillin, cephalosporins, NSAIDs, aspirin, contrast media (drugs); bee/wasp venom (insects); latex.
+CROSS-REACTIVITY: penicillin-cephalosporin ~1-2%. Iodine contrast — pre-medication protocol for prior reaction.
+DOAC interactions: some antibiotics increase bleeding risk with concurrent anticoagulation.
+
+CONTRAST ALLERGY MANAGEMENT:
+Prior mild contrast reaction: premedicate, use low-osmolar contrast, have resuscitation ready.
+Prior severe contrast reaction (anaphylaxis): strongly consider alternative imaging (MRI, ultrasound). If contrast essential: premedicate + allergist consult.

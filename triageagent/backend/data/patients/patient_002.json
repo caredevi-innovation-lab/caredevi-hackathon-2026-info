@@ -1,0 +1,120 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-002-bundle",
+  "type": "collection",
+  "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-002",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "name": [{ "family": "Santos", "given": ["Maria"] }],
+        "gender": "female",
+        "birthDate": "1981-07-22",
+        "address": [{ "city": "San Marcos", "state": "TX", "country": "US" }]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-002-asthma",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "subject": { "reference": "Patient/patient-002" },
+        "clinicalStatus": {
+          "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active" }]
+        },
+        "code": {
+          "coding": [{ "system": "http://snomed.info/sct", "code": "195967001", "display": "Asthma" }]
+        },
+        "onsetDateTime": "2005-09-01"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "condition-002-smoking",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "subject": { "reference": "Patient/patient-002" },
+        "clinicalStatus": {
+          "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/condition-clinical", "code": "active" }]
+        },
+        "code": {
+          "coding": [{ "system": "http://snomed.info/sct", "code": "449868002", "display": "Smokes tobacco daily" }]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "med-002-albuterol",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "subject": { "reference": "Patient/patient-002" },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [{ "system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "245314", "display": "Albuterol 0.083 MG/ML" }]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "id": "med-002-ocp",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "subject": { "reference": "Patient/patient-002" },
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [{ "system": "http://www.nlm.nih.gov/research/umls/rxnorm", "code": "748962", "display": "Norethindrone-Ethinyl Estradiol" }]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "AllergyIntolerance",
+        "id": "allergy-002-sulfa",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "patient": { "reference": "Patient/patient-002" },
+        "clinicalStatus": {
+          "coding": [{ "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical", "code": "active" }]
+        },
+        "criticality": "low",
+        "code": {
+          "coding": [{ "system": "http://snomed.info/sct", "code": "91939002", "display": "Allergy to sulfonamide" }]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-002-hr",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "status": "final",
+        "subject": { "reference": "Patient/patient-002" },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "8867-4", "display": "Heart rate" }] },
+        "valueQuantity": { "value": 78, "unit": "beats/minute" }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-002-spo2",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "status": "final",
+        "subject": { "reference": "Patient/patient-002" },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "59408-5", "display": "Oxygen saturation" }] },
+        "valueQuantity": { "value": 97, "unit": "%" }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-002-bloodtype",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "status": "final",
+        "subject": { "reference": "Patient/patient-002" },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "883-9", "display": "ABO and Rh group" }] },
+        "valueString": "O-"
+      }
+    }
+  ]
+}

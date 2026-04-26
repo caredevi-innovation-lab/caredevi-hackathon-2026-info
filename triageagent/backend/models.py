@@ -101,12 +101,12 @@ def create_mock_signal_bundle() -> SignalBundle:
         fall_detected=True,
         movement_status="still",
         watch_on_wrist=True,
-        skin_temp=35.8,
+        skin_temp=34.8,  # slightly cool — consistent with arrest
         respiratory_rate=0,
 
-        # Phone fell with patient, no interaction for 2 minutes
+        # Phone fell with patient, no interaction for 5+ minutes
         phone_accelerometer_status="fall_impact",
-        phone_last_interaction_seconds=120,
+        phone_last_interaction_seconds=310,
         phone_position="floor",
 
         # Voice — no response
@@ -116,7 +116,7 @@ def create_mock_signal_bundle() -> SignalBundle:
 
         # Environment — home, evening
         location_type="residential",
-        gps=(37.7749, -122.4194),
+        gps=(29.8833, -97.9414),  # San Marcos, TX
         altitude_meters=52,
         time_of_day="evening",
         temperature_celsius=19.5,

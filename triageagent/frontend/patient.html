@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TriageAgent — Patient</title>
+<style>
+:root {
+  --bg: #0f1117; --card: #1a1d2e; --border: #2a2d3e;
+  --accent: #e53e3e; --green: #38a169; --yellow: #d69e2e;
+  --blue: #3182ce; --text: #f0f4ff; --muted: #8892aa;
+  --panel-w: 390px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif;
+       display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+       padding: 24px 0 48px; }
+h1.brand { font-size: 1.1rem; letter-spacing: .15em; color: var(--muted); margin-bottom: 16px; }
+
+/* iPhone frame */
+.phone-frame {
+  width: var(--panel-w); border-radius: 44px;
+  background: #111; border: 2px solid #333;
+  box-shadow: 0 0 60px rgba(0,0,0,.6), inset 0 0 0 1px #444;
+  overflow: hidden; position: relative;
+}
+.notch { height: 32px; background: #111; display: flex; align-items: center;
+         justify-content: center; border-bottom: 1px solid #222; }
+.notch-pill { width: 120px; height: 10px; background: #000; border-radius: 10px; }
+.screen { background: var(--bg); min-height: 700px; padding: 20px 16px 32px; position: relative; }
+.status-bar { display: flex; justify-content: space-between; font-size: .7rem;
+              color: var(--muted); margin-bottom: 16px; }
+
+/* Screens */
+.screen-view { display: none; }
+.screen-view.active { display: block; }
+
+/* Header */
+.app-header { text-align: center; margin-bottom: 20px; }
+.app-header h2 { font-size: 1.4rem; font-weight: 700; }
+.app-header p { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+/* Patient card */
+.patient-card { background: var(--card); border: 1px solid var(--border);
+                border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+.patient-card .name { font-size: 1.1rem; font-weight: 600; }
+.patient-card .meta { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+
+/* Vitals */
+.vitals-row { display: flex; gap: 10px; margin-bottom: 14px; }
+.vital { flex: 1; background: var(--card); border: 1px solid var(--border);
+         border-radius: 12px; padding: 12px; text-align: center; }
+.vital .label { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.vital .value { font-size: 1.5rem; font-weight: 700; margin-top: 2px; }
+.vital.critical .value { color: var(--accent); }
+.vital.ok .value { color: var(--green); }
+.pulse-dot { width: 8px; height: 8px; background: var(--green);
+             border-radius: 50%; display: inline-block; margin-right: 6px;
+             animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+/* Monitoring badge */
+.monitor-badge { background: rgba(56,161,105,.15); border: 1px solid rgba(56,161,105,.3);
+                 color: var(--green); border-radius: 20px; padding: 6px 14px;
+                 font-size: .78rem; display: inline-flex; align-items: center;
+                 margin-bottom: 20px; }
+
+/* SOS button */
+.sos-btn { width: 100%; padding: 18px; background: var(--accent);
+           border: none; border-radius: 16px; color: #fff;
+           font-size: 1.2rem; font-weight: 700; cursor: pointer; letter-spacing: .06em;
+           box-shadow: 0 4px 20px rgba(229,62,62,.4); transition: transform .1s; }
+.sos-btn:active { transform: scale(.97); }
+.demo-btn { width: 100%; margin-top: 10px; padding: 12px;
+            background: transparent; border: 1px solid var(--border);
+            border-radius: 12px; color: var(--muted); font-size: .8rem; cursor: pointer; }
+.demo-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Screen 2 — detected */
+.alert-banner { background: rgba(229,62,62,.15); border: 1px solid rgba(229,62,62,.4);
+                border-radius: 14px; padding: 18px; text-align: center; margin-bottom: 18px; }
+.alert-banner h3 { font-size: 1.1rem; color: var(--accent); }
+.alert-banner p { font-size: .8rem; color: var(--muted); margin-top: 4px; }
+.countdown { font-size: 4rem; font-weight: 800; color: var(--accent);
+             text-align: center; margin: 24px 0; line-height: 1; }
+.cancel-btn { width: 100%; padding: 16px; background: var(--green);
+              border: none; border-radius: 14px; color: #fff;
+              font-size: 1rem; font-weight: 600; cursor: pointer; }
+
+/* Screen 3 — working */
+.step-list { list-style: none; }
+.step-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0;
+             border-bottom: 1px solid var(--border); font-size: .82rem; }
+.step-item:last-child { border-bottom: none; }
+.step-icon { width: 20px; height: 20px; border-radius: 50%;
+             display: flex; align-items: center; justify-content: center;
+             font-size: .7rem; flex-shrink: 0; margin-top: 1px; }
+.step-icon.done { background: var(--green); }
+.step-icon.active { background: var(--blue); animation: spin 1s linear infinite; }
+.step-icon.wait { background: var(--border); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.step-text { flex: 1; }
+.step-tech { font-size: .68rem; color: var(--blue); margin-top: 2px; }
+
+/* Screen 4 — result */
+.hospital-card { background: var(--card); border: 1px solid var(--border);
+                 border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+.hospital-card h3 { font-size: 1rem; font-weight: 600; }
+.hospital-card .eta { font-size: 1.8rem; font-weight: 800; color: var(--blue); }
+.caps-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.cap-badge { background: rgba(49,130,206,.15); border: 1px solid rgba(49,130,206,.3);
+             color: var(--blue); border-radius: 6px; padding: 2px 8px; font-size: .68rem; }
+.ems-card { background: rgba(229,62,62,.12); border: 1px solid rgba(229,62,62,.35);
+            border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+.ems-card .row { display: flex; justify-content: space-between; align-items: center; }
+.call-btn { background: var(--accent); border: none; border-radius: 8px;
+            color: #fff; padding: 6px 14px; font-size: .78rem; cursor: pointer; }
+.conf-bar { background: var(--border); border-radius: 4px; height: 6px; margin-top: 6px; }
+.conf-fill { height: 6px; border-radius: 4px; background: var(--green); }
+.tech-toggle { background: none; border: 1px solid var(--border); border-radius: 8px;
+               color: var(--muted); padding: 8px 12px; font-size: .75rem;
+               width: 100%; cursor: pointer; margin-bottom: 8px; }
+.tech-detail { display: none; background: var(--card); border: 1px solid var(--border);
+               border-radius: 10px; padding: 12px; font-size: .72rem; color: var(--muted); }
+.tech-detail.open { display: block; }
+.tech-row { display: flex; justify-content: space-between; padding: 3px 0;
+            border-bottom: 1px solid var(--border); }
+.tech-row:last-child { border-bottom: none; }
+.tech-val { color: var(--blue); font-size: .68rem; }
+.handoff-btn { width: 100%; padding: 14px; background: var(--blue);
+               border: none; border-radius: 14px; color: #fff;
+               font-size: .9rem; font-weight: 600; cursor: pointer; margin-top: 12px; }
+
+/* Screen 5 — handoff */
+.handoff-card { background: var(--card); border: 1px solid var(--border);
+                border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+.handoff-card h4 { font-size: .8rem; color: var(--muted); text-transform: uppercase;
+                   letter-spacing: .08em; margin-bottom: 8px; }
+.handoff-row { display: flex; justify-content: space-between;
+               padding: 4px 0; font-size: .82rem; border-bottom: 1px solid var(--border); }
+.handoff-row:last-child { border-bottom: none; }
+.handoff-label { color: var(--muted); }
+.allergy-tag { background: rgba(229,62,62,.2); color: var(--accent);
+               border-radius: 4px; padding: 1px 6px; font-size: .72rem; margin: 2px; display: inline-block; }
+.med-tag { background: rgba(49,130,206,.15); color: var(--blue);
+           border-radius: 4px; padding: 1px 6px; font-size: .72rem; margin: 2px; display: inline-block; }
+.condition-badge { background: rgba(229,62,62,.15); border: 1px solid rgba(229,62,62,.4);
+                   color: var(--accent); border-radius: 8px; padding: 6px 12px;
+                   font-size: .88rem; font-weight: 600; margin-bottom: 10px; }
+.back-btn { width: 100%; padding: 12px; background: transparent;
+            border: 1px solid var(--border); border-radius: 12px;
+            color: var(--muted); font-size: .8rem; cursor: pointer; }
+
+/* Disclaimer */
+.disclaimer { font-size: .65rem; color: var(--muted); text-align: center;
+              margin-top: 16px; line-height: 1.4; border-top: 1px solid var(--border); padding-top: 10px; }
+.disclaimer strong { color: var(--accent); }
+
+/* Footer */
+footer { margin-top: 20px; font-size: .68rem; color: #444; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1 class="brand">TRIAGEAGENT</h1>
+
+<div class="phone-frame">
+  <div class="notch"><div class="notch-pill"></div></div>
+  <div class="screen">
+    <div class="status-bar">
+      <span>9:41 AM</span><span>● ● ●</span><span>🔋 84%</span>
+    </div>
+
+    <!-- SCREEN 1: HOME -->
+    <div id="s-home" class="screen-view active">
+      <div class="app-header">
+        <h2>TriageAgent</h2>
+        <p>Emergency Response System</p>
+      </div>
+      <div class="patient-card">
+        <div class="name">Robert Chen</div>
+        <div class="meta">62 yrs · Male · Blood type: A+ · Patient 001</div>
+        <div class="meta" style="margin-top:4px">Hx: Prior MI · HTN · T2DM · Warfarin</div>
+      </div>
+      <div style="text-align:center;margin-bottom:14px">
+        <span class="monitor-badge"><span class="pulse-dot"></span>Monitoring Active</span>
+      </div>
+      <div class="vitals-row">
+        <div class="vital ok">
+          <div class="label">Heart Rate</div>
+          <div class="value" id="hr-display">72</div>
+          <div style="font-size:.65rem;color:var(--muted)">bpm</div>
+        </div>
+        <div class="vital ok">
+          <div class="label">SpO₂</div>
+          <div class="value" id="spo2-display">98</div>
+          <div style="font-size:.65rem;color:var(--muted)">%</div>
+        </div>
+        <div class="vital ok">
+          <div class="label">ECG</div>
+          <div class="value" style="font-size:1rem" id="ecg-display">NSR</div>
+          <div style="font-size:.65rem;color:var(--muted)">rhythm</div>
+        </div>
+      </div>
+      <button class="sos-btn" onclick="startEmergency()">🆘 SOS EMERGENCY</button>
+      <button class="demo-btn" onclick="simulateCardiacArrest()">Simulate Cardiac Arrest (Demo)</button>
+      <div class="disclaimer">
+        <strong>For demonstration purposes only.</strong><br>
+        Not a substitute for emergency services. Always call 911.
+      </div>
+    </div>
+
+    <!-- SCREEN 2: DETECTED -->
+    <div id="s-detected" class="screen-view">
+      <div class="alert-banner">
+        <h3>⚠️ Possible Emergency Detected</h3>
+        <p>Abnormal wearable signals detected. Confirming...</p>
+      </div>
+      <div class="vitals-row">
+        <div class="vital critical">
+          <div class="label">Heart Rate</div>
+          <div class="value">0</div>
+          <div style="font-size:.65rem;color:var(--muted)">bpm</div>
+        </div>
+        <div class="vital critical">
+          <div class="label">SpO₂</div>
+          <div class="value">72</div>
+          <div style="font-size:.65rem;color:var(--muted)">%</div>
+        </div>
+        <div class="vital critical">
+          <div class="label">ECG</div>
+          <div class="value" style="font-size:.85rem">VFib</div>
+          <div style="font-size:.65rem;color:var(--muted)">rhythm</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:8px;font-size:.8rem;color:var(--muted)">
+        Auto-dispatching in
+      </div>
+      <div class="countdown" id="countdown-display">15</div>
+      <button class="cancel-btn" onclick="cancelEmergency()">✓ I'm Okay — Cancel</button>
+      <div class="disclaimer" style="margin-top:16px">
+        <strong>If this is a real emergency, call 911 immediately.</strong>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: WORKING -->
+    <div id="s-working" class="screen-view">
+      <div class="app-header">
+        <h2>Analyzing...</h2>
+        <p>AI agent running triage pipeline</p>
+      </div>
+      <ul class="step-list" id="step-list">
+        <li class="step-item" data-step="0">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Extracting symptoms with NER
+            <div class="step-tech">scispaCy en_core_sci_md → SNOMED CT codes</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="1">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Loading FHIR patient history
+            <div class="step-tech">FHIR R4 Bundle · Synthea format</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="2">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Cross-validating wearable + phone sensors
+            <div class="step-tech">Sensor fusion · collision detection</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="3">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Retrieving triage protocols from RAG
+            <div class="step-tech">ChromaDB · sentence-transformers/all-MiniLM-L6-v2</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="4">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Running ESI severity scoring
+            <div class="step-tech">Deterministic rule-based algorithm</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="5">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Matching hospital capabilities
+            <div class="step-tech">Deterministic routing · 6 hospitals</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="6">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Generating FHIR R4 handoff bundle
+            <div class="step-tech">SNOMED CT · LOINC · RxNorm</div>
+          </div>
+        </li>
+        <li class="step-item" data-step="7">
+          <div class="step-icon wait">○</div>
+          <div class="step-text">Agent reasoning synthesis
+            <div class="step-tech">Llama3-OpenBioLLM-70B via HuggingFace</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- SCREEN 4: RESULT -->
+    <div id="s-result" class="screen-view">
+      <div class="app-header">
+        <h2>Emergency Response</h2>
+        <p id="result-subtitle">EMS dispatched · Hospital selected</p>
+      </div>
+      <div class="hospital-card">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Routing to</div>
+        <h3 id="hosp-name">Central Texas Heart &amp; Vascular Center</h3>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-top:6px">
+          <span class="eta" id="hosp-eta">8</span>
+          <span style="color:var(--muted);font-size:.8rem">min ETA</span>
+          <span style="margin-left:auto;font-size:.75rem;color:var(--muted)" id="hosp-wait">ER wait: 8 min</span>
+        </div>
+        <div class="caps-list" id="hosp-caps"></div>
+      </div>
+      <div class="ems-card">
+        <div class="row">
+          <span style="font-size:.85rem;font-weight:600">🚑 EMS Dispatched</span>
+          <button class="call-btn" onclick="alert('Calling 911...')">Call 911</button>
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">
+          Emergency contacts notified (2) · EMS en route
+        </div>
+      </div>
+      <div class="hospital-card">
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:6px">
+          AI Confidence — <span id="conf-label">95%</span>
+        </div>
+        <div class="conf-bar"><div class="conf-fill" id="conf-fill" style="width:95%"></div></div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:6px" id="diagnosis-text">
+          Suspected: cardiac arrest
+        </div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:4px">
+          ESI Level: <span id="esi-display">1</span>
+        </div>
+      </div>
+      <button class="tech-toggle" onclick="toggleTech()">🔬 Technologies Used ▼</button>
+      <div class="tech-detail" id="tech-detail">
+        <div class="tech-row"><span>LLM</span><span class="tech-val">Llama3-OpenBioLLM-70B</span></div>
+        <div class="tech-row"><span>NER</span><span class="tech-val">scispaCy + SNOMED CT</span></div>
+        <div class="tech-row"><span>RAG</span><span class="tech-val">ChromaDB + sentence-transformers</span></div>
+        <div class="tech-row"><span>FHIR</span><span class="tech-val">R4 · Synthea · LOINC · RxNorm</span></div>
+        <div class="tech-row"><span>Detection</span><span class="tech-val">Deterministic rules</span></div>
+        <div class="tech-row"><span>Routing</span><span class="tech-val">Capability matching</span></div>
+      </div>
+      <button class="handoff-btn" onclick="showHandoff()">Show Paramedic Handoff Card →</button>
+      <div class="disclaimer">
+        <strong>AI-generated preliminary assessment. Not a clinical diagnosis.</strong><br>
+        Always follow the guidance of emergency professionals.
+      </div>
+    </div>
+
+    <!-- SCREEN 5: HANDOFF -->
+    <div id="s-handoff" class="screen-view">
+      <div class="app-header">
+        <h2>📋 Paramedic Handoff</h2>
+        <p>Show this to arriving paramedics</p>
+      </div>
+      <div class="condition-badge" id="hf-condition">⚠️ Cardiac Arrest — 95% confidence</div>
+      <div class="handoff-card">
+        <h4>Patient</h4>
+        <div class="handoff-row"><span class="handoff-label">Name</span><span>Robert Chen</span></div>
+        <div class="handoff-row"><span class="handoff-label">Age / Sex</span><span>62 · Male</span></div>
+        <div class="handoff-row"><span class="handoff-label">Blood Type</span><span>A+</span></div>
+        <div class="handoff-row"><span class="handoff-label">SNOMED</span><span style="font-size:.72rem;color:var(--blue)" id="hf-snomed">410429000</span></div>
+      </div>
+      <div class="handoff-card">
+        <h4>Vitals at Detection</h4>
+        <div class="handoff-row"><span class="handoff-label">HR [LOINC 8867-4]</span><span style="color:var(--accent)">0 bpm</span></div>
+        <div class="handoff-row"><span class="handoff-label">SpO₂ [LOINC 59408-5]</span><span style="color:var(--accent)">72%</span></div>
+        <div class="handoff-row"><span class="handoff-label">ECG</span><span style="color:var(--accent)">Ventricular Fibrillation</span></div>
+        <div class="handoff-row"><span class="handoff-label">ESI Level</span><span style="color:var(--accent)">1 — Immediate</span></div>
+      </div>
+      <div class="handoff-card">
+        <h4>Medications (RxNorm)</h4>
+        <span class="med-tag">Warfarin 5mg [11289]</span>
+        <span class="med-tag">Lisinopril 10mg [314076]</span>
+        <span class="med-tag">Metformin 500mg [861004]</span>
+      </div>
+      <div class="handoff-card">
+        <h4>Critical Allergies</h4>
+        <span class="allergy-tag">⚠ Penicillin [SNOMED 91936005]</span>
+        <span class="allergy-tag">⚠ Iodine Contrast [293637006]</span>
+      </div>
+      <div class="handoff-card">
+        <h4>Conditions</h4>
+        <div style="font-size:.78rem">Prior MI [22298006] · T2DM [44054006] · HTN [38341003]</div>
+      </div>
+      <div id="hf-time" style="font-size:.72rem;color:var(--muted);text-align:center;margin:8px 0"></div>
+      <div class="disclaimer">
+        <strong>AI-generated preliminary assessment. Not a clinical diagnosis.</strong><br>
+        Verify all data on arrival.
+      </div>
+      <button class="back-btn" onclick="showScreen('s-result')" style="margin-top:12px">← Back to Results</button>
+    </div>
+
+  </div><!-- /screen -->
+</div><!-- /phone-frame -->
+
+<footer>TriageAgent · AI Healthcare Innovation Hackathon 2026 · For demonstration purposes only</footer>
+
+<script>
+const API = 'http://localhost:8000';
+let countdownTimer = null;
+let stepTimer = null;
+let triageResult = null;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen-view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── Screen 1 → 2 ──────────────────────────────────────────────────────────
+function startEmergency() { triggerDetected(false); }
+
+function simulateCardiacArrest() {
+  document.getElementById('hr-display').textContent = '0';
+  document.getElementById('spo2-display').textContent = '72';
+  document.getElementById('ecg-display').textContent = 'VFib';
+  document.querySelector('.vital:nth-child(1)').className = 'vital critical';
+  document.querySelector('.vital:nth-child(2)').className = 'vital critical';
+  document.querySelector('.vital:nth-child(3)').className = 'vital critical';
+  setTimeout(() => triggerDetected(true), 800);
+}
+
+function triggerDetected(isArrest) {
+  showScreen('s-detected');
+  let n = 15;
+  document.getElementById('countdown-display').textContent = n;
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    n--;
+    document.getElementById('countdown-display').textContent = n;
+    if (n <= 5) document.getElementById('countdown-display').style.color = '#c53030';
+    if (n <= 0) { clearInterval(countdownTimer); runTriage(isArrest); }
+  }, 1000);
+}
+
+function cancelEmergency() {
+  clearInterval(countdownTimer);
+  document.getElementById('countdown-display').style.color = 'var(--accent)';
+  showScreen('s-home');
+}
+
+// ── Screen 3: Agent steps ──────────────────────────────────────────────────
+function runTriage(isArrest) {
+  showScreen('s-working');
+  const steps = document.querySelectorAll('#step-list .step-item');
+  steps.forEach(s => {
+    s.querySelector('.step-icon').className = 'step-icon wait';
+    s.querySelector('.step-icon').textContent = '○';
+  });
+
+  let i = 0;
+  function advanceStep() {
+    if (i > 0) {
+      const prev = steps[i - 1].querySelector('.step-icon');
+      prev.className = 'step-icon done';
+      prev.textContent = '✓';
+    }
+    if (i >= steps.length) {
+      showResult();
+      return;
+    }
+    const cur = steps[i].querySelector('.step-icon');
+    cur.className = 'step-icon active';
+    cur.textContent = '↻';
+    i++;
+    stepTimer = setTimeout(advanceStep, 700 + Math.random() * 400);
+  }
+
+  // Fire real API call in parallel
+  callAPI(isArrest);
+  advanceStep();
+}
+
+async function callAPI(isArrest) {
+  try {
+    const payload = {
+      patient_id: 'patient-001',
+      symptoms: 'unresponsive, no pulse, fall detected',
+      signal_bundle: isArrest ? {
+        heart_rate: 0, spo2: 72, ecg_findings: 'ventricular_fibrillation',
+        fall_detected: true, movement_status: 'still',
+        phone_position: 'floor', phone_last_interaction_seconds: 120
+      } : {}
+    };
+    const res = await fetch(`${API}/triage`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload), signal: AbortSignal.timeout(20000)
+    });
+    if (res.ok) triageResult = await res.json();
+  } catch (_) { triageResult = null; }
+}
+
+// ── Screen 4: Result ───────────────────────────────────────────────────────
+function showResult() {
+  showScreen('s-result');
+  const r = triageResult;
+  const hosp = r?.routing_decision?.chosen_hospital;
+  const diag = r?.working_diagnosis;
+
+  document.getElementById('hosp-name').textContent =
+    hosp?.name || 'Central Texas Heart & Vascular Center';
+  document.getElementById('hosp-eta').textContent =
+    r?.routing_decision?.eta_minutes || 8;
+  document.getElementById('hosp-wait').textContent =
+    `ER wait: ${hosp?.current_er_wait_minutes || 8} min`;
+
+  const capsEl = document.getElementById('hosp-caps');
+  capsEl.innerHTML = '';
+  const caps = hosp?.capabilities || ['cath_lab', 'cardiology', 'icu'];
+  caps.forEach(c => {
+    const b = document.createElement('span');
+    b.className = 'cap-badge';
+    b.textContent = c.replace(/_/g, ' ');
+    capsEl.appendChild(b);
+  });
+
+  const conf = Math.round((diag?.top_confidence || 0.95) * 100);
+  document.getElementById('conf-label').textContent = `${conf}%`;
+  document.getElementById('conf-fill').style.width = `${conf}%`;
+  document.getElementById('diagnosis-text').textContent =
+    `Suspected: ${diag?.top_condition || 'cardiac arrest'}`;
+  document.getElementById('esi-display').textContent = diag?.esi_level || 1;
+
+  if (r?.working_diagnosis?.top_condition) {
+    const snomedMap = { cardiac_arrest: '410429000', stemi: '22298006',
+                        stroke: '230690007', anaphylaxis: '39579001' };
+    document.getElementById('hf-snomed').textContent =
+      snomedMap[r.working_diagnosis.top_condition] || '410429000';
+    document.getElementById('hf-condition').textContent =
+      `⚠️ ${r.working_diagnosis.top_condition.replace(/_/g,' ')} — ${conf}% confidence`;
+  }
+  document.getElementById('hf-time').textContent =
+    `Detection time: ${new Date().toLocaleTimeString()}`;
+}
+
+function toggleTech() {
+  const d = document.getElementById('tech-detail');
+  d.classList.toggle('open');
+}
+
+function showHandoff() { showScreen('s-handoff'); }
+</script>
+</body>
+</html>

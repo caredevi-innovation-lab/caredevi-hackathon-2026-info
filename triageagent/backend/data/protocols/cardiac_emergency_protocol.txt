@@ -1,0 +1,36 @@
+CARDIAC EMERGENCY TRIAGE PROTOCOL
+
+CARDIAC ARREST (VF/VT/PEA/Asystole) — ESI 1
+Recognition: unresponsive, no normal breathing, no pulse. ECG: ventricular fibrillation (VF), pulseless VT, PEA, flat line.
+Immediate actions: call code, start CPR (100-120 compressions/min, 2 inches depth), attach defibrillator.
+Defibrillation: shock VF/pulseless VT within 3-5 minutes. 200J biphasic first shock, 360J monophasic.
+CPR cycles: 2 minutes CPR → rhythm check → shock if shockable → 2 minutes CPR. Repeat.
+Epinephrine: 1mg IV/IO every 3-5 minutes for VF/VT (after second shock) and PEA/asystole.
+Amiodarone: 300mg IV for refractory VF/VT after third shock.
+Airway: BVM ventilation initially, advanced airway when feasible without interrupting CPR.
+Door-to-first-shock goal: <3 minutes in-hospital. Community AED: <5 minutes.
+ROSC actions: 12-lead ECG immediately, targeted temperature management if comatose, consider cath lab activation.
+
+STEMI — ESI 1 (door-to-balloon goal: 90 minutes)
+Recognition: >1mm ST elevation in ≥2 contiguous leads (≥2mm in V1-V3), or new LBBB.
+Immediate actions: aspirin 325mg PO, 12-lead ECG within 10 minutes of arrival, activate cath lab.
+Anticoagulation: heparin 60 units/kg bolus (max 4000 units) + 12 units/kg/hr infusion.
+Antiplatelet: P2Y12 inhibitor (ticagrelor 180mg or clopidogrel 600mg loading dose).
+WARFARIN CONSIDERATION: if patient on warfarin, check INR before fibrinolytics. High bleeding risk — discuss with interventionalist.
+CONTRAST ALLERGY: iodine contrast allergy — premedicate with methylprednisolone 32mg PO 12h and 2h before, diphenhydramine 50mg IV 1h before. Consider non-ionic contrast. Discuss alternative imaging with cardiology.
+Fibrinolytics: only if PCI unavailable and door-to-balloon >120 minutes. Contraindicated if: prior intracranial hemorrhage, ischemic stroke <3 months, active internal bleeding, BP >180/110, known AVM.
+
+NSTEMI / UA RISK STRATIFICATION — ESI 2
+High risk: troponin positive, dynamic ECG changes, recurrent chest pain, TIMI score ≥5.
+Intermediate: age >65, known CAD, typical symptoms, TIMI 3-4.
+Serial troponins: at 0h, 3h, 6h. High-sensitivity troponin at 0h and 1h (ESC protocol).
+GRACE score for risk stratification and timing of invasive strategy.
+
+ANTICOAGULANT HISTORY CONSIDERATIONS:
+- Warfarin: check INR. Subtherapeutic (<2.0) in AF patients may indicate embolic event.
+- DOACs (rivaroxaban, apixaban, dabigatran): last dose timing critical for bleeding risk. Reversal agents available (andexanet alfa, idarucizumab).
+- Heparin drip: therapeutic range aPTT 60-100 seconds.
+
+CARDIOGENIC SHOCK:
+Criteria: SBP <90 for >30 min or requiring vasopressors, cardiac index <2.2, PCWP >15.
+Treatment: norepinephrine first-line vasopressor, dobutamine for low output, early revascularization, consider IABP or mechanical support.
