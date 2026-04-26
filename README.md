@@ -10,7 +10,7 @@
 | Name | GitHub |
 |---|---|
 | Alok Thakur | [@aalok012](https://github.com/aalok012) |
-
+| Aayush Raj Sah |  |
 ---
 
 ## Problem Statement
