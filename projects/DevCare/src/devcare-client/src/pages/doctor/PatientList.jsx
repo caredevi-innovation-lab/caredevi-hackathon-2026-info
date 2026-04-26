@@ -4,11 +4,11 @@ import { Search, UserPlus, Filter, MoreHorizontal, Users, Loader2 } from 'lucide
 import { getMyPatients } from '../../api/connectionsApi'
 import { getPatientSessions } from '../../api/rehabApi'
 import PatientFilterBar from '../../components/PatientFilterBar'
+import { toastError } from '../../utils/toast'
 
 function PatientList() {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState('All')
 
@@ -43,7 +43,7 @@ function PatientList() {
         setPatients(patientsWithStatus)
       } catch (err) {
         console.error(err)
-        setError(err.message)
+        toastError(err.message || 'Failed to load patients')
       } finally {
         setLoading(false)
       }

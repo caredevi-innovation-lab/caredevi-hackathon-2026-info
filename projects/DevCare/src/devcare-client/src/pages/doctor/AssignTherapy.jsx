@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { getMyPatients } from '../../api/connectionsApi'
 import { getExercises, createRehabPlan } from '../../api/rehabApi'
+import { toastSuccess, toastError } from '../../utils/toast'
 
 function AssignTherapy() {
   const [selectedPatient, setSelectedPatient] = useState('')
@@ -34,7 +35,10 @@ function AssignTherapy() {
         setPatients(pData)
         setAvailableExercises(exData)
       })
-      .catch(err => console.error('Error fetching data:', err))
+      .catch(err => {
+        console.error('Error fetching data:', err)
+        toastError('Failed to load required data. Please refresh.')
+      })
       .finally(() => setLoading(false))
   }, [])
 
@@ -90,7 +94,7 @@ function AssignTherapy() {
       }
       
       const response = await createRehabPlan(planData)
-      alert(`Plan successfully deployed for ${patients.find(p => String(p.id) === selectedPatient)?.name}!\n\nExercises assigned: ${response.exercises?.length || 0}\nTasks added: ${response.tasks?.length || 0}`)
+      toastSuccess(`Plan successfully deployed for ${patients.find(p => String(p.id) === selectedPatient)?.name}!`)
       
       // Reset form
       setExercises([])
@@ -100,7 +104,7 @@ function AssignTherapy() {
       setStartDate('')
       setEndDate('')
     } catch (err) {
-      alert(`Failed to deploy plan: ${err.message}`)
+      toastError(`Failed to deploy plan: ${err.message}`)
     } finally {
       setSubmitting(false)
     }

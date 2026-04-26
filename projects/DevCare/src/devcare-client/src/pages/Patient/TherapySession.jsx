@@ -14,6 +14,7 @@ import {
 } from '../../utils/exerciseEvaluators';
 import { generateBodyEvaluation } from '../../utils/bodyEvaluation';
 import SessionReport from '../../components/SessionReport';
+import { toastSuccess } from '../../utils/toast';
 
 const USERNAME_KEY = 'devcare_username'
 const ACCESS_TOKEN_KEY = 'devcare_access_token'
@@ -260,7 +261,7 @@ function TherapySessionPage() {
       ...bodyEvaluation
     };
     console.log("Submitting report to backend:", report);
-    alert("Session report submitted successfully!");
+    toastSuccess("Session report submitted successfully!");
     navigate('/session-result');
   };
 

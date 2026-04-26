@@ -2,6 +2,7 @@ import { useState } from 'react'
 import logo from '../assets/Devcare-logo.png'
 
 import { loginUser, registerUser } from '../api/authApi'
+import { toastSuccess, toastError } from '../utils/toast'
 
 const ACCESS_TOKEN_KEY = 'devcare_access_token'
 const REFRESH_TOKEN_KEY = 'devcare_refresh_token'
@@ -13,8 +14,6 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
   const mode = propsMode || localMode
 
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [form, setForm] = useState({
     username: '',
     email: '',
@@ -39,8 +38,6 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
   async function handleSubmit(event) {
     event.preventDefault()
     setLoading(true)
-    setError('')
-    setSuccess('')
 
     try {
       if (mode === 'register') {
@@ -58,7 +55,7 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
           registerData.user.username,
           registerData.user.role
         )
-        setSuccess('Registration successful. Redirecting to dashboard...')
+        toastSuccess('Registration successful. Redirecting to dashboard...')
         setForm({
           username: '',
           email: '',
@@ -85,7 +82,7 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
           loginData.user?.role
         )
 
-        setSuccess('Login successful. Redirecting to dashboard...')
+        toastSuccess('Login successful. Redirecting to dashboard...')
         setForm({
           username: '',
           email: '',
@@ -101,7 +98,7 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
         )
       }
     } catch (submitError) {
-      setError(submitError.message)
+      toastError(submitError.message)
     } finally {
       setLoading(false)
     }
@@ -113,8 +110,6 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
     } else {
       setLocalMode(nextMode)
     }
-    setError('')
-    setSuccess('')
   }
 
   return (
@@ -237,10 +232,7 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
               </>
             )}
 
-            {error && <p className="auth-message auth-message-error">{error}</p>}
-            {success && (
-              <p className="auth-message auth-message-success">{success}</p>
-            )}
+
 
             <button type="submit" className="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 group shadow-lg hover:shadow-xl" disabled={loading}>
               {loading

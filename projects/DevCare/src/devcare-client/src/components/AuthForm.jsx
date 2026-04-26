@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { loginUser, registerUser } from '../api/authApi'
+import { toastSuccess, toastError } from '../utils/toast'
 
 const ACCESS_TOKEN_KEY = 'devcare_access_token'
 const REFRESH_TOKEN_KEY = 'devcare_refresh_token'
@@ -17,8 +18,6 @@ const initialFormState = {
 function AuthForm({ mode }) {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [form, setForm] = useState(initialFormState)
 
   function updateField(event) {
@@ -35,8 +34,6 @@ function AuthForm({ mode }) {
   async function handleSubmit(event) {
     event.preventDefault()
     setLoading(true)
-    setError('')
-    setSuccess('')
 
     try {
       if (mode === 'register') {
@@ -52,7 +49,7 @@ function AuthForm({ mode }) {
           registerData.refresh,
           registerData.user.username
         )
-        setSuccess('Registration successful. Redirecting...')
+        toastSuccess('Registration successful. Redirecting...')
 
         const searchParams = new URLSearchParams(window.location.search)
         const nextPath = searchParams.get('next')
@@ -71,7 +68,7 @@ function AuthForm({ mode }) {
         })
 
         saveAuth(loginData.access, loginData.refresh, loginData.user.username)
-        setSuccess('Login successful. Redirecting...')
+        toastSuccess('Login successful. Redirecting...')
         
         // Handle 'next' redirect if present
         const searchParams = new URLSearchParams(window.location.search)
@@ -89,7 +86,7 @@ function AuthForm({ mode }) {
 
       setForm(initialFormState)
     } catch (submitError) {
-      setError(submitError.message)
+      toastError(submitError.message)
     } finally {
       setLoading(false)
     }
@@ -200,8 +197,7 @@ function AuthForm({ mode }) {
               </div>
             )}
 
-            {error && <p className="auth-message auth-message-error">{error}</p>}
-            {success && <p className="auth-message auth-message-success">{success}</p>}
+
 
             <button type="submit" className="btn-primary w-full" disabled={loading}>
               {loading ? 'Please wait...' : isRegister ? 'Register' : 'Login'}

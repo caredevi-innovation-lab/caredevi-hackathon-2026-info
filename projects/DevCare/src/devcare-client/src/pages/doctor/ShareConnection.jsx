@@ -15,22 +15,22 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { createJoinLink } from '../../api/connectionsApi'
+import { toastSuccess, toastError } from '../../utils/toast'
 
 function ShareConnection() {
   const [slug, setSlug] = useState('')
   const [linkData, setLinkData] = useState(null) // { link, token, qr_code }
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
 
   const handleGenerate = async () => {
     setLoading(true)
-    setError(null)
     try {
       const data = await createJoinLink({ slug: slug.trim() })
       setLinkData(data)
+      toastSuccess('Join link generated successfully.')
     } catch (err) {
-      setError(err.message)
+      toastError(err.message)
     } finally {
       setLoading(false)
     }
@@ -40,6 +40,7 @@ function ShareConnection() {
     if (!shareLink) return
     navigator.clipboard.writeText(shareLink)
     setCopied(true)
+    toastSuccess('Link copied to clipboard!')
     setTimeout(() => setCopied(false), 2000)
   }
 
@@ -140,11 +141,7 @@ function ShareConnection() {
               </button>
             </div>
 
-            {error && (
-              <div className="mt-4 flex items-center gap-2 text-red-500 text-sm font-semibold bg-red-50 px-4 py-3 rounded-2xl">
-                <AlertCircle size={16} /> {error}
-              </div>
-            )}
+
           </div>
 
           <div className="grid gap-8 md:grid-cols-2">

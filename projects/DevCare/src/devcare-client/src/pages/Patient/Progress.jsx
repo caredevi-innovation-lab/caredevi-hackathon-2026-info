@@ -30,12 +30,12 @@ import {
   Cell
 } from 'recharts'
 import { getSessionHistory } from '../../api/rehabApi'
+import { toastError } from '../../utils/toast'
 
 function ProgressPage() {
   const navigate = useNavigate()
   const [sessions, setSessions] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
     async function fetchData() {
@@ -71,7 +71,7 @@ function ProgressPage() {
         }
       } catch (err) {
         console.error('Failed to fetch sessions:', err)
-        setError('Unable to load your progress history. Please try again later.')
+        toastError('Unable to load your progress history. Please try again later.')
       } finally {
         setLoading(false)
       }
@@ -240,12 +240,7 @@ function ProgressPage() {
         </div>
       ) : (
         <>
-          {error && (
-            <div className="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3 text-amber-800 text-sm font-medium">
-              <Info size={18} />
-              {error}
-            </div>
-          )}
+
 
       {/* 1. Top Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">

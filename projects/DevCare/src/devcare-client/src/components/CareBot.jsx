@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageSquare, Sparkles, X, Send, ClipboardList, AlertCircle, Bot, Edit2, Trash2, Plus, ChevronDown, ChevronUp, Database, CheckCircle2, RefreshCcw } from 'lucide-react'
+import { toastSuccess, toastError } from '../utils/toast'
 
 function CareBot() {
   const [isOpen, setIsOpen] = useState(false)
@@ -213,6 +214,7 @@ function CareBot() {
 
       if (res.ok) {
         setSyncSuccess(true)
+        toastSuccess('Plan synced successfully to patient app.')
         setTimeout(() => {
           setSyncSuccess(false)
           setShowSyncUI(null)
@@ -222,7 +224,7 @@ function CareBot() {
       }
     } catch (err) {
       console.error('Sync Error:', err)
-      alert('Failed to sync plan to patient app.')
+      toastError('Failed to sync plan to patient app.')
     } finally {
       setIsSyncing(false)
     }

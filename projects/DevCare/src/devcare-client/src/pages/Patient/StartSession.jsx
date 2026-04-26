@@ -14,6 +14,7 @@ import {
 } from '../../utils/exerciseEvaluators';
 import { generateBodyEvaluation } from '../../utils/bodyEvaluation';
 import SessionReport from '../../components/SessionReport';
+import { toastSuccess, toastError } from '../../utils/toast';
 
 const USERNAME_KEY = 'devcare_username'
 const ACCESS_TOKEN_KEY = 'devcare_access_token'
@@ -85,17 +86,25 @@ export default function StartSession() {
       return;
     }
 
+    console.log("AI Speaking:", text);
     window.speechSynthesis.cancel(); // stop previous
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 1;
     utterance.pitch = 1;
     utterance.volume = 1;
+    utterance.lang = 'en-US';
 
     window.speechSynthesis.speak(utterance);
     
     lastSpokenRef.current = text;
     lastSpokenTimeRef.current = now;
   }, [voiceEnabled]);
+
+  // Use a ref for speak to keep onResults stable but use latest speak logic
+  const speakRef = useRef(speak);
+  useEffect(() => {
+    speakRef.current = speak;
+  }, [speak]);
 
   // Stop speech on pause/end
   useEffect(() => {
@@ -182,16 +191,16 @@ export default function StartSession() {
       const msgs = ["Great job! 💪", "Halfway there! 🔥", "Keep pushing! 🚀", "Excellent pace! ⚡"];
       const chosen = msgs[Math.floor(Math.random() * msgs.length)];
       setMotivation(chosen);
-      speak("Good job, keep going!", true);
+      speakRef.current("Good job, keep going!", true);
       
       const timeout = setTimeout(() => setMotivation(""), 3000);
       return () => clearTimeout(timeout);
     }
     
     if (currentExerciseRef.current && exerciseState.reps > 0 && exerciseState.reps === currentExerciseRef.current.targetReps - 1) {
-      speak("Last rep, finish strong!", true);
+      speakRef.current("Last rep, finish strong!", true);
     }
-  }, [exerciseState.reps, speak]);
+  }, [exerciseState.reps]);
 
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
@@ -292,11 +301,11 @@ export default function StartSession() {
           // Audio Coaching Logic
           const highSeverityCorr = newState.corrections?.find(c => c.severity === 'high');
           if (highSeverityCorr) {
-            speak(`Fix this: ${highSeverityCorr.feedback}`, true);
+            speakRef.current(`Fix this: ${highSeverityCorr.feedback}`, true);
           } else if (newState.corrections?.length > 0) {
-            speak(newState.corrections[0].feedback);
+            speakRef.current(newState.corrections[0].feedback);
           } else if (newState.feedback !== exerciseStateRef.current.feedback) {
-            speak(newState.feedback);
+            speakRef.current(newState.feedback);
           }
 
           // Check if target reps reached
@@ -347,11 +356,11 @@ export default function StartSession() {
     try {
       const { completeSession } = await import('../../api/rehabApi');
       await completeSession(sessionId, report);
-      alert("Session report submitted successfully!");
+      toastSuccess("Session report submitted successfully!");
       navigate('/session-result');
     } catch (err) {
       console.error("Failed to submit session report:", err);
-      alert("Failed to submit report. Please try again.");
+      toastError("Failed to submit report. Please try again.");
       navigate('/session-result');
     }
   };
@@ -418,7 +427,14 @@ export default function StartSession() {
                       <div className="flex gap-3">
                         {!sessionActive ? (
                           <button 
-                            onClick={() => setSessionActive(true)}
+                            onClick={() => {
+                              // Unlock speech synthesis on user interaction
+                              if (window.speechSynthesis) {
+                                const u = new SpeechSynthesisUtterance("");
+                                window.speechSynthesis.speak(u);
+                              }
+                              setSessionActive(true);
+                            }}
                             disabled={!isLoaded}
                             className="flex-1 btn-primary flex items-center justify-center gap-2 disabled:opacity-50"
                           >

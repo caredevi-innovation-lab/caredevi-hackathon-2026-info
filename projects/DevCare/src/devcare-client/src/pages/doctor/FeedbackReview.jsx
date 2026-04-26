@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { submitFeedback, getPatientSessions } from '../../api/rehabApi'
+import { getMyPatients } from '../../api/connectionsApi'
+import { toastSuccess, toastError } from '../../utils/toast'
+import { format } from 'date-fns'
 import { 
   MessageSquareMore, 
   Star, 
@@ -17,31 +20,64 @@ function FeedbackReview() {
   const { patientId } = useParams()
   const [rating, setRating] = useState(0)
   const [message, setMessage] = useState('')
-  const selectedPatient = patientId || '1'
+  const selectedPatient = patientId
 
+  const [patientData, setPatientData] = useState(null)
   const [latestSessionId, setLatestSessionId] = useState(null)
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getPatientSessions(selectedPatient)
-      .then(sessions => {
+    async function fetchData() {
+      try {
+        setLoading(true)
+        // 1. Fetch patient sessions to get latest session and condition (plan name)
+        const sessions = await getPatientSessions(selectedPatient)
+        let lastSessionDate = 'No sessions yet'
+        let condition = 'General Recovery'
+        
         if (sessions && sessions.length > 0) {
-          setLatestSessionId(sessions[0].id)
+          const latest = sessions[0]
+          setLatestSessionId(latest.id)
+          condition = latest.plan_name
+          if (latest.completed_at) {
+            lastSessionDate = format(new Date(latest.completed_at), 'MMM dd, hh:mm a')
+          }
         }
-      })
-      .catch(err => console.error("Could not fetch sessions", err))
+
+        // 2. Fetch patient basic info (name)
+        const patients = await getMyPatients()
+        const patient = patients.find(p => p.id.toString() === selectedPatient.toString())
+        
+        if (patient) {
+          setPatientData({
+            name: patient.name || patient.username,
+            condition: condition,
+            lastSession: lastSessionDate,
+            avatarUrl: patient.avatar_url
+          })
+        }
+      } catch (err) {
+        console.error("Could not fetch patient details", err)
+        toastError("Could not load patient information")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (selectedPatient) {
+      fetchData()
+    }
   }, [selectedPatient])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!latestSessionId) {
-      setError("No completed session found for this patient.")
+      toastError("No completed session found for this patient.")
       return
     }
 
     setSubmitting(true)
-    setError('')
 
     try {
       await submitFeedback({
@@ -50,18 +86,31 @@ function FeedbackReview() {
         rating: rating,
         guidance: message
       })
-      alert('Clinical feedback has been recorded and transmitted.')
+      toastSuccess('Clinical feedback has been recorded and transmitted.')
       navigate('/doctor/dashboard')
     } catch (err) {
-      setError(err.message || 'Failed to submit feedback')
+      toastError(err.message || 'Failed to submit feedback')
     } finally {
       setSubmitting(false)
     }
   }
 
-  const patientInfo = {
-    '1': { name: 'Sarah Chen', condition: 'Post-ACL Reconstruction', lastSession: 'Oct 24, 09:15 AM' },
-    '2': { name: 'Bob Johnson', status: 'Shoulder Impingement', lastSession: 'Oct 23, 02:30 PM' }
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <Loader2 size={40} className="animate-spin text-blue-500 mb-4" />
+        <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Loading Patient Profile...</p>
+      </div>
+    )
+  }
+
+  if (!patientData) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <AlertCircle size={40} className="text-red-400 mb-4" />
+        <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Patient not found</p>
+      </div>
+    )
   }
 
   return (
@@ -81,19 +130,23 @@ function FeedbackReview() {
            <div className="elevated-card p-6 border-none shadow-lg bg-white">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Active Review</h3>
               <div className="flex items-center gap-4 mb-8">
-                 <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center text-2xl font-black text-slate-400">
-                   {patientInfo[selectedPatient]?.name[0]}
-                 </div>
+                 {patientData.avatarUrl ? (
+                   <img src={patientData.avatarUrl} className="h-14 w-14 rounded-2xl object-cover" alt={patientData.name} />
+                 ) : (
+                   <div className="h-14 w-14 rounded-2xl bg-slate-100 flex items-center justify-center text-2xl font-black text-slate-400">
+                     {patientData.name[0]}
+                   </div>
+                 )}
                  <div>
-                    <h4 className="font-bold text-slate-900">{patientInfo[selectedPatient]?.name}</h4>
-                    <p className="text-xs font-bold text-blue-600 uppercase tracking-tighter mt-1">{patientInfo[selectedPatient]?.condition || patientInfo[selectedPatient]?.status}</p>
+                    <h4 className="font-bold text-slate-900">{patientData.name}</h4>
+                    <p className="text-xs font-bold text-blue-600 uppercase tracking-tighter mt-1">{patientData.condition}</p>
                  </div>
               </div>
 
               <div className="space-y-4 pt-6 border-t border-slate-50">
                  <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Last Session</span>
-                    <span className="text-[10px] font-bold text-slate-700">{patientInfo[selectedPatient]?.lastSession}</span>
+                    <span className="text-[10px] font-bold text-slate-700">{patientData.lastSession}</span>
                  </div>
                  <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Data Quality</span>
@@ -175,12 +228,7 @@ function FeedbackReview() {
               <span>{submitting ? 'Transmitting...' : 'Broadcast Feedback'}</span>
             </button>
             
-            {error && (
-              <div className="mt-4 p-4 rounded-xl bg-red-50 text-red-600 text-sm font-bold flex items-center justify-center gap-2">
-                 <AlertCircle size={16} />
-                 {error}
-              </div>
-            )}
+
             
           </form>
         </div>

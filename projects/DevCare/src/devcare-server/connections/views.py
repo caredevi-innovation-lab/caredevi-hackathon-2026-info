@@ -116,12 +116,18 @@ class ConnectedPatientsView(APIView):
         relations = DoctorPatientRelation.objects.filter(doctor=request.user).select_related("patient")
         patients_data = []
         for rel in relations:
+            profile_patient = getattr(rel.patient, 'profile', None)
+            avatar_url = None
+            if profile_patient and profile_patient.avatar:
+                avatar_url = request.build_absolute_uri(profile_patient.avatar.url)
+
             patients_data.append({
                 "id": rel.patient.id,
                 "username": rel.patient.username,
                 "name": f"{rel.patient.first_name} {rel.patient.last_name}".strip() or rel.patient.username,
                 "email": rel.patient.email,
                 "connected_at": rel.created_at,
+                "avatar_url": avatar_url,
             })
 
         return Response(patients_data, status=status.HTTP_200_OK)
