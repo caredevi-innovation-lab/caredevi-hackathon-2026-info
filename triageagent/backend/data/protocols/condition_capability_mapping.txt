@@ -1,0 +1,79 @@
+CONDITION-TO-HOSPITAL-CAPABILITY MAPPING
+
+This protocol maps suspected emergency conditions to required hospital capabilities for optimal patient routing.
+
+CARDIAC ARREST (VF/VT/PEA/Asystole):
+Required: cath_lab, icu, cardiology
+Rationale: Post-ROSC STEMI requires immediate PCI. ICU for post-arrest care. Cardiology for rhythm management.
+Time critical: 90-minute door-to-balloon for STEMI after ROSC.
+Secondary: defibrillation available at all ERs — nearest hospital for initial stabilization if >15 min to cath lab.
+
+STEMI (ST-Elevation Myocardial Infarction):
+Required: cath_lab, cardiology
+Strongly preferred: icu
+Time critical: 90-minute door-to-balloon goal.
+Rationale: Primary PCI is gold standard. Fibrinolytics only if no cath lab available within 120 min of first contact.
+
+NSTEMI / Unstable Angina (High Risk):
+Required: cardiology, icu
+Preferred: cath_lab
+Time: invasive strategy within 24h for high-risk, 72h for intermediate.
+
+ISCHEMIC STROKE:
+Required: comprehensive_stroke_center, neurology
+For thrombectomy: add neurointerventional capability
+Time critical: tPA window 4.5 hours, thrombectomy 6-24 hours.
+Rationale: Comprehensive stroke centers have 24/7 neurology, CT/MRI, tPA protocols, and neurointerventional teams.
+
+HEMORRHAGIC STROKE (ICH / SAH):
+Required: neurosurgery, comprehensive_stroke_center
+Preferred: icu, neurointerventional
+Rationale: Surgical evacuation, VP shunt, or coil embolization may be needed. Aggressive BP management.
+
+ANAPHYLAXIS (Severe):
+Required: er_basic, icu
+Rationale: Epinephrine and airway management at any ER. ICU for monitoring biphasic reaction and hemodynamic instability.
+
+MAJOR TRAUMA (Multi-system / Penetrating / TBI):
+Required: level_1_trauma, surgery, blood_bank
+Preferred: icu, burn_unit (if burns involved)
+Time critical: golden hour — definitive surgery within 60 minutes.
+Rationale: Level 1 trauma centers have 24/7 trauma surgery, interventional radiology, and full blood bank.
+
+HEAT STROKE:
+Required: er_basic, icu
+Rationale: Immediate cooling at any ER. ICU for complication management (rhabdomyolysis, DIC, renal failure).
+
+PEDIATRIC EMERGENCY:
+Required: pediatric_er, picu
+Rationale: Pediatric-specific equipment, dosing, and training. Adult ERs may not have appropriate airway sizes, defibrillator settings, or medication doses.
+
+BURNS (>20% TBSA or full-thickness):
+Required: burn_unit, icu
+Preferred: surgery, blood_bank
+
+OBSTETRIC EMERGENCY:
+Required: labor_and_delivery, obstetrics
+Preferred: surgery (cesarean capability), icu (maternal ICU), blood_bank (massive transfusion for hemorrhage)
+
+PSYCHIATRIC EMERGENCY:
+Required: psychiatric_emergency
+Preferred: er_basic (for medical clearance)
+
+UNKNOWN / UNDIFFERENTIATED SEVERE:
+Required: level_1_trauma, icu, er_basic
+Rationale: Broadest capability set. When diagnosis is uncertain, route to highest capability center.
+Exception: if patient is hemodynamically unstable — nearest hospital for stabilization, then transfer.
+
+ROUTING PRIORITY ALGORITHM:
+1. Filter hospitals by required capabilities (hard requirement).
+2. If no full match: find best partial match (most required capabilities met).
+3. For time-critical conditions: weight travel time heavily over ER wait time.
+4. For stable conditions: balance travel time and ER wait time equally.
+5. Always include 2 alternative hospitals in routing decision.
+6. Re-evaluate routing if: patient deteriorates, hospital diverts, or ETA exceeds time-critical window.
+
+DISTANCE THRESHOLDS:
+For ESI 1 (cardiac arrest, hemorrhagic stroke): nearest hospital with defibrillator first, transfer after stabilization.
+For ESI 1-2 time-critical (STEMI, ischemic stroke): bypass nearer hospital without required capabilities if time-critical window allows.
+General rule: capability match > 30 min travel time penalty vs. closer hospital without capability.

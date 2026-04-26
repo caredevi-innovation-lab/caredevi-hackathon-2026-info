@@ -1,0 +1,32 @@
+STROKE EMERGENCY TRIAGE PROTOCOL
+
+ISCHEMIC STROKE — ESI 1-2 (time = brain: 1.9 million neurons die per minute)
+FAST ASSESSMENT: Face drooping (unilateral), Arm weakness (pronator drift), Speech difficulty (slurred/absent), Time to call 911.
+Extended BEFAST: Balance loss, Eyes (vision changes), Face, Arm, Speech, Time.
+Immediate actions: Non-contrast CT head within 25 minutes, CT read within 45 minutes, tPA decision within 60 minutes.
+
+tPA (Alteplase) ELIGIBILITY:
+Inclusion: ischemic stroke symptoms, NIHSS ≥4 (or disabling deficit), onset within 4.5 hours, CT no hemorrhage.
+Exclusion criteria: active internal bleeding, intracranial hemorrhage on CT, BP >185/110 (treat first), blood glucose <50 or >400, platelet count <100,000, INR >1.7 (if on warfarin), heparin within 48h with elevated aPTT, prior intracranial hemorrhage, stroke/head trauma <3 months, major surgery <14 days, arterial puncture non-compressible site <7 days.
+Relative contraindications: rapidly improving symptoms, minor isolated deficits, seizure at onset, prior stroke + diabetes combined.
+Dose: 0.9 mg/kg IV (max 90 mg): 10% bolus over 1 min, remainder over 60 min.
+
+MECHANICAL THROMBECTOMY:
+Window: up to 6 hours from onset (standard), 6-24 hours if DAWN/DEFUSE-3 criteria met (salvageable penumbra on perfusion imaging).
+Requires: large vessel occlusion (ICA, M1, M2, basilar), comprehensive stroke center with neurointerventional team.
+Pre-procedure BP: <185/110.
+
+HEMORRHAGIC STROKE — ESI 1
+Types: intracerebral hemorrhage (ICH), subarachnoid hemorrhage (SAH — "worst headache of life").
+Immediate: non-contrast CT, neurosurgery consult, reverse anticoagulation urgently.
+BP target ICH: systolic <140 mmHg (aggressive lowering if SBP 150-220 and no contraindication).
+BP target SAH: avoid hypotension, systolic 140-160 until secured.
+tPA ABSOLUTELY CONTRAINDICATED in hemorrhagic stroke.
+Anticoagulation reversal: warfarin → 4-factor PCC + vitamin K; DOACs → specific reversal agents; heparin → protamine.
+
+NIHSS SCORING KEY COMPONENTS:
+Level of consciousness (0-3), gaze (0-2), visual fields (0-3), facial palsy (0-3), arm motor (0-4 each), leg motor (0-4 each), limb ataxia (0-2), sensory (0-2), language/aphasia (0-3), dysarthria (0-2), extinction/neglect (0-2).
+NIHSS <4: minor stroke, consider tPA if disabling. NIHSS >20: severe, high hemorrhagic transformation risk with tPA.
+
+STROKE MIMICS: hypoglycemia (check glucose immediately), Todd's paralysis post-seizure, complex migraine, brain tumor, multiple sclerosis, conversion disorder.
+Blood glucose <60 mg/dL: give D50W 25-50g IV — may fully resolve stroke-like symptoms.
