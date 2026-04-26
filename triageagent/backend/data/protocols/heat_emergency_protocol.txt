@@ -1,0 +1,44 @@
+HEAT EMERGENCY TRIAGE PROTOCOL
+
+HEAT EXHAUSTION — ESI 3
+Definition: heat-related illness with core temperature <40°C (104°F), with intact CNS function.
+Symptoms: heavy sweating, cool/moist skin, weakness, dizziness, nausea, headache, muscle cramps, tachycardia, hypotension.
+Treatment: move to cool environment, oral hydration if alert, IV NS 1-2L if unable to drink, cooling measures (fans, ice packs to neck/axilla/groin), rest.
+Disposition: most can be discharged after recovery, with instructions to avoid heat for 24-48h.
+
+HEAT STROKE — ESI 1
+Definition: core temp >40°C (104°F) with CNS dysfunction (confusion, ataxia, bizarre behavior, seizure, coma).
+Two types:
+- Classic: elderly, chronic illness, medications, poor heat dissipation. Often dry skin (anhidrosis).
+- Exertional: young athletes/military, intense exercise in heat. Often still sweating.
+
+IMMEDIATE COOLING IS THE TREATMENT — every minute matters:
+Target core temp: <38.9°C (102°F) within 30 minutes.
+Fastest method: cold water immersion (ice bath) — gold standard for exertional. Cold water at 1-15°C.
+Alternatives: evaporative cooling (mist fans + ice packs), cooling blankets, cold IV fluids.
+Avoid: antipyretics (NSAIDs/acetaminophen) — ineffective and potentially harmful.
+Ice packs to: neck, axillae, groin (major vessels).
+
+MEDICATION CONSIDERATIONS — CRITICAL:
+Beta-blockers (metoprolol, atenolol, carvedilol): IMPAIR thermoregulation — blunt tachycardia response, reduce sweating. Patients on beta-blockers may not mount appropriate tachycardia — HR may appear misleadingly normal despite severe heat stress.
+Diuretics (furosemide, HCTZ): cause dehydration + electrolyte loss — exacerbate heat illness.
+Anticholinergics (diphenhydramine, TCAs, antipsychotics): impair sweating.
+Stimulants (amphetamines, cocaine): increase heat production.
+Alcohol: causes vasodilation + diuresis.
+
+RISK FACTORS:
+Age extremes: infants, elderly. Obesity. Cardiac disease. Renal disease. Prior heat stroke.
+Environmental: high humidity + high temperature (wet bulb temperature >32°C most dangerous), no air conditioning, outdoor exertion in heat.
+Medications: as listed above.
+
+COMPLICATIONS:
+Rhabdomyolysis: CK >1000 U/L, myoglobinuria — aggressive IV hydration, target UO >200 mL/hr.
+Acute kidney injury: aggressive hydration.
+Coagulopathy/DIC: monitor coagulation, fresh frozen plasma if needed.
+Hepatic injury: elevated LFTs common.
+CNS: cerebral edema, seizures — benzos for seizure control.
+
+ELDERLY-SPECIFIC CONSIDERATIONS:
+Core temperature >38°C in elderly patient with confusion: treat as heat emergency even without classic criteria.
+Check: medication list for beta-blockers, diuretics, anticholinergics.
+Social history: air conditioning access, living alone, dementia.

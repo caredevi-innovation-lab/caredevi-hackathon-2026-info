@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TriageAgent — Hospital Dashboard</title>
+<style>
+:root {
+  --bg: #f8fafc; --sidebar: #fff; --card: #fff; --border: #e2e8f0;
+  --text: #1a202c; --muted: #718096; --accent: #e53e3e; --blue: #3182ce;
+  --green: #38a169; --yellow: #d69e2e; --purple: #805ad5;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif;
+       min-height: 100vh; display: flex; flex-direction: column; }
+
+/* Top bar */
+.topbar { background: #1a202c; color: #fff; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.topbar h1 { font-size: 1rem; font-weight: 600; }
+.topbar .sub { font-size: .75rem; color: #a0aec0; margin-top: 1px; }
+.topbar .badge { background: var(--accent); color: #fff; border-radius: 6px;
+                 padding: 4px 10px; font-size: .72rem; font-weight: 700; }
+.live-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%;
+            display: inline-block; margin-right: 6px;
+            animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+/* Layout */
+.layout { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 280px; background: var(--sidebar); border-right: 1px solid var(--border);
+           overflow-y: auto; flex-shrink: 0; }
+.sidebar-header { padding: 14px 16px; border-bottom: 1px solid var(--border);
+                  font-size: .75rem; font-weight: 700; text-transform: uppercase;
+                  letter-spacing: .08em; color: var(--muted); }
+.patient-item { padding: 12px 16px; border-bottom: 1px solid var(--border);
+                cursor: pointer; transition: background .15s; display: flex; align-items: center; gap: 10px; }
+.patient-item:hover { background: #f7fafc; }
+.patient-item.active { background: #ebf8ff; border-left: 3px solid var(--blue); }
+.pt-esi { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+          justify-content: center; font-weight: 800; font-size: .85rem; flex-shrink: 0; }
+.esi-1 { background: #fed7d7; color: var(--accent); }
+.esi-2 { background: #fefcbf; color: #975a16; }
+.esi-3 { background: #c6f6d5; color: #276749; }
+.pt-info .name { font-size: .85rem; font-weight: 600; }
+.pt-info .meta { font-size: .7rem; color: var(--muted); }
+.pt-eta { margin-left: auto; font-size: .7rem; color: var(--blue); font-weight: 600; white-space: nowrap; }
+
+/* Main panel */
+.main { flex: 1; overflow-y: auto; padding: 20px; }
+.incoming-banner { background: var(--accent); color: #fff; border-radius: 10px;
+                   padding: 12px 20px; display: flex; align-items: center;
+                   justify-content: space-between; margin-bottom: 20px; }
+.incoming-banner .title { font-size: 1rem; font-weight: 700; }
+.incoming-banner .eta-big { font-size: 1.4rem; font-weight: 800; }
+.eta-countdown { font-size: .78rem; opacity: .85; }
+
+/* Grid */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid.full { grid-template-columns: 1fr; }
+@media(max-width:900px){ .grid { grid-template-columns: 1fr; } }
+
+/* Cards */
+.card { background: var(--card); border: 1px solid var(--border);
+        border-radius: 12px; padding: 16px; }
+.card-title { font-size: .7rem; font-weight: 700; text-transform: uppercase;
+              letter-spacing: .08em; color: var(--muted); margin-bottom: 12px;
+              display: flex; align-items: center; gap: 6px; }
+.card-title .dot { width: 6px; height: 6px; border-radius: 50%; }
+.row2 { display: flex; justify-content: space-between; padding: 5px 0;
+         font-size: .82rem; border-bottom: 1px solid var(--border); }
+.row2:last-child { border-bottom: none; }
+.row2 .lbl { color: var(--muted); }
+
+/* AI assessment */
+.condition-pill { display: inline-flex; align-items: center; gap: 6px;
+                  background: #fff5f5; border: 1px solid #fed7d7;
+                  color: var(--accent); border-radius: 8px; padding: 8px 14px;
+                  font-size: .9rem; font-weight: 600; margin-bottom: 10px; }
+.conf-bar { background: var(--border); border-radius: 4px; height: 8px; margin: 6px 0; }
+.conf-fill { height: 8px; border-radius: 4px; }
+.esi-badge { display: inline-block; padding: 4px 12px; border-radius: 20px;
+             font-size: .78rem; font-weight: 700; margin-top: 6px; }
+.esi-badge.lvl1 { background: #fed7d7; color: var(--accent); }
+.esi-badge.lvl2 { background: #fefcbf; color: #975a16; }
+.esi-badge.lvl3 { background: #c6f6d5; color: #276749; }
+
+/* Vitals */
+.vitals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.vital-cell { background: var(--bg); border-radius: 8px; padding: 10px;
+              text-align: center; border: 1px solid var(--border); }
+.vital-cell .v-label { font-size: .65rem; color: var(--muted); text-transform: uppercase; }
+.vital-cell .v-val { font-size: 1.3rem; font-weight: 700; margin-top: 2px; }
+.vital-cell .v-code { font-size: .6rem; color: var(--blue); margin-top: 2px; }
+.critical { color: var(--accent) !important; }
+.normal { color: var(--green) !important; }
+
+/* Tags */
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.tag { border-radius: 6px; padding: 3px 8px; font-size: .72rem; }
+.tag.allergy { background: #fff5f5; color: var(--accent); border: 1px solid #fed7d7; }
+.tag.allergy.high { font-weight: 700; }
+.tag.med { background: #ebf8ff; color: var(--blue); border: 1px solid #bee3f8; }
+.tag.condition { background: #faf5ff; color: var(--purple); border: 1px solid #e9d8fd; }
+
+/* NER */
+.ner-entity { display: flex; justify-content: space-between; align-items: center;
+              padding: 6px 0; border-bottom: 1px solid var(--border); font-size: .8rem; }
+.ner-entity:last-child { border-bottom: none; }
+.snomed-code { font-size: .68rem; color: var(--blue); background: #ebf8ff;
+               padding: 2px 6px; border-radius: 4px; }
+
+/* RAG */
+.rag-chunk { background: #f7fafc; border: 1px solid var(--border);
+             border-radius: 8px; padding: 10px; margin-bottom: 8px;
+             font-size: .75rem; color: var(--muted); line-height: 1.5; }
+.rag-source { font-size: .68rem; color: var(--blue); font-weight: 600; margin-bottom: 4px; }
+
+/* FHIR viewer */
+.fhir-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.fhir-badge { background: #ebf8ff; color: var(--blue); border: 1px solid #bee3f8;
+              border-radius: 6px; padding: 3px 8px; font-size: .68rem; font-weight: 600; }
+.fhir-pre { background: #1a202c; color: #a8d8ea; border-radius: 10px;
+            padding: 14px; font-size: .68rem; overflow-x: auto; max-height: 280px;
+            overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+.fhir-key { color: #f6e05e; }
+.fhir-str { color: #68d391; }
+.fhir-num { color: #fc8181; }
+
+/* Sensor validation */
+.sensor-row { display: flex; align-items: center; gap: 8px; padding: 5px 0;
+              font-size: .8rem; border-bottom: 1px solid var(--border); }
+.sensor-row:last-child { border-bottom: none; }
+.sensor-icon { font-size: .85rem; }
+.verdict-chip { display: inline-block; padding: 4px 12px; border-radius: 20px;
+                font-size: .78rem; font-weight: 700; }
+.verdict-EMERGENCY  { background: #fed7d7; color: var(--accent); }
+.verdict-INVESTIGATE{ background: #fefcbf; color: #975a16; }
+.verdict-NORMAL     { background: #c6f6d5; color: #276749; }
+.verdict-SENSOR_ERROR{ background: #e2e8f0; color: var(--muted); }
+
+/* Disclaimer */
+.disclaimer { font-size: .7rem; color: var(--muted); background: #fffbeb;
+              border: 1px solid #fbd38d; border-radius: 8px; padding: 10px;
+              margin: 16px 0; text-align: center; }
+.disclaimer strong { color: #975a16; }
+
+/* Footer */
+.page-footer { background: #1a202c; color: #718096; font-size: .68rem;
+               text-align: center; padding: 12px; }
+
+/* Empty state */
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+.empty h3 { font-size: 1rem; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="live-dot"></span>
+      <h1>St. Mary's Medical Center — Emergency Department</h1>
+    </div>
+    <div class="sub">TriageAgent Hospital Dashboard · FHIR R4 · Real-time incoming</div>
+  </div>
+  <div>
+    <span class="badge" id="incoming-count">0 Incoming</span>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">Incoming Patients</div>
+    <div id="patient-list">
+      <!-- demo patient pre-loaded -->
+      <div class="patient-item active" onclick="selectPatient('demo')">
+        <div class="pt-esi esi-1">1</div>
+        <div class="pt-info">
+          <div class="name">Robert Chen</div>
+          <div class="meta">62M · Cardiac Arrest · 95%</div>
+        </div>
+        <div class="pt-eta">8 min</div>
+      </div>
+    </div>
+    <div style="padding:12px 16px;font-size:.7rem;color:var(--muted);text-align:center">
+      Auto-refreshes every 10s
+    </div>
+  </div>
+
+  <!-- Main panel -->
+  <div class="main" id="main-panel">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<div class="page-footer">
+  Built with: FHIR R4 · SNOMED CT · LOINC · RxNorm · Synthea · scispaCy · ChromaDB ·
+  Llama3-OpenBioLLM-70B · LangChain · HuggingFace sentence-transformers<br>
+  TriageAgent · AI Healthcare Innovation Hackathon 2026 · For demonstration purposes only
+</div>
+
+<script>
+const API = 'http://localhost:8000';
+
+// ── demo data (fallback when backend not running) ──────────────────────────
+const DEMO = {
+  working_diagnosis: {
+    top_condition: 'cardiac_arrest', top_confidence: 0.95, esi_level: 1,
+    required_capabilities: ['cath_lab', 'icu', 'cardiology'],
+    critical_handoff_facts: [
+      'Ventricular fibrillation confirmed on ECG',
+      'HR=0 + fall detected + no movement + phone inactive 120s',
+      'Patient on Warfarin — bleeding risk for fibrinolytics',
+      'Contrast allergy — avoid iodine contrast media',
+      'Last known well: approximately 2 minutes ago',
+    ],
+    conflict_flags: [],
+    reasoning_trace: 'Deterministic assessment: VF on ECG with watch on wrist confirmed. ESI 1.',
+    differential: [['cardiac_arrest', 0.95], ['stemi', 0.40]],
+  },
+  routing_decision: {
+    chosen_hospital: {
+      name: 'Central Texas Heart & Vascular Center',
+      capabilities: ['cath_lab', 'cardiology', 'icu', 'surgery', 'blood_bank', 'er_basic'],
+      current_er_wait_minutes: 8, phone_number: '+1-512-555-0101',
+    },
+    eta_minutes: 8, fallback_triggered: false,
+    reasoning: 'Routing for cardiac_arrest (95%) | Required: cath_lab, icu, cardiology | Selected: Central Texas Heart & Vascular Center — ETA 8 min',
+    re_evaluation_triggers: ['Reassess if ETA exceeds 90-min window', 'Reassess if patient deteriorates en route'],
+  },
+  sensor_validation: { verdict: 'EMERGENCY', agreement_count: 7,
+    reasoning: '7 sensors agree across wearable+phone: wearable_hr_low, wearable_spo2_low, wearable_ecg_abnormal, wearable_fall, wearable_no_movement, phone_fall_impact, phone_no_interaction' },
+  clinical_entities: {
+    symptoms: [
+      { text: 'unresponsive',  snomed_code: '40701008',  snomed_display: 'Unresponsive' },
+      { text: 'no pulse',      snomed_code: '249530007', snomed_display: 'Absent pulse' },
+      { text: 'fall detected', snomed_code: '217082002', snomed_display: 'Fall' },
+    ],
+    model_used: 'keyword_fallback',
+  },
+  rag_protocol_sources: [
+    'CARDIAC ARREST (VF/VT/PEA/Asystole): Immediate defibrillation within 3-5 minutes. CPR 100-120 compressions/min. Door-to-first-shock goal: <3 minutes in-hospital.',
+    'WARFARIN CONSIDERATION: if patient on warfarin, check INR before fibrinolytics. High bleeding risk — discuss with interventionalist.',
+    'CONTRAST ALLERGY: iodine contrast allergy — premedicate or use alternative imaging. Discuss with cardiology.',
+  ],
+  fhir_bundle: {
+    resourceType: 'Bundle', id: 'handoff-patient-001-demo', type: 'collection',
+    meta: { lastUpdated: new Date().toISOString() },
+    entry: [
+      { resource: { resourceType: 'Patient', id: 'patient-001',
+          name: [{ family: 'Chen', given: ['Robert'] }], gender: 'male', birthDate: '1964-03-15' } },
+      { resource: { resourceType: 'Condition', id: 'condition-emergency',
+          verificationStatus: { coding: [{ code: 'unconfirmed' }] },
+          code: { coding: [{ system: 'http://snomed.info/sct', code: '410429000', display: 'Cardiac arrest' }] },
+          note: [{ text: 'AI-generated preliminary assessment. Not a clinical diagnosis.' }] } },
+      { resource: { resourceType: 'Observation', id: 'obs-hr',
+          code: { coding: [{ system: 'http://loinc.org', code: '8867-4', display: 'Heart rate' }] },
+          valueQuantity: { value: 0, unit: 'beats/minute' } } },
+      { resource: { resourceType: 'Observation', id: 'obs-spo2',
+          code: { coding: [{ system: 'http://loinc.org', code: '59408-5', display: 'Oxygen saturation' }] },
+          valueQuantity: { value: 72, unit: '%' } } },
+      { resource: { resourceType: 'MedicationStatement', id: 'med-warfarin',
+          medicationCodeableConcept: { coding: [{ system: 'http://www.nlm.nih.gov/research/umls/rxnorm', code: '11289', display: 'Warfarin Sodium 5 MG' }] } } },
+      { resource: { resourceType: 'AllergyIntolerance', id: 'allergy-penicillin', criticality: 'high',
+          code: { coding: [{ system: 'http://snomed.info/sct', code: '91936005', display: 'Allergy to penicillin' }] } } },
+    ]
+  },
+  model_used: 'deterministic_fallback',
+  disclaimer: 'This is AI-generated preliminary information. Not a clinical diagnosis.',
+  also_call_911: true,
+};
+
+let currentData = DEMO;
+let etaTimer = null;
+let etaRemaining = 8;
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function selectPatient(id) {
+  document.querySelectorAll('.patient-item').forEach(p => p.classList.remove('active'));
+  event?.target?.closest('.patient-item')?.classList.add('active');
+  renderDashboard(currentData);
+}
+
+function renderDashboard(d) {
+  const diag  = d.working_diagnosis;
+  const route = d.routing_decision;
+  const hosp  = route.chosen_hospital;
+  const sensor= d.sensor_validation;
+  const ents  = d.clinical_entities;
+  const rags  = d.rag_protocol_sources || [];
+  const fhir  = d.fhir_bundle;
+
+  const conf    = Math.round(diag.top_confidence * 100);
+  const esiCls  = `esi-badge lvl${diag.esi_level}`;
+  const confColor = conf >= 80 ? 'var(--accent)' : conf >= 60 ? '#d69e2e' : 'var(--green)';
+
+  // start countdown
+  clearInterval(etaTimer);
+  etaRemaining = route.eta_minutes * 60;
+
+  const html = `
+    <!-- Incoming banner -->
+    <div class="incoming-banner">
+      <div>
+        <div class="title">🚨 INCOMING — ETA <span id="eta-live">${route.eta_minutes} min</span></div>
+        <div class="eta-countdown" id="eta-sub">Ambulance en route · ${hosp.name}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="eta-big" id="eta-countdown">${route.eta_minutes}:00</div>
+        <div style="font-size:.7rem;opacity:.8">min remaining</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- AI Assessment -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--accent)"></span>AI Assessment</div>
+        <div class="condition-pill">⚠️ ${diag.top_condition.replace(/_/g,' ')}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:4px">Confidence: ${conf}%</div>
+        <div class="conf-bar"><div class="conf-fill" style="width:${conf}%;background:${confColor}"></div></div>
+        <div class="${esiCls}">ESI ${diag.esi_level} — ${['','Immediate','Emergent','Urgent','Less Urgent','Non-Urgent'][diag.esi_level]}</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:10px">Model: ${d.model_used}</div>
+        <div style="margin-top:10px">
+          ${diag.critical_handoff_facts.map(f => `<div style="font-size:.75rem;padding:3px 0;border-bottom:1px solid var(--border);display:flex;gap:6px"><span>⚡</span><span>${f}</span></div>`).join('')}
+        </div>
+        <div class="disclaimer" style="margin-top:10px;margin-bottom:0">
+          <strong>${d.disclaimer}</strong>
+        </div>
+      </div>
+
+      <!-- Patient Info -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Patient Info</div>
+        <div class="row2"><span class="lbl">Name</span><span>Robert Chen</span></div>
+        <div class="row2"><span class="lbl">Age / Sex</span><span>62 · Male</span></div>
+        <div class="row2"><span class="lbl">Blood Type</span><span>A+</span></div>
+        <div class="row2"><span class="lbl">DOB</span><span>1964-03-15</span></div>
+        <div class="row2"><span class="lbl">Patient ID</span><span>patient-001</span></div>
+        <div style="margin-top:10px">
+          <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px">CONDITIONS</div>
+          <div class="tag-list">
+            <span class="tag condition">Prior MI [SNOMED 22298006]</span>
+            <span class="tag condition">T2DM [44054006]</span>
+            <span class="tag condition">HTN [38341003]</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vitals -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--accent)"></span>Vitals at Detection</div>
+        <div class="vitals-grid">
+          <div class="vital-cell">
+            <div class="v-label">Heart Rate</div>
+            <div class="v-val critical">0</div>
+            <div style="font-size:.65rem;color:var(--muted)">bpm</div>
+            <div class="v-code">LOINC 8867-4</div>
+          </div>
+          <div class="vital-cell">
+            <div class="v-label">SpO₂</div>
+            <div class="v-val critical">72%</div>
+            <div style="font-size:.65rem;color:var(--muted)">%</div>
+            <div class="v-code">LOINC 59408-5</div>
+          </div>
+          <div class="vital-cell">
+            <div class="v-label">ECG</div>
+            <div class="v-val critical" style="font-size:1rem">VFib</div>
+            <div class="v-code">Wearable</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medications -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Medications</div>
+        <div class="tag-list">
+          <span class="tag med">Warfarin 5mg [RxNorm 11289]</span>
+          <span class="tag med">Lisinopril 10mg [314076]</span>
+          <span class="tag med">Metformin 500mg [861004]</span>
+        </div>
+        <div style="margin-top:12px">
+          <div class="card-title" style="margin-bottom:6px"><span class="dot" style="background:var(--accent)"></span>Critical Allergies</div>
+          <div class="tag-list">
+            <span class="tag allergy high">⚠ Penicillin [SNOMED 91936005] HIGH</span>
+            <span class="tag allergy high">⚠ Iodine Contrast [293637006] HIGH</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px">
+      <!-- Clinical NER -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Clinical Entity Extraction (NER)</div>
+        <div style="font-size:.68rem;color:var(--blue);margin-bottom:10px">
+          Extracted using scispaCy biomedical NER · SNOMED CT mapping
+        </div>
+        ${(ents.symptoms || []).map(e => `
+          <div class="ner-entity">
+            <span>${e.text}</span>
+            <span class="snomed-code">SNOMED ${e.snomed_code} — ${e.snomed_display}</span>
+          </div>`).join('') || '<div style="font-size:.78rem;color:var(--muted)">No entities extracted</div>'}
+        <div style="margin-top:8px;font-size:.68rem;color:var(--muted)">
+          Model: ${ents.model_used || 'keyword_fallback'}
+        </div>
+      </div>
+
+      <!-- RAG -->
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--green)"></span>Protocol Grounding (RAG)</div>
+        <div style="font-size:.68rem;color:var(--blue);margin-bottom:10px">
+          Retrieved from ChromaDB using sentence-transformers/all-MiniLM-L6-v2
+        </div>
+        ${rags.map((chunk, i) => `
+          <div class="rag-chunk">
+            <div class="rag-source">Protocol chunk ${i + 1}</div>
+            ${chunk.substring(0, 220)}${chunk.length > 220 ? '…' : ''}
+          </div>`).join('') || '<div style="font-size:.78rem;color:var(--muted)">No protocols retrieved (run setup_rag.py to build knowledge base)</div>'}
+      </div>
+    </div>
+
+    <!-- FHIR Bundle viewer -->
+    <div class="card" style="margin-top:16px">
+      <div class="fhir-header">
+        <div class="card-title" style="margin:0"><span class="dot" style="background:var(--blue)"></span>FHIR R4 Bundle</div>
+        <div>
+          <span class="fhir-badge">FHIR R4 Compliant</span>
+          <span class="fhir-badge" style="margin-left:4px">Synthea Compatible</span>
+        </div>
+      </div>
+      <div class="fhir-pre" id="fhir-viewer">${syntaxHighlight(JSON.stringify(fhir, null, 2))}</div>
+    </div>
+
+    <!-- Sensor validation -->
+    <div class="card" style="margin-top:16px">
+      <div class="card-title"><span class="dot" style="background:var(--yellow)"></span>Sensor Validation</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span class="verdict-chip verdict-${sensor.verdict}">${sensor.verdict}</span>
+        <span style="font-size:.8rem;color:var(--muted)">Agreement: ${sensor.agreement_count} sensors</span>
+      </div>
+      <div class="sensor-row"><span class="sensor-icon">⌚</span><span>Wearable: HR, SpO₂, ECG, Fall, Movement</span></div>
+      <div class="sensor-row"><span class="sensor-icon">📱</span><span>Phone: Fall impact, No interaction >120s, Position=floor</span></div>
+      <div class="sensor-row"><span class="sensor-icon">✓</span><span style="font-size:.75rem;color:var(--muted)">${sensor.reasoning}</span></div>
+    </div>
+
+    <div class="disclaimer">
+      <strong>AI-generated preliminary assessment. Not a clinical diagnosis.</strong>
+      Verify all data on patient arrival. Always follow clinical judgment.
+    </div>
+  `;
+
+  document.getElementById('main-panel').innerHTML = html;
+
+  // ETA countdown
+  etaTimer = setInterval(() => {
+    etaRemaining--;
+    if (etaRemaining <= 0) { clearInterval(etaTimer); return; }
+    const m = Math.floor(etaRemaining / 60);
+    const s = String(etaRemaining % 60).padStart(2, '0');
+    const el = document.getElementById('eta-countdown');
+    if (el) el.textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function syntaxHighlight(json) {
+  return json
+    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) return `<span class="fhir-key">${match}</span>`;
+        return `<span class="fhir-str">${match}</span>`;
+      }
+      if (/true|false/.test(match)) return `<span style="color:#f6ad55">${match}</span>`;
+      return `<span class="fhir-num">${match}</span>`;
+    });
+}
+
+// ── API polling ────────────────────────────────────────────────────────────
+async function pollIncoming() {
+  try {
+    const res = await fetch(`${API}/incoming`, { signal: AbortSignal.timeout(4000) });
+    if (!res.ok) return;
+    const data = await res.json();
+    const count = data.count || 0;
+    document.getElementById('incoming-count').textContent = `${count} Incoming`;
+
+    if (count > 0) {
+      const pid = data.patients[0];
+      const patientData = data.results[pid];
+      if (patientData) {
+        currentData = patientData;
+        renderDashboard(currentData);
+        updateSidebar(data.patients, data.results);
+      }
+    }
+  } catch (_) { /* backend not running — show demo data */ }
+}
+
+function updateSidebar(patients, results) {
+  const list = document.getElementById('patient-list');
+  list.innerHTML = patients.map((pid, i) => {
+    const r = results[pid];
+    const diag = r?.working_diagnosis;
+    const eta  = r?.routing_decision?.eta_minutes || '?';
+    const esi  = diag?.esi_level || 3;
+    const name = pid.replace(/-/g, ' ').replace(/patient /i, 'Patient ');
+    const cond = (diag?.top_condition || 'unknown').replace(/_/g, ' ');
+    const conf = Math.round((diag?.top_confidence || 0) * 100);
+    return `
+      <div class="patient-item ${i === 0 ? 'active' : ''}" onclick="selectPatient('${pid}')">
+        <div class="pt-esi esi-${esi}">${esi}</div>
+        <div class="pt-info">
+          <div class="name">${name}</div>
+          <div class="meta">${cond} · ${conf}%</div>
+        </div>
+        <div class="pt-eta">${eta} min</div>
+      </div>`;
+  }).join('');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderDashboard(DEMO);
+pollIncoming();
+setInterval(pollIncoming, 10000);
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{
+  "resourceType": "Bundle",
+  "id": "patient-003-bundle",
+  "type": "collection",
+  "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-003",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "name": [{ "family": "Park", "given": ["James"] }],
+        "gender": "male",
+        "birthDate": "1998-01-09",
+        "address": [{ "city": "San Marcos", "state": "TX", "country": "US" }]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-003-hr",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "status": "final",
+        "subject": { "reference": "Patient/patient-003" },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "8867-4", "display": "Heart rate" }] },
+        "valueQuantity": { "value": 48, "unit": "beats/minute" },
+        "note": [{ "text": "Athlete baseline resting heart rate" }]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-003-spo2",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "status": "final",
+        "subject": { "reference": "Patient/patient-003" },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "59408-5", "display": "Oxygen saturation" }] },
+        "valueQuantity": { "value": 99, "unit": "%" }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "obs-003-bloodtype",
+        "meta": { "lastUpdated": "2026-04-26T00:00:00Z" },
+        "status": "final",
+        "subject": { "reference": "Patient/patient-003" },
+        "code": { "coding": [{ "system": "http://loinc.org", "code": "883-9", "display": "ABO and Rh group" }] },
+        "valueString": "B+"
+      }
+    }
+  ]
+}

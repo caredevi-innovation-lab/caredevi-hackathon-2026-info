@@ -1,0 +1,42 @@
+EMERGENCY SEVERITY INDEX (ESI) TRIAGE ALGORITHM
+
+The Emergency Severity Index is a five-level triage algorithm that provides clinically relevant stratification of patients into five groups from 1 (most urgent) to 5 (least urgent) based on acuity and resource needs.
+
+ESI LEVEL 1 — IMMEDIATE (Resuscitation Required)
+Patient requires immediate life-saving intervention. Do not delay treatment for any reason.
+Examples: cardiac arrest, respiratory arrest, unresponsive patient, active seizure with airway compromise, severe anaphylaxis with hypotension.
+Actions: immediate physician evaluation, activate resuscitation team, airway management, defibrillation if indicated.
+Time to physician: IMMEDIATE (0 minutes).
+
+ESI LEVEL 2 — EMERGENT (High Risk)
+Patient is in a high-risk situation, or is confused/lethargic/disoriented, or has severe pain/distress.
+High-risk situations include: conditions that could rapidly deteriorate to ESI 1, new-onset neurological deficit, ectopic pregnancy, testicular torsion, submassive PE.
+Examples: chest pain with cardiac history, acute stroke symptoms (FAST positive), severe allergic reaction without shock, altered mental status, diabetic ketoacidosis, sepsis, severe hypertensive crisis (SBP >220 or with end-organ damage).
+Time to physician: within 10 minutes.
+
+ESI LEVEL 3 — URGENT (Stable but Resource-Intensive)
+Patient requires two or more resources but vital signs are stable. Resources include: labs, ECG, imaging (X-ray, CT, ultrasound), IV fluids, IV or IM medications, specialist consultation, complex wound care.
+Examples: abdominal pain needing CT, fracture needing X-ray and reduction, asthma exacerbation needing nebulizers and labs, chest pain with normal initial ECG needing serial troponins.
+Time to physician: within 30 minutes.
+
+ESI LEVEL 4 — LESS URGENT (One Resource)
+Patient requires exactly one resource and vital signs are stable.
+Examples: simple laceration needing sutures only, prescription refill with brief exam, minor infection needing oral antibiotics only, sprain needing X-ray only.
+Time to physician: within 60 minutes.
+
+ESI LEVEL 5 — NON-URGENT (No Resources)
+Patient requires no resources — history and physical exam only.
+Examples: cold symptoms, minor rash, medication question, suture removal.
+Time to physician: within 120 minutes.
+
+VITAL SIGN DANGER ZONES (automatic upgrade consideration):
+- Heart rate: <50 bpm or >100 bpm
+- Respiratory rate: <10 or >20 breaths/minute
+- SpO2: <92%
+- Systolic blood pressure: <90 mmHg
+- Temperature: <35°C or >40°C
+- Capillary refill: >2 seconds in adults
+
+Any patient with abnormal vital signs in these danger zones must be considered for ESI upgrade. A patient who initially appears ESI 3 with tachycardia >120 or SpO2 <90% should be reassigned to ESI 2.
+
+PEDIATRIC CONSIDERATIONS: Use Broselow tape for weight estimation. Adjust vital sign thresholds by age group. Any infant under 28 days with fever is ESI 2 minimum.
