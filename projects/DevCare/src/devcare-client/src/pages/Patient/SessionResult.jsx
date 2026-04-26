@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Search, Filter, MessageSquareText, History, Loader2, Info, CheckCircle2, Timer, Target, Activity } from 'lucide-react'
+import { ArrowLeft, Search, Filter, MessageSquareText, History, Loader2, Info, CheckCircle2, Timer, Target, Activity, Star } from 'lucide-react'
 import { getSessionHistory } from '../../api/rehabApi'
 
 function SessionResult() {
@@ -42,8 +42,8 @@ function SessionResult() {
                <div className="h-1 w-4 bg-[var(--color-primary)] rounded-full"></div>
                Performance Overview
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-text)]">Progress & History</h1>
-            <p className="text-lg font-medium text-[var(--color-text-muted)] mt-2">Analyze the results and anatomical metrics of your past sessions.</p>
+            <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-text)]">Session Result</h1>
+            <p className="text-lg font-medium text-[var(--color-text-muted)] mt-2">Analyze the specific outcomes and metrics of your therapy sessions.</p>
           </div>
         </div>
       </div>
@@ -183,19 +183,38 @@ function SessionResult() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-[#F59E0B] to-[#D97706] p-6 shadow-xl text-white">
-            <div className="flex items-center gap-3 mb-4">
-              <MessageSquareText className="h-5 w-5" />
-              <h3 className="font-bold">Recovery Analytics</h3>
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-8 shadow-lg">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center border border-amber-100">
+                  <Star size={20} fill="currentColor" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900">Doctor's Review</h3>
+              </div>
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} size={18} fill={star <= 4 ? "#F59E0B" : "none"} stroke={star <= 4 ? "#F59E0B" : "#CBD5E1"} />
+                ))}
+              </div>
             </div>
-            <div className="space-y-4 text-sm">
-              <p className="font-medium opacity-90 leading-relaxed italic">"You are showing 15% improvement in joint flexibility over the last 7 sessions. Great job!"</p>
-              <div className="h-px bg-white/20 w-full"></div>
-              <button className="w-full bg-white text-orange-700 font-black py-4 rounded-xl hover:bg-orange-50 transition-all shadow-lg shadow-orange-900/20">
-                 Download Recovery Report
-              </button>
+
+            <div className="space-y-6">
+              <p className="text-lg leading-relaxed text-slate-600 italic font-medium">
+                "Your knee flexion accuracy is significantly higher this session. Recommendation: Increase load by 5% next week."
+              </p>
+
+              <div className="h-px bg-slate-100 w-full"></div>
+
+              <div className="flex items-center justify-between">
+                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Verified Provider</span>
+                 <span className="text-sm font-bold text-blue-600">Dr. Sarah Johnson</span>
+              </div>
             </div>
           </div>
+
+          <button className="w-full bg-[#EA580C] text-white font-extrabold py-5 rounded-[2rem] hover:bg-[#C2410C] transition-all shadow-xl shadow-orange-100 flex items-center justify-center gap-2">
+            Download PDF Report
+          </button>
         </div>
       </div>
     </div>
