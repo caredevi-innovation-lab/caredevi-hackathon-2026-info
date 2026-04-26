@@ -172,6 +172,8 @@ Voice/Text Input + Wearable Sensor Data
 ---
 
 ## Screenshots
+<img width="730" height="382" alt="Screenshot 2026-04-26 at 4 11 45 PM" src="https://github.com/user-attachments/assets/e2c0453f-1f42-4a95-9878-ded466ae0b45" />
+<img width="1470" height="829" alt="Screenshot 2026-04-26 at 4 14 44 PM" src="https://github.com/user-attachments/assets/d2fca79a-899f-464e-9839-00819ed69301" />
 
 > The patient UI (`frontend/patient.html`) provides a real-time emergency triage interface. The hospital UI (`frontend/hospital.html`) shows incoming handoff bundles.
 
