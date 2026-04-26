@@ -6,6 +6,7 @@ Fallback: Qwen/Qwen2.5-Coder-32B-Instruct, then fully deterministic.
 from __future__ import annotations
 import json
 import os
+from pathlib import Path
 from .models import SignalBundle, WorkingDiagnosis
 from .ner import extract_clinical_entities, detect_speech_quality
 from .rag import retrieve_relevant_protocols, build_grounded_prompt
@@ -14,7 +15,16 @@ from .detection import run_all_detections, score_esi
 from .routing import route
 from .fhir import load_patient_bundle, generate_handoff_bundle, format_handoff_summary
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+except ImportError:
+    pass
+
 DISCLAIMER = "This is AI-generated preliminary information. Not a clinical diagnosis."
+HF_ROUTER_BASE_URL = "https://router.huggingface.co/v1"
+HF_PRIMARY_MODEL = os.getenv("HF_MODEL", "aaditya/Llama3-OpenBioLLM-70B")
+HF_FALLBACK_MODELS = ("Qwen/Qwen2.5-Coder-32B-Instruct",)
 
 _SYSTEM_PROMPT = (
     "You are a clinical decision SUPPORT assistant for emergency triage.\n"
@@ -57,10 +67,10 @@ _CAPS_MAP: dict[str, list[str]] = {
 def _hf_client():
     try:
         from openai import OpenAI
-        key = os.getenv("HF_API_KEY", "")
+        key = os.getenv("HF_API_KEY") or os.getenv("HF_TOKEN") or ""
         if not key:
             return None
-        return OpenAI(base_url="https://router.huggingface.co/v1", api_key=key)
+        return OpenAI(base_url=HF_ROUTER_BASE_URL, api_key=key)
     except ImportError:
         return None
 
@@ -110,7 +120,7 @@ async def run_triage_agent(
     model_used = "deterministic_fallback"
     client = _hf_client()
     if client:
-        for model in ["aaditya/Llama3-OpenBioLLM-70B", "Qwen/Qwen2.5-Coder-32B-Instruct"]:
+        for model in (HF_PRIMARY_MODEL, *HF_FALLBACK_MODELS):
             try:
                 resp = client.chat.completions.create(
                     model=model,
