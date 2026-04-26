@@ -3,789 +3,1046 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TriageAgent — Patient</title>
+<title>LifeLine AI — Cardiac Emergency Demo</title>
 <style>
+/* ── Variables ────────────────────────────────────────────────────────────── */
 :root {
-  --bg: #0f1117; --card: #1a1d2e; --border: #2a2d3e;
-  --accent: #e53e3e; --green: #38a169; --yellow: #d69e2e;
-  --blue: #3182ce; --text: #f0f4ff; --muted: #8892aa;
-  --panel-w: 390px;
+  --bg-dark:    #0A0E1A;
+  --bg-card:    #141B2D;
+  --bg-surface: #1E2740;
+  --red:        #E53E3E;
+  --red-dk:     #9B2C2C;
+  --teal:       #0D9488;
+  --cyan:       #06B6D4;
+  --blue:       #3B82F6;
+  --amber:      #F59E0B;
+  --green:      #10B981;
+  --purple:     #8B5CF6;
+  --white:      #FFFFFF;
+  --gray:       #94A3B8;
+  --muted:      #64748B;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif;
-       display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-       padding: 24px 0 48px; }
-h1.brand { font-size: 1.1rem; letter-spacing: .15em; color: var(--muted); margin-bottom: 16px; }
 
-/* ── Stage layout ───────────────────────────────────────────────────────────── */
-.demo-stage {
+/* ── Reset ────────────────────────────────────────────────────────────────── */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+body {
+  background: var(--bg-dark);
+  color: var(--white);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
   display: flex;
-  align-items: flex-start;
-  gap: 28px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 20px 36px;
+  gap: 24px;
 }
 
-.device-col { display: flex; flex-direction: column; align-items: center; }
-.device-label {
-  font-size: .62rem; color: var(--muted); letter-spacing: .12em;
-  text-transform: uppercase; margin-bottom: 8px;
-}
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.app-header { text-align: center; }
+.logo-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:6px; }
+.logo-svg { width:34px; height:34px; }
+.logo-svg path { stroke: var(--red); fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;
+                 animation: logoPulse 1.4s ease-in-out infinite; }
+@keyframes logoPulse { 0%,100%{stroke:var(--red)} 50%{stroke:#FF7A7A} }
+h1 { font-size:2rem; font-weight:800; letter-spacing:-.02em; }
+.tagline { font-size:.82rem; color:var(--gray); letter-spacing:.04em; }
+.tagline b { color:var(--cyan); font-weight:500; }
 
-/* ── Watch ──────────────────────────────────────────────────────────────────── */
-.watch-col { padding-top: 80px; }
+/* ── Stage ────────────────────────────────────────────────────────────────── */
+.demo-stage { display:flex; align-items:flex-start; gap:44px; justify-content:center; }
+.device-col { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.device-label { font-size:.58rem; color:var(--muted); letter-spacing:.14em; text-transform:uppercase; }
 
-.watch-band {
-  width: 58px; height: 26px; background: #1c1c1e;
-  border: 1px solid #333; margin: 0 auto;
-}
-.watch-band-top    { border-radius: 4px 4px 0 0; border-bottom: none; }
-.watch-band-bottom { border-radius: 0 0 4px 4px; border-top: none; }
-
+/* ── Watch ────────────────────────────────────────────────────────────────── */
+.watch-wrap { position:relative; }
 .watch-frame {
-  width: 180px; height: 214px;
-  background: #1c1c1e; border-radius: 56px;
-  border: 2px solid #3a3a3c;
-  box-shadow: 0 0 40px rgba(0,0,0,.7), inset 0 0 0 1px #444;
-  position: relative; overflow: visible;
+  width:196px; height:226px;
+  background:#111; border-radius:60px;
+  border:3px solid #282828;
+  box-shadow: 0 0 50px rgba(0,0,0,.8), inset 0 0 0 1px #383838;
+  position:relative; overflow:visible;
+  transition: box-shadow .5s ease;
+}
+.watch-frame.alert-shake { animation: watchShake .15s ease-in-out 4; }
+@keyframes watchShake {
+  0%,100%{transform:translateX(0) rotate(0)}
+  25%{transform:translateX(-3px) rotate(-.4deg)}
+  75%{transform:translateX(3px) rotate(.4deg)}
 }
 .watch-crown {
-  position: absolute; right: -9px; top: 42%;
-  transform: translateY(-50%);
-  width: 7px; height: 34px;
-  background: linear-gradient(to right, #555, #777);
-  border-radius: 4px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.6);
+  position:absolute; right:-9px; top:38%;
+  transform:translateY(-50%);
+  width:8px; height:40px;
+  background:linear-gradient(180deg,#666 0%,#333 100%);
+  border-radius:4px; box-shadow:1px 0 5px rgba(0,0,0,.6);
 }
-.watch-btn {
-  position: absolute; right: -9px; top: 66%;
-  width: 7px; height: 16px;
-  background: linear-gradient(to right, #555, #777);
-  border-radius: 4px;
+.watch-side-btn {
+  position:absolute; right:-9px; top:62%;
+  width:8px; height:18px;
+  background:linear-gradient(180deg,#666 0%,#333 100%);
+  border-radius:4px;
 }
-.watch-screen {
-  position: absolute; inset: 8px;
-  border-radius: 48px; overflow: hidden;
-  background: #000;
+.watch-tint {
+  position:absolute; inset:10px; border-radius:50px;
+  pointer-events:none; z-index:10; opacity:0;
+  transition: opacity .5s ease, background .5s ease;
 }
-
-.watch-view { display: none; height: 100%; flex-direction: column; padding: 14px 12px; }
-.watch-view.active { display: flex; }
-
-/* watch — normal */
-.w-time { font-size: 1.5rem; font-weight: 700; color: #fff; text-align: center; }
-.w-date { font-size: .6rem; color: #888; text-align: center; margin-bottom: 10px; }
-.w-vitals { display: flex; gap: 6px; margin-bottom: 8px; }
-.w-vital { flex: 1; background: #1c1c1e; border-radius: 10px; padding: 6px 4px; text-align: center; }
-.w-vital .wv-label { font-size: .52rem; color: #888; text-transform: uppercase; letter-spacing: .06em; }
-.w-vital .wv-val { font-size: 1.05rem; font-weight: 700; margin-top: 1px; }
-.w-vital.ok  .wv-val { color: var(--green); }
-.w-vital.crit .wv-val { color: var(--accent); }
-.w-ecg-line { height: 28px; margin-bottom: 6px; }
-.w-badge { font-size: .6rem; border-radius: 10px; padding: 3px 8px;
-           text-align: center; font-weight: 600; }
-.w-badge.ok   { background: rgba(56,161,105,.2); color: var(--green); }
-.w-badge.crit { background: rgba(229,62,62,.2);  color: var(--accent); animation: walert 0.6s ease-in-out infinite; }
-.w-badge.blue { background: rgba(49,130,206,.2); color: var(--blue); }
-.w-badge.done { background: rgba(56,161,105,.2); color: var(--green); }
-@keyframes walert { 0%,100%{opacity:1} 50%{opacity:.4} }
-
-/* watch — alert */
-.w-alert-hdr { text-align: center; margin-bottom: 4px; }
-.w-alert-icon { font-size: 1.8rem; display: block; animation: walert 0.7s ease-in-out infinite; }
-.w-alert-title { font-size: .72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
-.w-alert-sub   { font-size: .58rem; color: #888; margin-top: 2px; }
-.w-haptic { width: 100%; padding: 5px 0; background: rgba(229,62,62,.2);
-            border: 1px solid rgba(229,62,62,.4); border-radius: 8px;
-            color: var(--accent); font-size: .6rem; font-weight: 600;
-            text-align: center; margin-top: auto; letter-spacing: .04em; }
-
-/* watch — working */
-.w-working-icon { font-size: 1.4rem; text-align: center; margin-bottom: 6px;
-                  animation: wspin 1.2s linear infinite; }
-@keyframes wspin { to { transform: rotate(360deg); } }
-.w-working-title { font-size: .68rem; font-weight: 600; color: var(--blue); text-align: center; }
-.w-working-sub   { font-size: .58rem; color: #888; text-align: center; margin-top: 3px; }
-.w-dots span { display: inline-block; width: 5px; height: 5px; background: var(--blue);
-               border-radius: 50%; margin: 0 2px; animation: wdot 1.2s ease-in-out infinite; }
-.w-dots span:nth-child(2) { animation-delay: .2s; }
-.w-dots span:nth-child(3) { animation-delay: .4s; }
-@keyframes wdot { 0%,100%{opacity:.2;transform:scale(.7)} 50%{opacity:1;transform:scale(1)} }
-.w-dots { text-align: center; margin-top: 8px; }
-
-/* watch — result */
-.w-result-icon  { font-size: 1.6rem; text-align: center; margin-bottom: 4px; }
-.w-result-title { font-size: .72rem; font-weight: 700; color: var(--green); text-align: center; }
-.w-result-eta   { font-size: .62rem; color: #888; text-align: center; margin-top: 3px; }
-.w-result-hosp  { font-size: .55rem; color: var(--blue); text-align: center; margin-top: 5px; line-height: 1.3; }
-
-/* watch connection indicator */
-.watch-link {
-  margin-top: 10px; font-size: .6rem; color: var(--muted);
-  display: flex; align-items: center; gap: 4px;
+.watch-tint.amber { background:rgba(245,158,11,.12); opacity:1; }
+.watch-tint.red   { background:rgba(229,62,62,.18);  opacity:1; }
+.watch-tint.green { background:rgba(16,185,129,.12); opacity:1; }
+.watch-display {
+  position:absolute; inset:10px;
+  border-radius:50px; overflow:hidden; background:#000;
 }
-.link-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green);
-            animation: pulse 1.8s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-.link-dot.alert { background: var(--accent); animation: walert .6s ease-in-out infinite; }
+.ws { display:none; width:100%; height:100%; flex-direction:column; }
+.ws.active { display:flex; }
 
-/* ── Phone frame ────────────────────────────────────────────────────────────── */
+/* ws-normal */
+#ws-normal { background:#080808; padding:14px 13px 10px; }
+.wn-time { font-size:1.75rem; font-weight:700; text-align:center; line-height:1; }
+.wn-date { font-size:.52rem; color:var(--muted); text-align:center; letter-spacing:.1em; margin-bottom:9px; }
+.wn-hr-row { display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:3px; }
+.wn-heart-svg { width:13px; height:13px; animation:heartbeat 1s ease-in-out infinite; }
+.wn-heart-svg path { fill:var(--red); }
+@keyframes heartbeat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+.wn-hr-val { font-size:1.45rem; font-weight:700; animation:hrNumPulse 1s ease-in-out infinite; }
+@keyframes hrNumPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+.wn-hr-unit { font-size:.58rem; color:var(--gray); }
+.wn-badge { display:flex; align-items:center; justify-content:center; gap:4px;
+            font-size:.55rem; color:var(--green); margin-bottom:7px; }
+.wn-badge-dot { width:5px; height:5px; border-radius:50%; background:var(--green);
+                animation:greenPulse 1.5s ease-in-out infinite; }
+@keyframes greenPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.5)} }
+.wn-ecg-wrap { flex:1; overflow:hidden; position:relative; }
+
+/* ws-anomaly */
+#ws-anomaly { background:#0e0303; padding:11px 12px 8px; }
+.wa-alert { font-size:.56rem; font-weight:700; color:var(--red); text-transform:uppercase;
+            letter-spacing:.1em; text-align:center; margin-bottom:5px;
+            animation:redBlink .7s ease-in-out infinite; }
+@keyframes redBlink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.wa-hr { font-size:2.1rem; font-weight:800; color:var(--red); text-align:center; line-height:1; }
+.wa-hr-sub { font-size:.53rem; color:var(--gray); text-align:center; margin-bottom:5px; }
+.wa-ecg-wrap { flex:1; overflow:hidden; position:relative; }
+
+/* ws-countdown */
+#ws-countdown { background:#0b0303; padding:10px 13px; align-items:center; justify-content:center; }
+.wcd-label { font-size:.56rem; color:var(--amber); font-weight:600; letter-spacing:.08em;
+             text-transform:uppercase; margin-bottom:3px; text-align:center; }
+.wcd-num { font-size:3.4rem; font-weight:900; text-align:center; line-height:1;
+           color:var(--amber); transition:color .4s ease; }
+.wcd-num.urgent { color:var(--red); animation:urgentPulse .55s ease-in-out infinite; }
+@keyframes urgentPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.06);opacity:.85} }
+.wcd-sub { font-size:.55rem; color:var(--muted); text-align:center; margin-top:4px; }
+.wcd-ecg-tag { font-size:.53rem; color:var(--red); text-align:center; margin-top:8px;
+               animation:redBlink .9s ease-in-out infinite; }
+
+/* ws-dispatch */
+#ws-dispatch { background:#040d09; padding:12px 11px 10px; }
+.wd-check-icon { font-size:1.3rem; text-align:center; margin-bottom:3px; }
+.wd-title { font-size:.68rem; font-weight:700; color:var(--green); text-align:center; margin-bottom:9px; }
+.wd-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.wd-item { display:flex; align-items:center; gap:5px; font-size:.56rem; color:var(--muted);
+           opacity:0; transition:opacity .3s ease; }
+.wd-item.show { opacity:1; color:var(--green); }
+.wd-item-dot { width:11px; height:11px; border-radius:50%; background:var(--green); flex-shrink:0;
+               display:flex; align-items:center; justify-content:center; font-size:.42rem; color:#000; }
+.wd-eta { font-size:.58rem; color:var(--cyan); text-align:center; margin-top:8px;
+          padding-top:7px; border-top:1px solid rgba(255,255,255,.08); }
+
+/* ws-ems */
+#ws-ems { background:#040d09; padding:10px 13px; align-items:center; justify-content:center; }
+.we-ambulance { display:flex; justify-content:center; margin-bottom:6px; }
+.we-ambulance svg { width:32px; height:32px; }
+.we-title { font-size:.65rem; font-weight:600; color:var(--green); text-align:center; margin-bottom:7px; }
+.we-eta { font-size:1.7rem; font-weight:800; color:var(--cyan); text-align:center; line-height:1; }
+.we-eta-label { font-size:.5rem; color:var(--muted); text-align:center; margin-top:2px; }
+.we-911 { font-size:.5rem; color:var(--amber); text-align:center; margin-top:9px;
+          padding-top:7px; border-top:1px solid rgba(255,255,255,.07); }
+
+/* ── Phone ────────────────────────────────────────────────────────────────── */
 .phone-frame {
-  width: var(--panel-w); border-radius: 44px;
-  background: #111; border: 2px solid #333;
-  box-shadow: 0 0 60px rgba(0,0,0,.6), inset 0 0 0 1px #444;
-  overflow: hidden; position: relative;
+  width:310px; border-radius:42px;
+  background:#0d0d0d; border:3px solid #282828;
+  box-shadow:0 0 60px rgba(0,0,0,.7), inset 0 0 0 1px #383838;
+  overflow:hidden;
 }
-.notch { height: 32px; background: #111; display: flex; align-items: center;
-         justify-content: center; border-bottom: 1px solid #222; }
-.notch-pill { width: 120px; height: 10px; background: #000; border-radius: 10px; }
-.screen { background: var(--bg); min-height: 700px; padding: 20px 16px 32px; position: relative; }
-.status-bar { display: flex; justify-content: space-between; font-size: .7rem;
-              color: var(--muted); margin-bottom: 16px; }
+.phone-notch { height:28px; background:#0d0d0d; display:flex; align-items:center; justify-content:center; }
+.phone-notch-pill { width:100px; height:9px; background:#000; border-radius:9px; }
+.phone-display { background:var(--bg-dark); min-height:630px; position:relative; overflow:hidden; }
+.ps { display:none; width:100%; min-height:630px; padding:14px 13px 22px; flex-direction:column; }
+.ps.active { display:flex; }
+.p-status { display:flex; justify-content:space-between; font-size:.6rem; color:var(--muted); margin-bottom:12px; }
 
-.screen-view { display: none; }
-.screen-view.active { display: block; }
+/* ps-normal */
+.p-app-row { display:flex; align-items:center; gap:7px; margin-bottom:14px; }
+.p-app-svg { width:20px; height:20px; }
+.p-app-svg path { stroke:var(--red); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.p-app-name { font-size:.92rem; font-weight:700; }
+.p-app-ver  { font-size:.56rem; color:var(--muted); }
 
-.app-header { text-align: center; margin-bottom: 20px; }
-.app-header h2 { font-size: 1.4rem; font-weight: 700; }
-.app-header p { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+.p-patient { background:var(--bg-card); border:1px solid rgba(255,255,255,.07);
+             border-radius:14px; padding:11px; margin-bottom:10px; }
+.p-patient-name { font-size:.9rem; font-weight:600; }
+.p-patient-meta { font-size:.65rem; color:var(--gray); margin-top:2px; line-height:1.4; }
+.p-mon-row { display:flex; align-items:center; gap:5px; margin-top:7px; }
+.p-mon-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:greenPulse 1.5s ease-in-out infinite; }
+.p-mon-text { font-size:.65rem; color:var(--green); font-weight:500; }
 
-.patient-card { background: var(--card); border: 1px solid var(--border);
-                border-radius: 14px; padding: 14px; margin-bottom: 14px; }
-.patient-card .name { font-size: 1.1rem; font-weight: 600; }
-.patient-card .meta { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+.p-vitals { background:var(--bg-card); border:1px solid rgba(255,255,255,.07);
+            border-radius:14px; padding:11px; margin-bottom:10px; }
+.p-vitals-title { font-size:.57rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+.p-v-row { display:flex; justify-content:space-between; align-items:center;
+           padding:4px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:.68rem; }
+.p-v-row:last-child { border-bottom:none; }
+.p-v-label { color:var(--gray); }
+.p-v-val { font-weight:600; color:var(--white); }
+.p-v-val.ok     { color:var(--green); }
+.p-v-val.crit   { color:var(--red);   animation:redBlink .8s ease-in-out infinite; }
+.p-v-val.amber  { color:var(--amber); }
 
-.vitals-row { display: flex; gap: 10px; margin-bottom: 14px; }
-.vital { flex: 1; background: var(--card); border: 1px solid var(--border);
-         border-radius: 12px; padding: 12px; text-align: center; }
-.vital .label { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.vital .value { font-size: 1.5rem; font-weight: 700; margin-top: 2px; }
-.vital.critical .value { color: var(--accent); }
-.vital.ok .value { color: var(--green); }
-.pulse-dot { width: 8px; height: 8px; background: var(--green);
-             border-radius: 50%; display: inline-block; margin-right: 6px;
-             animation: pulse 1.2s ease-in-out infinite; }
+.p-ecg-card { background:var(--bg-card); border:1px solid rgba(255,255,255,.07);
+              border-radius:14px; padding:11px; flex:1; }
+.p-ecg-title { font-size:.57rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:7px; }
+.p-ecg-wrap { height:56px; overflow:hidden; position:relative; }
 
-.monitor-badge { background: rgba(56,161,105,.15); border: 1px solid rgba(56,161,105,.3);
-                 color: var(--green); border-radius: 20px; padding: 6px 14px;
-                 font-size: .78rem; display: inline-flex; align-items: center;
-                 margin-bottom: 20px; }
+/* ps-anomaly */
+.p-alert-bar { background:rgba(229,62,62,.14); border:1px solid rgba(229,62,62,.4);
+               border-radius:12px; padding:10px 12px; margin-bottom:10px;
+               animation:alertGlow 1s ease-in-out infinite; }
+@keyframes alertGlow { 0%,100%{border-color:rgba(229,62,62,.35)} 50%{border-color:rgba(229,62,62,.85)} }
+.p-alert-title { font-size:.84rem; font-weight:700; color:var(--red); }
+.p-alert-sub   { font-size:.64rem; color:var(--gray); margin-top:3px; }
 
-.sos-btn { width: 100%; padding: 18px; background: var(--accent);
-           border: none; border-radius: 16px; color: #fff;
-           font-size: 1.2rem; font-weight: 700; cursor: pointer; letter-spacing: .06em;
-           box-shadow: 0 4px 20px rgba(229,62,62,.4); transition: transform .1s; }
-.sos-btn:active { transform: scale(.97); }
-.demo-btn { width: 100%; margin-top: 10px; padding: 12px;
-            background: transparent; border: 1px solid var(--border);
-            border-radius: 12px; color: var(--muted); font-size: .8rem; cursor: pointer; }
-.demo-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-.alert-banner { background: rgba(229,62,62,.15); border: 1px solid rgba(229,62,62,.4);
-                border-radius: 14px; padding: 18px; text-align: center; margin-bottom: 18px; }
-.alert-banner h3 { font-size: 1.1rem; color: var(--accent); }
-.alert-banner p { font-size: .8rem; color: var(--muted); margin-top: 4px; }
-.watch-detected-badge {
-  font-size: .7rem; background: rgba(229,62,62,.1); border: 1px solid rgba(229,62,62,.3);
-  color: var(--accent); border-radius: 8px; padding: 5px 10px;
-  text-align: center; margin-bottom: 12px;
+/* ps-voice */
+#ps-voice { padding:0; min-height:630px; }
+.voice-bg-strip {
+  padding:14px 13px 8px;
+  position:absolute; top:0; left:0; right:0; z-index:1;
 }
-.countdown { font-size: 4rem; font-weight: 800; color: var(--accent);
-             text-align: center; margin: 24px 0; line-height: 1; }
-.cancel-btn { width: 100%; padding: 16px; background: var(--green);
-              border: none; border-radius: 14px; color: #fff;
-              font-size: 1rem; font-weight: 600; cursor: pointer; }
+.voice-overlay {
+  position:absolute; inset:0; z-index:2;
+  background:rgba(4,8,20,.88);
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:88px 14px 20px;
+}
+.voice-card {
+  width:100%; background:var(--bg-card); border-radius:20px; padding:22px 18px;
+  border-top:3px solid var(--amber);
+  box-shadow:0 8px 40px rgba(0,0,0,.6);
+  transition:border-color .5s ease;
+}
+.voice-card.urgent { border-top-color:var(--red); }
 
-.step-list { list-style: none; }
-.step-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0;
-             border-bottom: 1px solid var(--border); font-size: .82rem; }
-.step-item:last-child { border-bottom: none; }
-.step-icon { width: 20px; height: 20px; border-radius: 50%;
-             display: flex; align-items: center; justify-content: center;
-             font-size: .7rem; flex-shrink: 0; margin-top: 1px; }
-.step-icon.done   { background: var(--green); }
-.step-icon.active { background: var(--blue); animation: spin 1s linear infinite; }
-.step-icon.wait   { background: var(--border); }
-@keyframes spin { to { transform: rotate(360deg); } }
-.step-text { flex: 1; }
-.step-tech { font-size: .68rem; color: var(--blue); margin-top: 2px; }
+.voice-mic-wrap { text-align:center; margin-bottom:10px; }
+.voice-mic-outer {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:52px; height:52px; border-radius:50%;
+  background:rgba(245,158,11,.12);
+  animation:micRing 1.1s ease-in-out infinite;
+}
+@keyframes micRing { 0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)} 50%{box-shadow:0 0 0 10px rgba(245,158,11,.0)} }
+.voice-mic-svg { width:28px; height:28px; }
+.voice-mic-svg .mic-body { fill:var(--amber); }
+.voice-mic-svg .mic-arc  { stroke:var(--amber); stroke-width:2; fill:none; stroke-linecap:round; }
+.voice-mic-svg .mic-stem { stroke:var(--amber); stroke-width:2; stroke-linecap:round; }
 
-.hospital-card { background: var(--card); border: 1px solid var(--border);
-                 border-radius: 14px; padding: 16px; margin-bottom: 14px; }
-.hospital-card h3 { font-size: 1rem; font-weight: 600; }
-.hospital-card .eta { font-size: 1.8rem; font-weight: 800; color: var(--blue); }
-.caps-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.cap-badge { background: rgba(49,130,206,.15); border: 1px solid rgba(49,130,206,.3);
-             color: var(--blue); border-radius: 6px; padding: 2px 8px; font-size: .68rem; }
-.ems-card { background: rgba(229,62,62,.12); border: 1px solid rgba(229,62,62,.35);
-            border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-.ems-card .row { display: flex; justify-content: space-between; align-items: center; }
-.call-btn { background: var(--accent); border: none; border-radius: 8px;
-            color: #fff; padding: 6px 14px; font-size: .78rem; cursor: pointer; }
-.conf-bar { background: var(--border); border-radius: 4px; height: 6px; margin-top: 6px; }
-.conf-fill { height: 6px; border-radius: 4px; background: var(--green); }
-.tech-toggle { background: none; border: 1px solid var(--border); border-radius: 8px;
-               color: var(--muted); padding: 8px 12px; font-size: .75rem;
-               width: 100%; cursor: pointer; margin-bottom: 8px; }
-.tech-detail { display: none; background: var(--card); border: 1px solid var(--border);
-               border-radius: 10px; padding: 12px; font-size: .72rem; color: var(--muted); }
-.tech-detail.open { display: block; }
-.tech-row { display: flex; justify-content: space-between; padding: 3px 0;
-            border-bottom: 1px solid var(--border); }
-.tech-row:last-child { border-bottom: none; }
-.tech-val { color: var(--blue); font-size: .68rem; }
-.handoff-btn { width: 100%; padding: 14px; background: var(--blue);
-               border: none; border-radius: 14px; color: #fff;
-               font-size: .9rem; font-weight: 600; cursor: pointer; margin-top: 12px; }
+.voice-heading { font-size:.95rem; font-weight:700; text-align:center; margin-bottom:4px; }
+.voice-question { font-size:.74rem; color:var(--gray); text-align:center; margin-bottom:14px; line-height:1.5; font-style:italic; }
+.voice-question b { color:var(--white); font-style:normal; }
 
-.handoff-card { background: var(--card); border: 1px solid var(--border);
-                border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-.handoff-card h4 { font-size: .8rem; color: var(--muted); text-transform: uppercase;
-                   letter-spacing: .08em; margin-bottom: 8px; }
-.handoff-row { display: flex; justify-content: space-between;
-               padding: 4px 0; font-size: .82rem; border-bottom: 1px solid var(--border); }
-.handoff-row:last-child { border-bottom: none; }
-.handoff-label { color: var(--muted); }
-.allergy-tag { background: rgba(229,62,62,.2); color: var(--accent);
-               border-radius: 4px; padding: 1px 6px; font-size: .72rem; margin: 2px; display: inline-block; }
-.med-tag { background: rgba(49,130,206,.15); color: var(--blue);
-           border-radius: 4px; padding: 1px 6px; font-size: .72rem; margin: 2px; display: inline-block; }
-.condition-badge { background: rgba(229,62,62,.15); border: 1px solid rgba(229,62,62,.4);
-                   color: var(--accent); border-radius: 8px; padding: 6px 12px;
-                   font-size: .88rem; font-weight: 600; margin-bottom: 10px; }
-.back-btn { width: 100%; padding: 12px; background: transparent;
-            border: 1px solid var(--border); border-radius: 12px;
-            color: var(--muted); font-size: .8rem; cursor: pointer; }
+.voice-listen-box { background:var(--bg-surface); border-radius:10px; padding:10px 12px; margin-bottom:12px; }
+.voice-listen-label { font-size:.6rem; color:var(--gray); display:flex; align-items:center; gap:5px; margin-bottom:7px; }
+.vll-dot { width:6px; height:6px; border-radius:50%; background:var(--red); animation:redBlink .6s ease-in-out infinite; }
+.voice-wave { display:flex; align-items:center; justify-content:center; gap:3px; height:30px; }
+.vw-bar { width:4px; border-radius:2px; background:var(--cyan); transform-origin:center; }
+.vw-bar:nth-child(1){animation:vw1 .80s ease-in-out infinite}
+.vw-bar:nth-child(2){animation:vw2 .90s ease-in-out .10s infinite}
+.vw-bar:nth-child(3){animation:vw3 .70s ease-in-out .20s infinite}
+.vw-bar:nth-child(4){animation:vw4 1.1s ease-in-out .05s infinite}
+.vw-bar:nth-child(5){animation:vw5 .85s ease-in-out .15s infinite}
+.vw-bar:nth-child(6){animation:vw6 .95s ease-in-out .25s infinite}
+.vw-bar:nth-child(7){animation:vw7 .75s ease-in-out .10s infinite}
+@keyframes vw1{0%,100%{height:7px;opacity:.5}  50%{height:26px;opacity:1}}
+@keyframes vw2{0%,100%{height:16px;opacity:.7} 50%{height:10px;opacity:1}}
+@keyframes vw3{0%,100%{height:22px;opacity:.7} 50%{height:5px;opacity:.5}}
+@keyframes vw4{0%,100%{height:9px;opacity:.5}  50%{height:28px;opacity:1}}
+@keyframes vw5{0%,100%{height:18px;opacity:.7} 50%{height:7px;opacity:.5}}
+@keyframes vw6{0%,100%{height:12px;opacity:.6} 50%{height:24px;opacity:1}}
+@keyframes vw7{0%,100%{height:20px;opacity:.7} 50%{height:8px;opacity:.4}}
 
-.disclaimer { font-size: .65rem; color: var(--muted); text-align: center;
-              margin-top: 16px; line-height: 1.4; border-top: 1px solid var(--border); padding-top: 10px; }
-.disclaimer strong { color: var(--accent); }
+.voice-timer-row { display:flex; justify-content:space-between; align-items:center;
+                   font-size:.65rem; margin-bottom:6px; }
+.voice-timer-label { color:var(--muted); }
+.voice-timer-num { font-weight:700; color:var(--green); transition:color .3s ease; }
+.voice-timer-num.amber { color:var(--amber); }
+.voice-timer-num.red   { color:var(--red); animation:redBlink .5s ease-in-out infinite; }
+.voice-progress-bg { height:5px; background:rgba(255,255,255,.1); border-radius:3px; margin-bottom:14px; }
+.voice-progress { height:5px; border-radius:3px; background:var(--green);
+                  transition:width 1s linear, background .5s ease; }
+.voice-cancel-btn { width:100%; padding:11px; background:rgba(16,185,129,.1);
+                    border:1px solid rgba(16,185,129,.35); border-radius:10px;
+                    color:var(--green); font-size:.76rem; font-weight:600;
+                    cursor:pointer; margin-bottom:9px; transition:background .2s; }
+.voice-cancel-btn:hover { background:rgba(16,185,129,.22); }
+.voice-note { font-size:.6rem; color:var(--muted); text-align:center; line-height:1.4; }
 
-footer { margin-top: 20px; font-size: .68rem; color: #444; text-align: center; }
+#voice-noresponse { display:none; text-align:center; padding:30px 0 10px; }
+.vnr-icon { margin-bottom:10px; }
+.vnr-title { font-size:.92rem; font-weight:700; color:var(--red); margin-bottom:5px; }
+.vnr-sub { font-size:.73rem; color:var(--gray); }
+
+/* ps-dispatch */
+.pd-header { background:rgba(229,62,62,.1); border:1px solid rgba(229,62,62,.3);
+             border-radius:12px; padding:11px 13px; margin-bottom:12px; text-align:center; }
+.pd-title { font-size:.9rem; font-weight:800; color:var(--red); letter-spacing:.03em; }
+.pd-sub { font-size:.64rem; color:var(--gray); margin-top:3px; }
+
+.pd-actions { list-style:none; display:flex; flex-direction:column; gap:8px; margin-bottom:11px; }
+.pd-item { background:var(--bg-card); border-radius:12px; padding:10px 11px;
+           border:1px solid rgba(255,255,255,.06); opacity:0; transition:opacity .4s ease; }
+.pd-item.show { opacity:1; }
+.pd-pending { font-size:.74rem; color:var(--amber); display:flex; align-items:center; gap:6px; }
+.pd-done    { display:none; }
+.pd-done-main { font-size:.74rem; color:var(--green); display:flex; align-items:center; gap:5px; }
+.pd-done-sub  { font-size:.62rem; color:var(--gray); margin-top:2px; margin-left:18px; }
+.pd-item.done .pd-pending { display:none; }
+.pd-item.done .pd-done    { display:block; }
+.pd-spinner { width:11px; height:11px; border-radius:50%; border:2px solid rgba(245,158,11,.25);
+              border-top-color:var(--amber); animation:spin .8s linear infinite; }
+@keyframes spin{to{transform:rotate(360deg)}}
+.pd-check { color:var(--green); }
+
+.pd-fhir { background:var(--bg-card); border:1px solid rgba(6,182,212,.15);
+           border-radius:12px; padding:10px 11px; margin-bottom:10px; }
+.pd-fhir-title { font-size:.58rem; color:var(--cyan); text-transform:uppercase; letter-spacing:.1em; font-weight:600; margin-bottom:6px; }
+.pd-fhir-row { font-size:.63rem; color:var(--gray); line-height:1.6; }
+.pd-fhir-row span { color:var(--white); }
+
+.pd-911 { background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.35);
+          border-radius:12px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; }
+.pd-911-text { font-size:.74rem; color:var(--amber); font-weight:600; }
+.pd-911-btn { background:var(--red); border:none; border-radius:8px; color:#fff;
+              padding:6px 12px; font-size:.7rem; font-weight:600; cursor:pointer; }
+
+/* ps-handoff */
+.phf-header { text-align:center; margin-bottom:12px; }
+.phf-title { font-size:.88rem; font-weight:700; }
+.phf-sub { font-size:.62rem; color:var(--gray); margin-top:2px; }
+.phf-card { background:var(--bg-card); border:1px solid rgba(255,255,255,.06); border-radius:12px;
+            padding:9px 11px; margin-bottom:7px; }
+.phf-card-title { font-size:.55rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:5px; }
+.phf-row { display:flex; justify-content:space-between; padding:3px 0; font-size:.66rem;
+           border-bottom:1px solid rgba(255,255,255,.04); }
+.phf-row:last-child { border-bottom:none; }
+.phf-lbl { color:var(--gray); }
+.phf-val { font-weight:500; }
+.phf-val.crit  { color:var(--red); }
+.phf-val.amber { color:var(--amber); }
+.phf-val.cyan  { color:var(--cyan); }
+.phf-val.green { color:var(--green); }
+.phf-downtime { color:var(--red); font-variant-numeric:tabular-nums; }
+.phf-conf-bg { height:4px; background:rgba(255,255,255,.1); border-radius:2px; margin-top:5px; }
+.phf-conf-fill { height:4px; background:var(--green); border-radius:2px; width:89%; }
+.phf-disclaimer { font-size:.55rem; color:var(--muted); text-align:center; margin-top:7px; font-style:italic; line-height:1.4; }
+
+/* ps-end */
+#ps-end { align-items:center; justify-content:center; text-align:center; }
+.pe-icon { margin-bottom:14px; }
+.pe-icon svg { width:48px; height:48px; }
+.pe-title { font-size:.98rem; font-weight:700; color:var(--green); margin-bottom:8px; }
+.pe-sub { font-size:.74rem; color:var(--gray); line-height:1.6; }
+
+/* ── Controls ─────────────────────────────────────────────────────────────── */
+.controls { display:flex; align-items:center; gap:10px; }
+.ctrl { padding:9px 22px; border:none; border-radius:10px; font-size:.82rem; font-weight:600;
+        cursor:pointer; transition:opacity .2s, transform .1s; }
+.ctrl:active { transform:scale(.97); }
+.ctrl:disabled { opacity:.35; cursor:default; }
+.ctrl-start { background:var(--green); color:#000; }
+.ctrl-reset { background:var(--bg-surface); color:var(--gray); border:1px solid rgba(255,255,255,.1); }
+.speed-grp { display:flex; border:1px solid rgba(255,255,255,.15); border-radius:8px; overflow:hidden; }
+.speed-btn { padding:7px 15px; background:transparent; border:none; cursor:pointer;
+             font-size:.76rem; color:var(--gray); transition:background .2s, color .2s; }
+.speed-btn.on { background:var(--blue); color:#fff; }
+
+/* ── Timeline ─────────────────────────────────────────────────────────────── */
+.timeline { display:none; max-width:580px; width:100%; }
+.timeline.show { display:block; }
+.tl-heading { font-size:.62rem; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:8px; }
+.tl-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.tl-li { display:flex; align-items:center; gap:9px; font-size:.68rem; }
+.tl-ts { color:var(--cyan); width:44px; flex-shrink:0; font-variant-numeric:tabular-nums; }
+.tl-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.tl-txt { color:var(--gray); line-height:1.3; }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+footer { font-size:.6rem; color:var(--muted); text-align:center; line-height:1.7;
+         max-width:580px; border-top:1px solid rgba(255,255,255,.06); padding-top:14px; }
+footer b { color:var(--red); }
+
+/* ── ECG keyframes ────────────────────────────────────────────────────────── */
+@keyframes ecgScroll    { from{transform:translateX(0)} to{transform:translateX(-200px)} }
+@keyframes ecgScrollFast{ from{transform:translateX(0)} to{transform:translateX(-200px)} }
 </style>
 </head>
 <body>
 
-<h1 class="brand">TRIAGEAGENT</h1>
+<!-- Header -->
+<header class="app-header">
+  <div class="logo-row">
+    <svg class="logo-svg" viewBox="0 0 34 34">
+      <path d="M2,17 L7,17 L10,7 L14,27 L17,13 L20,21 L23,17 L32,17"/>
+    </svg>
+    <h1>LifeLine AI</h1>
+  </div>
+  <p class="tagline">
+    <b>Live Cardiac Detection</b> · <b>Voice Confirmation</b> · <b>Automated Response</b>
+  </p>
+</header>
 
+<!-- Stage -->
 <div class="demo-stage">
 
-  <!-- ── WATCH COLUMN ──────────────────────────────────────────────────────── -->
-  <div class="device-col watch-col">
-    <div class="device-label">Apple Watch</div>
-    <div class="watch-band watch-band-top"></div>
-    <div class="watch-frame">
-      <div class="watch-crown"></div>
-      <div class="watch-btn"></div>
-      <div class="watch-screen">
-
-        <!-- W-HOME -->
-        <div id="w-home" class="watch-view active">
-          <div class="w-time" id="w-clock">9:41</div>
-          <div class="w-date">SAT, APR 26</div>
-          <div class="w-vitals">
-            <div class="w-vital ok" id="wv-hr">
-              <div class="wv-label">♥ HR</div>
-              <div class="wv-val" id="w-hr-val">72</div>
-              <div style="font-size:.48rem;color:#666">bpm</div>
-            </div>
-            <div class="w-vital ok" id="wv-spo2">
-              <div class="wv-label">SpO₂</div>
-              <div class="wv-val" id="w-spo2-val">98</div>
-              <div style="font-size:.48rem;color:#666">%</div>
-            </div>
-          </div>
-          <svg class="w-ecg-line" viewBox="0 0 160 28" xmlns="http://www.w3.org/2000/svg">
-            <polyline points="0,14 20,14 28,4 34,24 40,14 60,14 68,4 74,24 80,14 100,14 108,4 114,24 120,14 160,14"
-              fill="none" stroke="#38a169" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="w-badge ok">● Monitoring Active</div>
-          <div style="font-size:.52rem;color:#555;text-align:center;margin-top:5px">ECG: NSR · Fall: None</div>
-        </div>
-
-        <!-- W-ALERT -->
-        <div id="w-alert" class="watch-view">
-          <div class="w-alert-hdr">
-            <span class="w-alert-icon">⚠️</span>
-            <div class="w-alert-title">Emergency</div>
-            <div class="w-alert-sub">Detected by sensors</div>
-          </div>
-          <div class="w-vitals" style="margin-top:8px">
-            <div class="w-vital crit">
-              <div class="wv-label">♥ HR</div>
-              <div class="wv-val">0</div>
-              <div style="font-size:.48rem;color:#666">bpm</div>
-            </div>
-            <div class="w-vital crit">
-              <div class="wv-label">SpO₂</div>
-              <div class="wv-val">72</div>
-              <div style="font-size:.48rem;color:#666">%</div>
-            </div>
-          </div>
-          <div style="font-size:.56rem;color:var(--accent);text-align:center;margin-top:4px">
-            ECG: VFib · Fall: Yes
-          </div>
-          <div class="w-haptic">📳 Alerting iPhone...</div>
-        </div>
-
-        <!-- W-WORKING -->
-        <div id="w-working" class="watch-view" style="justify-content:center;text-align:center">
-          <div class="w-working-icon">⚙️</div>
-          <div class="w-working-title">AI Analyzing</div>
-          <div class="w-working-sub">Triage pipeline<br>running...</div>
-          <div class="w-dots" style="margin-top:12px">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-
-        <!-- W-RESULT -->
-        <div id="w-result" class="watch-view" style="justify-content:center">
-          <div class="w-result-icon">✅</div>
-          <div class="w-result-title">EMS Dispatched</div>
-          <div class="w-result-eta" id="w-eta">ETA: 8 min</div>
-          <div style="margin-top:8px">
-            <div class="w-badge done">ESI Level 1</div>
-          </div>
-          <div class="w-result-hosp" id="w-hosp">Central Texas Heart &amp; Vascular Center</div>
-          <div style="font-size:.52rem;color:#555;text-align:center;margin-top:6px">
-            Handoff bundle sent
-          </div>
-        </div>
-
-      </div>
-    </div>
-    <div class="watch-band watch-band-bottom"></div>
-    <div class="watch-link" id="watch-link">
-      <div class="link-dot" id="link-dot"></div>
-      <span id="link-text">iPhone connected</span>
-    </div>
-  </div>
-
-  <!-- ── PHONE COLUMN ──────────────────────────────────────────────────────── -->
+  <!-- WATCH -->
   <div class="device-col">
-    <div class="device-label">iPhone</div>
+    <div class="device-label">Smartwatch</div>
+    <div class="watch-frame" id="watch-frame">
+      <div class="watch-crown"></div>
+      <div class="watch-side-btn"></div>
+      <div class="watch-tint" id="watch-tint"></div>
+      <div class="watch-display">
+
+        <!-- Normal -->
+        <div id="ws-normal" class="ws active" style="background:#080808;padding:14px 13px 10px">
+          <div class="wn-time" id="w-clock">9:41</div>
+          <div class="wn-date" id="w-date">SAT · APR 26</div>
+          <div class="wn-hr-row">
+            <svg class="wn-heart-svg" viewBox="0 0 13 13">
+              <path d="M6.5,11C6.5,11,1,7,1,4A2.6,2.6,0,0,1,6.5,2.8,2.6,2.6,0,0,1,12,4C12,7,6.5,11,6.5,11Z"/>
+            </svg>
+            <span class="wn-hr-val" id="w-hr-val">72</span>
+            <span class="wn-hr-unit">bpm</span>
+          </div>
+          <div class="wn-badge"><div class="wn-badge-dot"></div>Monitoring</div>
+          <div class="wn-ecg-wrap">
+            <svg id="w-ecg-n" style="position:absolute;top:0;left:0;animation:ecgScroll 2s linear infinite" height="36"></svg>
+          </div>
+        </div>
+
+        <!-- Anomaly -->
+        <div id="ws-anomaly" class="ws" style="background:#0e0303;padding:11px 12px 8px">
+          <div class="wa-alert">VFib Detected</div>
+          <div class="wa-hr" id="w-anom-hr">182</div>
+          <div class="wa-hr-sub">bpm — Fibrillation</div>
+          <div class="wa-ecg-wrap">
+            <svg id="w-ecg-v" style="position:absolute;top:0;left:0;animation:ecgScrollFast .5s linear infinite" height="36"></svg>
+          </div>
+        </div>
+
+        <!-- Countdown -->
+        <div id="ws-countdown" class="ws" style="background:#0b0303;padding:10px 13px;align-items:center;justify-content:center">
+          <div class="wcd-label">Respond to confirm</div>
+          <div class="wcd-num" id="w-cd-num">30</div>
+          <div class="wcd-sub">seconds remaining</div>
+          <div class="wcd-ecg-tag">ECG: VFib · HR: 182</div>
+        </div>
+
+        <!-- Dispatch -->
+        <div id="ws-dispatch" class="ws" style="background:#040d09;padding:12px 11px 10px">
+          <div class="wd-check-icon">✅</div>
+          <div class="wd-title">Help is on the way</div>
+          <ul class="wd-list">
+            <li class="wd-item" id="wck-1"><div class="wd-item-dot">✓</div>EMS notified</li>
+            <li class="wd-item" id="wck-2"><div class="wd-item-dot">✓</div>Hospital alerted</li>
+            <li class="wd-item" id="wck-3"><div class="wd-item-dot">✓</div>Contacts notified</li>
+          </ul>
+          <div class="wd-eta">St. Mary's Cardiac — ETA 8 min</div>
+        </div>
+
+        <!-- EMS -->
+        <div id="ws-ems" class="ws" style="background:#040d09;padding:10px 13px;align-items:center;justify-content:center">
+          <div class="we-ambulance">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="2" y="10" width="22" height="14" rx="2" fill="#10B981" opacity=".9"/>
+              <rect x="24" y="14" width="6" height="10" rx="1" fill="#10B981" opacity=".7"/>
+              <circle cx="8" cy="24" r="3" fill="#1E2740" stroke="#10B981" stroke-width="1.5"/>
+              <circle cx="20" cy="24" r="3" fill="#1E2740" stroke="#10B981" stroke-width="1.5"/>
+              <rect x="8" y="13" width="2" height="5" rx="1" fill="#fff"/>
+              <rect x="6" y="15" width="6" height="2" rx="1" fill="#fff"/>
+              <rect x="26" y="16" width="2" height="4" rx="1" fill="#06B6D4" opacity=".8"/>
+            </svg>
+          </div>
+          <div class="we-title">EMS Arriving</div>
+          <div class="we-eta" id="w-ems-eta">7:42</div>
+          <div class="we-eta-label">estimated arrival</div>
+          <div class="we-911">Also call 911 directly</div>
+        </div>
+
+      </div><!-- /watch-display -->
+    </div><!-- /watch-frame -->
+  </div><!-- /watch col -->
+
+  <!-- PHONE -->
+  <div class="device-col">
+    <div class="device-label">Smartphone</div>
     <div class="phone-frame">
-      <div class="notch"><div class="notch-pill"></div></div>
-      <div class="screen">
-        <div class="status-bar">
-          <span>9:41 AM</span><span>● ● ●</span><span>🔋 84%</span>
-        </div>
+      <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+      <div class="phone-display">
 
-        <!-- SCREEN 1: HOME -->
-        <div id="s-home" class="screen-view active">
-          <div class="app-header">
-            <h2>TriageAgent</h2>
-            <p>Emergency Response System</p>
-          </div>
-          <div class="patient-card">
-            <div class="name">Robert Chen</div>
-            <div class="meta">62 yrs · Male · Blood type: A+ · Patient 001</div>
-            <div class="meta" style="margin-top:4px">Hx: Prior MI · HTN · T2DM · Warfarin</div>
-          </div>
-          <div style="text-align:center;margin-bottom:14px">
-            <span class="monitor-badge"><span class="pulse-dot"></span>Monitoring Active</span>
-          </div>
-          <div class="vitals-row">
-            <div class="vital ok">
-              <div class="label">Heart Rate</div>
-              <div class="value" id="hr-display">72</div>
-              <div style="font-size:.65rem;color:var(--muted)">bpm</div>
-            </div>
-            <div class="vital ok">
-              <div class="label">SpO₂</div>
-              <div class="value" id="spo2-display">98</div>
-              <div style="font-size:.65rem;color:var(--muted)">%</div>
-            </div>
-            <div class="vital ok">
-              <div class="label">ECG</div>
-              <div class="value" style="font-size:1rem" id="ecg-display">NSR</div>
-              <div style="font-size:.65rem;color:var(--muted)">rhythm</div>
+        <!-- Normal -->
+        <div id="ps-normal" class="ps active">
+          <div class="p-status"><span id="p-clock">9:41 AM</span><span>●●● 84%</span></div>
+          <div class="p-app-row">
+            <svg class="p-app-svg" viewBox="0 0 20 20">
+              <path d="M1,10 L5,10 L7,4 L10,16 L13,8 L15,12 L17,10 L19,10"/>
+            </svg>
+            <div>
+              <div class="p-app-name">LifeLine AI</div>
+              <div class="p-app-ver">Emergency Response v1.0</div>
             </div>
           </div>
-          <button class="sos-btn" onclick="startEmergency()">🆘 SOS EMERGENCY</button>
-          <button class="demo-btn" onclick="simulateCardiacArrest()">Simulate Cardiac Arrest (Demo)</button>
-          <div class="disclaimer">
-            <strong>For demonstration purposes only.</strong><br>
-            Not a substitute for emergency services. Always call 911.
+          <div class="p-patient">
+            <div class="p-patient-name">Robert Chen</div>
+            <div class="p-patient-meta">62 · Male · Blood Type A+ · Patient 001</div>
+            <div class="p-patient-meta">Prior MI · Hypertension · T2DM · Warfarin</div>
+            <div class="p-mon-row"><div class="p-mon-dot"></div><span class="p-mon-text">Status: Monitoring Active</span></div>
+          </div>
+          <div class="p-vitals">
+            <div class="p-vitals-title">Current Vitals</div>
+            <div class="p-v-row"><span class="p-v-label">Heart Rate</span><span class="p-v-val ok">72 bpm</span></div>
+            <div class="p-v-row"><span class="p-v-label">SpO₂</span><span class="p-v-val ok">98%</span></div>
+            <div class="p-v-row"><span class="p-v-label">ECG</span><span class="p-v-val ok">Normal Sinus</span></div>
+            <div class="p-v-row"><span class="p-v-label">Activity</span><span class="p-v-val">Resting</span></div>
+          </div>
+          <div class="p-ecg-card">
+            <div class="p-ecg-title">Live ECG</div>
+            <div class="p-ecg-wrap">
+              <svg id="p-ecg-n" style="position:absolute;top:0;left:0;animation:ecgScroll 2s linear infinite" height="56"></svg>
+            </div>
           </div>
         </div>
 
-        <!-- SCREEN 2: DETECTED -->
-        <div id="s-detected" class="screen-view">
-          <div class="watch-detected-badge">⌚ Detected by Apple Watch — alerting iPhone</div>
-          <div class="alert-banner">
-            <h3>⚠️ Possible Emergency Detected</h3>
-            <p>Abnormal wearable signals detected. Confirming...</p>
+        <!-- Anomaly -->
+        <div id="ps-anomaly" class="ps">
+          <div class="p-status"><span id="p-clock2">9:41 AM</span><span>●●● 84%</span></div>
+          <div class="p-alert-bar">
+            <div class="p-alert-title">Cardiac Anomaly Detected</div>
+            <div class="p-alert-sub">Wearable sensors reporting abnormal readings</div>
           </div>
-          <div class="vitals-row">
-            <div class="vital critical">
-              <div class="label">Heart Rate</div>
-              <div class="value">0</div>
-              <div style="font-size:.65rem;color:var(--muted)">bpm</div>
-            </div>
-            <div class="vital critical">
-              <div class="label">SpO₂</div>
-              <div class="value">72</div>
-              <div style="font-size:.65rem;color:var(--muted)">%</div>
-            </div>
-            <div class="vital critical">
-              <div class="label">ECG</div>
-              <div class="value" style="font-size:.85rem">VFib</div>
-              <div style="font-size:.65rem;color:var(--muted)">rhythm</div>
-            </div>
+          <div class="p-vitals" style="border-color:rgba(229,62,62,.4);background:rgba(229,62,62,.04)">
+            <div class="p-vitals-title" style="color:var(--red)">Critical Vitals</div>
+            <div class="p-v-row"><span class="p-v-label">Heart Rate</span><span class="p-v-val crit">182 bpm</span></div>
+            <div class="p-v-row"><span class="p-v-label">SpO₂</span><span class="p-v-val amber">91% ↓</span></div>
+            <div class="p-v-row"><span class="p-v-label">ECG</span><span class="p-v-val crit">Ventricular Fibrillation</span></div>
+            <div class="p-v-row"><span class="p-v-label">Status</span><span class="p-v-val amber">Analyzing...</span></div>
           </div>
-          <div style="text-align:center;margin-bottom:8px;font-size:.8rem;color:var(--muted)">
-            Auto-dispatching in
-          </div>
-          <div class="countdown" id="countdown-display">15</div>
-          <button class="cancel-btn" onclick="cancelEmergency()">✓ I'm Okay — Cancel</button>
-          <div class="disclaimer" style="margin-top:16px">
-            <strong>If this is a real emergency, call 911 immediately.</strong>
+          <div class="p-ecg-card" style="border-color:rgba(229,62,62,.25)">
+            <div class="p-ecg-title" style="color:var(--red)">ECG — Abnormal Pattern</div>
+            <div class="p-ecg-wrap">
+              <svg id="p-ecg-v" style="position:absolute;top:0;left:0;animation:ecgScrollFast .5s linear infinite" height="56"></svg>
+            </div>
           </div>
         </div>
 
-        <!-- SCREEN 3: WORKING -->
-        <div id="s-working" class="screen-view">
-          <div class="app-header">
-            <h2>Analyzing...</h2>
-            <p>AI agent running triage pipeline</p>
+        <!-- Voice -->
+        <div id="ps-voice" class="ps" style="padding:0;position:relative">
+          <div class="voice-bg-strip">
+            <div class="p-status"><span>9:41 AM</span><span>●●● 84%</span></div>
+            <div class="p-alert-bar" style="padding:8px 11px">
+              <div class="p-alert-title" style="font-size:.76rem">Cardiac Anomaly — HR 182 · VFib detected</div>
+            </div>
           </div>
-          <ul class="step-list" id="step-list">
-            <li class="step-item" data-step="0">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Extracting symptoms with NER
-                <div class="step-tech">scispaCy en_core_sci_md → SNOMED CT codes</div>
+          <div class="voice-overlay">
+            <div class="voice-card" id="voice-card">
+
+              <!-- listening state -->
+              <div id="voice-listening">
+                <div class="voice-mic-wrap">
+                  <div class="voice-mic-outer">
+                    <svg class="voice-mic-svg" viewBox="0 0 28 28">
+                      <rect class="mic-body" x="10" y="3" width="8" height="14" rx="4"/>
+                      <path class="mic-arc" d="M6,14 C6,19.5 10.5,24 14,24 C17.5,24 22,19.5 22,14"/>
+                      <line class="mic-stem" x1="14" y1="24" x2="14" y2="27"/>
+                      <line class="mic-stem" x1="10" y1="27" x2="18" y2="27"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="voice-heading">Voice Confirmation</div>
+                <div class="voice-question">
+                  <b>"We detected something unusual.</b><br>How are you feeling?"
+                </div>
+                <div class="voice-listen-box">
+                  <div class="voice-listen-label"><div class="vll-dot"></div>Listening for response...</div>
+                  <div class="voice-wave">
+                    <div class="vw-bar"></div><div class="vw-bar"></div><div class="vw-bar"></div>
+                    <div class="vw-bar"></div><div class="vw-bar"></div><div class="vw-bar"></div>
+                    <div class="vw-bar"></div>
+                  </div>
+                </div>
+                <div class="voice-timer-row">
+                  <span class="voice-timer-label">&#9201; Seconds remaining</span>
+                  <span class="voice-timer-num" id="p-cd-num">30</span>
+                </div>
+                <div class="voice-progress-bg">
+                  <div class="voice-progress" id="voice-progress" style="width:100%"></div>
+                </div>
+                <button class="voice-cancel-btn" onclick="cancelEmergency()">I'm Okay — Cancel</button>
+                <div class="voice-note">If no response, help will be dispatched automatically.</div>
+              </div>
+
+              <!-- no-response state -->
+              <div id="voice-noresponse">
+                <div class="vnr-icon">
+                  <svg width="44" height="44" viewBox="0 0 44 44" style="display:block;margin:0 auto">
+                    <circle cx="22" cy="22" r="20" fill="rgba(229,62,62,.15)" stroke="rgba(229,62,62,.5)" stroke-width="1.5"/>
+                    <line x1="14" y1="14" x2="30" y2="30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="30" y1="14" x2="14" y2="30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="vnr-title">No response detected.</div>
+                <div class="vnr-sub">Dispatching help now...</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Dispatch -->
+        <div id="ps-dispatch" class="ps">
+          <div class="p-status"><span>9:42 AM</span><span>●●● 84%</span></div>
+          <div class="pd-header">
+            <div class="pd-title">AUTO-DISPATCH ACTIVATED</div>
+            <div class="pd-sub">No voice response received — dispatching automatically</div>
+          </div>
+          <ul class="pd-actions">
+            <li class="pd-item" id="pa-1">
+              <div class="pd-pending"><div class="pd-spinner"></div>Calling EMS...</div>
+              <div class="pd-done">
+                <div class="pd-done-main"><span class="pd-check">✅</span>EMS Dispatched — Ambulance en route</div>
+                <div class="pd-done-sub">Estimated arrival: 8 minutes</div>
               </div>
             </li>
-            <li class="step-item" data-step="1">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Loading FHIR patient history
-                <div class="step-tech">FHIR R4 Bundle · Synthea format</div>
+            <li class="pd-item" id="pa-2">
+              <div class="pd-pending"><div class="pd-spinner"></div>Alerting hospital...</div>
+              <div class="pd-done">
+                <div class="pd-done-main"><span class="pd-check">✅</span>St. Mary's Cardiac Center</div>
+                <div class="pd-done-sub">Cath Lab Activated · ETA 8 min</div>
               </div>
             </li>
-            <li class="step-item" data-step="2">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Cross-validating wearable + phone sensors
-                <div class="step-tech">Sensor fusion · collision detection</div>
-              </div>
-            </li>
-            <li class="step-item" data-step="3">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Retrieving triage protocols from RAG
-                <div class="step-tech">ChromaDB · sentence-transformers/all-MiniLM-L6-v2</div>
-              </div>
-            </li>
-            <li class="step-item" data-step="4">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Running ESI severity scoring
-                <div class="step-tech">Deterministic rule-based algorithm</div>
-              </div>
-            </li>
-            <li class="step-item" data-step="5">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Matching hospital capabilities
-                <div class="step-tech">Deterministic routing · 6 hospitals</div>
-              </div>
-            </li>
-            <li class="step-item" data-step="6">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Generating FHIR R4 handoff bundle
-                <div class="step-tech">SNOMED CT · LOINC · RxNorm</div>
-              </div>
-            </li>
-            <li class="step-item" data-step="7">
-              <div class="step-icon wait">○</div>
-              <div class="step-text">Agent reasoning synthesis
-                <div class="step-tech">Llama3-OpenBioLLM-70B via HuggingFace</div>
+            <li class="pd-item" id="pa-3">
+              <div class="pd-pending"><div class="pd-spinner"></div>Notifying emergency contacts...</div>
+              <div class="pd-done">
+                <div class="pd-done-main"><span class="pd-check">✅</span>2 emergency contacts notified</div>
+                <div class="pd-done-sub">Sarah Chen · Dr. Wong alerted</div>
               </div>
             </li>
           </ul>
-        </div>
-
-        <!-- SCREEN 4: RESULT -->
-        <div id="s-result" class="screen-view">
-          <div class="app-header">
-            <h2>Emergency Response</h2>
-            <p id="result-subtitle">EMS dispatched · Hospital selected</p>
+          <div class="pd-fhir">
+            <div class="pd-fhir-title">FHIR R4 Bundle Sent to Hospital</div>
+            <div class="pd-fhir-row">Patient: <span>Robert Chen · 62M · A+</span></div>
+            <div class="pd-fhir-row">Suspected: <span>Cardiac Arrest (SNOMED 410429000)</span></div>
+            <div class="pd-fhir-row">Allergies: <span>Penicillin · Iodine Contrast (HIGH)</span></div>
+            <div class="pd-fhir-row">Meds: <span>Warfarin · Lisinopril · Metformin</span></div>
           </div>
-          <div class="hospital-card">
-            <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Routing to</div>
-            <h3 id="hosp-name">Central Texas Heart &amp; Vascular Center</h3>
-            <div style="display:flex;align-items:baseline;gap:8px;margin-top:6px">
-              <span class="eta" id="hosp-eta">8</span>
-              <span style="color:var(--muted);font-size:.8rem">min ETA</span>
-              <span style="margin-left:auto;font-size:.75rem;color:var(--muted)" id="hosp-wait">ER wait: 8 min</span>
-            </div>
-            <div class="caps-list" id="hosp-caps"></div>
-          </div>
-          <div class="ems-card">
-            <div class="row">
-              <span style="font-size:.85rem;font-weight:600">🚑 EMS Dispatched</span>
-              <button class="call-btn" onclick="alert('Calling 911...')">Call 911</button>
-            </div>
-            <div style="font-size:.72rem;color:var(--muted);margin-top:6px">
-              Emergency contacts notified (2) · EMS en route
-            </div>
-          </div>
-          <div class="hospital-card">
-            <div style="font-size:.78rem;color:var(--muted);margin-bottom:6px">
-              AI Confidence — <span id="conf-label">95%</span>
-            </div>
-            <div class="conf-bar"><div class="conf-fill" id="conf-fill" style="width:95%"></div></div>
-            <div style="font-size:.7rem;color:var(--muted);margin-top:6px" id="diagnosis-text">
-              Suspected: cardiac arrest
-            </div>
-            <div style="font-size:.65rem;color:var(--muted);margin-top:4px">
-              ESI Level: <span id="esi-display">1</span>
-            </div>
-          </div>
-          <button class="tech-toggle" onclick="toggleTech()">🔬 Technologies Used ▼</button>
-          <div class="tech-detail" id="tech-detail">
-            <div class="tech-row"><span>LLM</span><span class="tech-val">Llama3-OpenBioLLM-70B</span></div>
-            <div class="tech-row"><span>NER</span><span class="tech-val">scispaCy + SNOMED CT</span></div>
-            <div class="tech-row"><span>RAG</span><span class="tech-val">ChromaDB + sentence-transformers</span></div>
-            <div class="tech-row"><span>FHIR</span><span class="tech-val">R4 · Synthea · LOINC · RxNorm</span></div>
-            <div class="tech-row"><span>Detection</span><span class="tech-val">Deterministic rules</span></div>
-            <div class="tech-row"><span>Routing</span><span class="tech-val">Capability matching</span></div>
-          </div>
-          <button class="handoff-btn" onclick="showHandoff()">Show Paramedic Handoff Card →</button>
-          <div class="disclaimer">
-            <strong>AI-generated preliminary assessment. Not a clinical diagnosis.</strong><br>
-            Always follow the guidance of emergency professionals.
+          <div class="pd-911">
+            <div class="pd-911-text">Also call 911 directly</div>
+            <button class="pd-911-btn" onclick="alert('In a real emergency, call 911 immediately.')">Call 911</button>
           </div>
         </div>
 
-        <!-- SCREEN 5: HANDOFF -->
-        <div id="s-handoff" class="screen-view">
-          <div class="app-header">
-            <h2>📋 Paramedic Handoff</h2>
-            <p>Show this to arriving paramedics</p>
+        <!-- Handoff -->
+        <div id="ps-handoff" class="ps">
+          <div class="p-status"><span id="p-clock3">9:42 AM</span><span>●●● 84%</span></div>
+          <div class="phf-header">
+            <div class="phf-title">Show this to paramedics</div>
+            <div class="phf-sub">Paramedic Handoff Card</div>
           </div>
-          <div class="condition-badge" id="hf-condition">⚠️ Cardiac Arrest — 95% confidence</div>
-          <div class="handoff-card">
-            <h4>Patient</h4>
-            <div class="handoff-row"><span class="handoff-label">Name</span><span>Robert Chen</span></div>
-            <div class="handoff-row"><span class="handoff-label">Age / Sex</span><span>62 · Male</span></div>
-            <div class="handoff-row"><span class="handoff-label">Blood Type</span><span>A+</span></div>
-            <div class="handoff-row"><span class="handoff-label">SNOMED</span><span style="font-size:.72rem;color:var(--blue)" id="hf-snomed">410429000</span></div>
+          <div class="phf-card">
+            <div class="phf-card-title">Patient</div>
+            <div class="phf-row"><span class="phf-lbl">Name</span><span class="phf-val">Robert Chen</span></div>
+            <div class="phf-row"><span class="phf-lbl">Age / Sex</span><span class="phf-val">62 · Male</span></div>
+            <div class="phf-row"><span class="phf-lbl">Blood Type</span><span class="phf-val cyan">A+</span></div>
+            <div class="phf-row"><span class="phf-lbl">Suspected</span><span class="phf-val crit">Cardiac Arrest (VFib)</span></div>
           </div>
-          <div class="handoff-card">
-            <h4>Vitals at Detection</h4>
-            <div class="handoff-row"><span class="handoff-label">HR [LOINC 8867-4]</span><span style="color:var(--accent)">0 bpm</span></div>
-            <div class="handoff-row"><span class="handoff-label">SpO₂ [LOINC 59408-5]</span><span style="color:var(--accent)">72%</span></div>
-            <div class="handoff-row"><span class="handoff-label">ECG</span><span style="color:var(--accent)">Ventricular Fibrillation</span></div>
-            <div class="handoff-row"><span class="handoff-label">ESI Level</span><span style="color:var(--accent)">1 — Immediate</span></div>
+          <div class="phf-card">
+            <div class="phf-card-title">Vitals at Detection</div>
+            <div class="phf-row"><span class="phf-lbl">Heart Rate</span><span class="phf-val crit">182 → VFib</span></div>
+            <div class="phf-row"><span class="phf-lbl">SpO₂</span><span class="phf-val amber">91%</span></div>
+            <div class="phf-row"><span class="phf-lbl">Time</span><span class="phf-val" id="p-det-time">—</span></div>
+            <div class="phf-row"><span class="phf-lbl">Downtime</span><span class="phf-val phf-downtime" id="p-downtime">0:00</span></div>
           </div>
-          <div class="handoff-card">
-            <h4>Medications (RxNorm)</h4>
-            <span class="med-tag">Warfarin 5mg [11289]</span>
-            <span class="med-tag">Lisinopril 10mg [314076]</span>
-            <span class="med-tag">Metformin 500mg [861004]</span>
+          <div class="phf-card">
+            <div class="phf-card-title">Medications</div>
+            <div class="phf-row"><span class="phf-lbl">Warfarin</span><span class="phf-val amber">Anticoagulant</span></div>
+            <div class="phf-row"><span class="phf-lbl">Lisinopril</span><span class="phf-val">ACE inhibitor</span></div>
+            <div class="phf-row"><span class="phf-lbl">Metformin</span><span class="phf-val">Biguanide</span></div>
           </div>
-          <div class="handoff-card">
-            <h4>Critical Allergies</h4>
-            <span class="allergy-tag">⚠ Penicillin [SNOMED 91936005]</span>
-            <span class="allergy-tag">⚠ Iodine Contrast [293637006]</span>
+          <div class="phf-card">
+            <div class="phf-card-title">Allergies</div>
+            <div class="phf-row"><span class="phf-lbl">Penicillin</span><span class="phf-val crit">HIGH severity</span></div>
+            <div class="phf-row"><span class="phf-lbl">Iodine Contrast</span><span class="phf-val crit">HIGH severity</span></div>
           </div>
-          <div class="handoff-card">
-            <h4>Conditions</h4>
-            <div style="font-size:.78rem">Prior MI [22298006] · T2DM [44054006] · HTN [38341003]</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+            <div style="font-size:.6rem;color:var(--muted)">AI Confidence</div>
+            <div style="font-size:.6rem;color:var(--green)">89%</div>
           </div>
-          <div id="hf-time" style="font-size:.72rem;color:var(--muted);text-align:center;margin:8px 0"></div>
-          <div class="disclaimer">
-            <strong>AI-generated preliminary assessment. Not a clinical diagnosis.</strong><br>
-            Verify all data on arrival.
-          </div>
-          <button class="back-btn" onclick="showScreen('s-result');updateWatch('result')" style="margin-top:12px">← Back to Results</button>
+          <div class="phf-conf-bg"><div class="phf-conf-fill"></div></div>
+          <div class="phf-disclaimer">AI-generated preliminary assessment. Not a clinical diagnosis. Verify all data on arrival.</div>
         </div>
 
-      </div><!-- /screen -->
+        <!-- End -->
+        <div id="ps-end" class="ps">
+          <div class="p-status"><span>9:43 AM</span><span>●●● 84%</span></div>
+          <div class="pe-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="22" fill="rgba(16,185,129,.15)" stroke="var(--green)" stroke-width="1.5"/>
+              <path d="M14,24 L20,30 L34,16" stroke="var(--green)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="pe-title">Emergency Response Active</div>
+          <div class="pe-sub">Help is on the way.<br>Stay calm. Do not move the patient.<br>Unlock the front door if possible.</div>
+        </div>
+
+      </div><!-- /phone-display -->
     </div><!-- /phone-frame -->
-  </div><!-- /phone-col -->
+  </div><!-- /phone col -->
 
 </div><!-- /demo-stage -->
 
-<footer>TriageAgent · AI Healthcare Innovation Hackathon 2026 · For demonstration purposes only</footer>
+<!-- Controls -->
+<div class="controls">
+  <button class="ctrl ctrl-start" id="start-btn" onclick="startDemo()">&#9654; Start Demo</button>
+  <button class="ctrl ctrl-reset" onclick="resetDemo()">Reset</button>
+  <div class="speed-grp">
+    <button class="speed-btn on" id="sp1" onclick="setSpeed(1)">1&times;</button>
+    <button class="speed-btn"    id="sp2" onclick="setSpeed(2)">2&times;</button>
+  </div>
+</div>
+
+<!-- Timeline -->
+<div class="timeline" id="timeline">
+  <div class="tl-heading">Event Timeline</div>
+  <ul class="tl-list">
+    <li class="tl-li"><span class="tl-ts">0:00</span><div class="tl-dot" style="background:var(--green)"></div><span class="tl-txt">Normal monitoring — HR 72 bpm · SpO₂ 98% · ECG normal sinus rhythm</span></li>
+    <li class="tl-li"><span class="tl-ts">0:05</span><div class="tl-dot" style="background:var(--amber)"></div><span class="tl-txt">Anomaly detected — HR 182 bpm → Ventricular Fibrillation, SpO₂ 91%</span></li>
+    <li class="tl-li"><span class="tl-ts">0:08</span><div class="tl-dot" style="background:var(--amber)"></div><span class="tl-txt">Voice confirmation window opened — 30-second response countdown started</span></li>
+    <li class="tl-li"><span class="tl-ts">0:18</span><div class="tl-dot" style="background:var(--amber)"></div><span class="tl-txt">10 seconds remaining — urgency escalated, both devices shift to red alert</span></li>
+    <li class="tl-li"><span class="tl-ts">0:38</span><div class="tl-dot" style="background:var(--red)"></div><span class="tl-txt">No voice response — auto-dispatch triggered automatically</span></li>
+    <li class="tl-li"><span class="tl-ts">0:40</span><div class="tl-dot" style="background:var(--red)"></div><span class="tl-txt">EMS dispatched · St. Mary's Cardiac Center alerted · FHIR R4 bundle sent</span></li>
+    <li class="tl-li"><span class="tl-ts">0:42</span><div class="tl-dot" style="background:var(--blue)"></div><span class="tl-txt">2 emergency contacts notified (Sarah Chen, Dr. Wong)</span></li>
+    <li class="tl-li"><span class="tl-ts">0:50</span><div class="tl-dot" style="background:var(--cyan)"></div><span class="tl-txt">Paramedic handoff active — SNOMED 410429000 · LOINC vitals · RxNorm meds</span></li>
+  </ul>
+</div>
+
+<!-- Footer -->
+<footer>
+  <b>LifeLine AI</b> — AI Healthcare Innovation Hackathon 2026<br>
+  For demonstration purposes only. Not a medical device. <b>In a real emergency, call 911.</b>
+</footer>
 
 <script>
-const API = 'http://localhost:8000';
-let countdownTimer = null;
-let triageResult = null;
+// ── ECG path generation ────────────────────────────────────────────────────
+function normalPath(cycles, h) {
+  const b = h * 0.66;   // baseline
+  let d = '';
+  for (let c = 0; c < cycles; c++) {
+    const x = c * 200;
+    const s = (c === 0) ? 'M' : 'L';
+    d += `${s} ${x},${b} `;
+    d += `L ${x+18},${b} `;
+    // P wave
+    d += `Q ${x+28},${b} ${x+33},${b*0.68} Q ${x+38},${b*0.36} ${x+43},${b*0.68} Q ${x+48},${b} ${x+53},${b} `;
+    // PR
+    d += `L ${x+66},${b} `;
+    // QRS
+    d += `L ${x+70},${b+h*0.07} L ${x+75},${h*0.08} L ${x+81},${h*0.92} L ${x+86},${b} `;
+    // ST
+    d += `L ${x+102},${b} `;
+    // T wave
+    d += `Q ${x+116},${b} ${x+128},${b*0.42} Q ${x+142},${b*0.08} ${x+155},${b*0.42} Q ${x+165},${b} ${x+178},${b} `;
+    // TP
+    d += `L ${x+200},${b} `;
+  }
+  return d;
+}
+
+function vfibPath(cycles, h) {
+  const pts = [.5,.18,.88,.06,.72,.22,.92,.1,.58,.28,.94,.14,.48,.84,.08,.68,.32,.87,.42,.05,.62,.36,.82,.2,.54,.9,.12,.66,.30,.86,.44,.1,.70,.28,.88,.18,.50,.80,.14,.62,.98];
+  let d = '';
+  for (let c = 0; c < cycles; c++) {
+    const x = c * 200;
+    for (let i = 0; i < pts.length; i++) {
+      const px = x + (i / (pts.length - 1)) * 200;
+      const py = pts[i] * h;
+      d += (c === 0 && i === 0) ? `M ${px},${py} ` : `L ${px},${py} `;
+    }
+  }
+  return d;
+}
+
+function makeSVG(id, cycles, h, pathFn, color, sw) {
+  const svg = document.getElementById(id);
+  const W = cycles * 200;
+  svg.setAttribute('width', W);
+  svg.setAttribute('viewBox', `0 0 ${W} ${h}`);
+  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d', pathFn(cycles, h));
+  p.setAttribute('fill','none'); p.setAttribute('stroke', color);
+  p.setAttribute('stroke-width', sw); p.setAttribute('stroke-linecap','round');
+  svg.appendChild(p);
+}
+
+makeSVG('w-ecg-n', 7, 36, normalPath, '#10B981', 1.5);
+makeSVG('w-ecg-v', 7, 36, vfibPath,  '#E53E3E', 1.5);
+makeSVG('p-ecg-n', 7, 56, normalPath, '#10B981', 2);
+makeSVG('p-ecg-v', 7, 56, vfibPath,  '#E53E3E', 2);
 
 // ── Clock ──────────────────────────────────────────────────────────────────
-function tickClock() {
-  const now = new Date();
-  const h = now.getHours() % 12 || 12;
-  const m = String(now.getMinutes()).padStart(2, '0');
+function refreshClock() {
+  const n = new Date();
+  const h = n.getHours() % 12 || 12, m = String(n.getMinutes()).padStart(2,'0');
+  const ap = n.getHours() < 12 ? 'AM' : 'PM';
+  const days   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   document.getElementById('w-clock').textContent = `${h}:${m}`;
+  document.getElementById('w-date').textContent  = `${days[n.getDay()]} · ${months[n.getMonth()]} ${n.getDate()}`;
+  const full = `${h}:${m} ${ap}`;
+  ['p-clock','p-clock2','p-clock3'].forEach(id => { const e = document.getElementById(id); if(e) e.textContent = full; });
 }
-tickClock();
-setInterval(tickClock, 30000);
+refreshClock();
+setInterval(refreshClock, 30000);
 
-// ── Screen helpers ─────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen-view').forEach(v => v.classList.remove('active'));
+// ── State helpers ──────────────────────────────────────────────────────────
+let speed = 1;
+const timers = [];
+let cdInterval = null, dtInterval = null, etaInterval = null;
+let cdVal = 30, dtSec = 0, etaSec = 480;
+
+function go(fn, ms)   { const t = setTimeout(fn, ms / speed); timers.push(t); }
+function killAll() {
+  timers.forEach(clearTimeout); timers.length = 0;
+  [cdInterval, dtInterval, etaInterval].forEach(i => i && clearInterval(i));
+  cdInterval = dtInterval = etaInterval = null;
+}
+function showW(id) {
+  document.querySelectorAll('.ws').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-
-function updateWatch(state) {
-  document.querySelectorAll('.watch-view').forEach(v => v.classList.remove('active'));
-  document.getElementById('w-' + state).classList.add('active');
-
-  const dot  = document.getElementById('link-dot');
-  const text = document.getElementById('link-text');
-  if (state === 'alert' || state === 'working') {
-    dot.classList.add('alert');
-    text.textContent = state === 'alert' ? 'Alerting iPhone...' : 'Syncing AI...';
-  } else if (state === 'result') {
-    dot.classList.remove('alert');
-    text.textContent = 'EMS notified';
-  } else {
-    dot.classList.remove('alert');
-    text.textContent = 'iPhone connected';
-  }
+function showP(id) {
+  document.querySelectorAll('.ps').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function tint(cls) {
+  const t = document.getElementById('watch-tint');
+  t.className = 'watch-tint' + (cls ? ' ' + cls : '');
 }
 
-// ── Screen 1 → 2 ──────────────────────────────────────────────────────────
-function startEmergency() { triggerDetected(false); }
+// ── Demo sequence ──────────────────────────────────────────────────────────
+function startDemo() {
+  document.getElementById('start-btn').disabled = true;
 
-function simulateCardiacArrest() {
-  // Watch detects first — vitals drop
-  document.getElementById('w-hr-val').textContent = '0';
-  document.getElementById('w-spo2-val').textContent = '72';
-  document.getElementById('wv-hr').className   = 'w-vital crit';
-  document.getElementById('wv-spo2').className = 'w-vital crit';
+  // Phase 1 — Normal (0–5 s)
+  showW('ws-normal'); showP('ps-normal'); tint('');
 
-  // Phone vitals update
-  document.getElementById('hr-display').textContent = '0';
-  document.getElementById('spo2-display').textContent = '72';
-  document.getElementById('ecg-display').textContent = 'VFib';
-  document.querySelectorAll('.vitals-row .vital').forEach(v => v.className = 'vital critical');
+  // Phase 2 — Anomaly (5 s)
+  go(() => {
+    // Watch HR jump animation
+    const hrEl = document.getElementById('w-hr-val');
+    hrEl.style.color = 'var(--amber)';
+    hrEl.textContent = '145';
+    go(() => {
+      hrEl.style.color = 'var(--red)';
+      hrEl.textContent = '182';
+      go(() => {
+        const wf = document.getElementById('watch-frame');
+        wf.classList.add('alert-shake');
+        tint('amber');
+        setTimeout(() => wf.classList.remove('alert-shake'), 700);
+        showW('ws-anomaly');
+      }, 800);
+    }, 800);
+    showP('ps-anomaly');
+  }, 5000);
 
-  // Watch goes to alert state, then phone follows
-  updateWatch('alert');
-  setTimeout(() => triggerDetected(true), 900);
+  // Phase 3 — Voice countdown (8 s)
+  go(() => {
+    showP('ps-voice');
+    showW('ws-countdown');
+    tint('amber');
+    startCountdown();
+  }, 8000);
+
+  // Phase 4 — No response flash (38 s)
+  go(() => {
+    clearInterval(cdInterval);
+    document.getElementById('voice-listening').style.display  = 'none';
+    document.getElementById('voice-noresponse').style.display = 'block';
+    document.getElementById('voice-card').classList.add('urgent');
+    tint('red');
+    go(() => {
+      showP('ps-dispatch');
+      showW('ws-dispatch');
+      tint('green');
+      runDispatch();
+    }, 1400);
+  }, 38000);
+
+  // Phase 5 — Handoff (50 s)
+  go(() => {
+    showP('ps-handoff');
+    showW('ws-ems');
+    document.getElementById('p-det-time').textContent = new Date().toLocaleTimeString();
+    startDowntime();
+    startETA();
+  }, 50000);
+
+  // Phase 6 — End (60 s)
+  go(() => {
+    showP('ps-end');
+    document.getElementById('timeline').classList.add('show');
+  }, 60000);
 }
 
-function triggerDetected(isArrest) {
-  showScreen('s-detected');
-  let n = 15;
-  document.getElementById('countdown-display').textContent = n;
-  clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    n--;
-    document.getElementById('countdown-display').textContent = n;
-    if (n <= 5) document.getElementById('countdown-display').style.color = '#c53030';
-    if (n <= 0) { clearInterval(countdownTimer); runTriage(isArrest); }
-  }, 1000);
-}
+// ── Countdown ─────────────────────────────────────────────────────────────
+function startCountdown() {
+  cdVal = 30;
+  const pNum = document.getElementById('p-cd-num');
+  const wNum = document.getElementById('w-cd-num');
+  const prog = document.getElementById('voice-progress');
+  const card = document.getElementById('voice-card');
 
-function cancelEmergency() {
-  clearInterval(countdownTimer);
-  document.getElementById('countdown-display').style.color = 'var(--accent)';
-  // Reset watch vitals
-  document.getElementById('w-hr-val').textContent = '72';
-  document.getElementById('w-spo2-val').textContent = '98';
-  document.getElementById('wv-hr').className   = 'w-vital ok';
-  document.getElementById('wv-spo2').className = 'w-vital ok';
-  document.querySelectorAll('.vitals-row .vital').forEach(v => v.className = 'vital ok');
-  document.getElementById('hr-display').textContent = '72';
-  document.getElementById('spo2-display').textContent = '98';
-  document.getElementById('ecg-display').textContent = 'NSR';
-  updateWatch('home');
-  showScreen('s-home');
-}
+  function tick() {
+    cdVal = Math.max(0, cdVal - 1);
+    pNum.textContent = cdVal;
+    wNum.textContent = cdVal;
+    prog.style.width = (cdVal / 30 * 100) + '%';
 
-// ── Screen 3: Agent steps ──────────────────────────────────────────────────
-function runTriage(isArrest) {
-  showScreen('s-working');
-  updateWatch('working');
-
-  const steps = document.querySelectorAll('#step-list .step-item');
-  steps.forEach(s => {
-    s.querySelector('.step-icon').className = 'step-icon wait';
-    s.querySelector('.step-icon').textContent = '○';
-  });
-
-  let i = 0;
-  function advanceStep() {
-    if (i > 0) {
-      const prev = steps[i - 1].querySelector('.step-icon');
-      prev.className = 'step-icon done';
-      prev.textContent = '✓';
+    if (cdVal > 20) {
+      pNum.className = 'voice-timer-num';
+      prog.style.background = 'var(--green)';
+      wNum.classList.remove('urgent');
+    } else if (cdVal > 10) {
+      pNum.className = 'voice-timer-num amber';
+      prog.style.background = 'var(--amber)';
+    } else {
+      pNum.className = 'voice-timer-num red';
+      prog.style.background = 'var(--red)';
+      wNum.classList.add('urgent');
+      card.classList.add('urgent');
     }
-    if (i >= steps.length) { showResult(); return; }
-    const cur = steps[i].querySelector('.step-icon');
-    cur.className = 'step-icon active';
-    cur.textContent = '↻';
-    i++;
-    setTimeout(advanceStep, 700 + Math.random() * 400);
+    if (cdVal <= 0) clearInterval(cdInterval);
   }
 
-  callAPI(isArrest);
-  advanceStep();
+  cdInterval = setInterval(tick, 1000 / speed);
 }
 
-async function callAPI(isArrest) {
-  try {
-    const payload = {
-      patient_id: 'patient-001',
-      symptoms: 'unresponsive, no pulse, fall detected',
-      signal_bundle: isArrest ? {
-        heart_rate: 0, spo2: 72, ecg_findings: 'ventricular_fibrillation',
-        fall_detected: true, movement_status: 'still',
-        phone_position: 'floor', phone_last_interaction_seconds: 310
-      } : {}
-    };
-    const res = await fetch(`${API}/triage`, {
-      method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload), signal: AbortSignal.timeout(20000)
-    });
-    if (res.ok) triageResult = await res.json();
-  } catch (_) { triageResult = null; }
-}
-
-// ── Screen 4: Result ───────────────────────────────────────────────────────
-function showResult() {
-  showScreen('s-result');
-  const r    = triageResult;
-  const hosp = r?.routing_decision?.chosen_hospital;
-  const diag = r?.working_diagnosis;
-  const eta  = r?.routing_decision?.eta_minutes || 8;
-
-  document.getElementById('hosp-name').textContent = hosp?.name || 'Central Texas Heart & Vascular Center';
-  document.getElementById('hosp-eta').textContent  = eta;
-  document.getElementById('hosp-wait').textContent = `ER wait: ${hosp?.current_er_wait_minutes || 8} min`;
-
-  const capsEl = document.getElementById('hosp-caps');
-  capsEl.innerHTML = '';
-  const caps = hosp?.capabilities || ['cath_lab', 'cardiology', 'icu'];
-  caps.forEach(c => {
-    const b = document.createElement('span');
-    b.className = 'cap-badge';
-    b.textContent = c.replace(/_/g, ' ');
-    capsEl.appendChild(b);
+// ── Dispatch checkmarks ───────────────────────────────────────────────────
+function runDispatch() {
+  const pItems = ['pa-1','pa-2','pa-3'];
+  const wItems = ['wck-1','wck-2','wck-3'];
+  pItems.forEach((pid, i) => {
+    go(() => {
+      document.getElementById(pid).classList.add('show');
+      go(() => {
+        document.getElementById(pid).classList.add('done');
+        if (wItems[i]) document.getElementById(wItems[i]).classList.add('show');
+      }, 1800);
+    }, i * 2200);
   });
-
-  const conf = Math.round((diag?.top_confidence || 0.95) * 100);
-  document.getElementById('conf-label').textContent   = `${conf}%`;
-  document.getElementById('conf-fill').style.width    = `${conf}%`;
-  document.getElementById('diagnosis-text').textContent = `Suspected: ${diag?.top_condition || 'cardiac arrest'}`;
-  document.getElementById('esi-display').textContent  = diag?.esi_level || 1;
-
-  const snomedMap = { cardiac_arrest:'410429000', stemi:'22298006', stroke:'230690007', anaphylaxis:'39579001' };
-  const topCond = r?.working_diagnosis?.top_condition || 'cardiac_arrest';
-  document.getElementById('hf-snomed').textContent   = snomedMap[topCond] || '410429000';
-  document.getElementById('hf-condition').textContent = `⚠️ ${topCond.replace(/_/g,' ')} — ${conf}% confidence`;
-  document.getElementById('hf-time').textContent     = `Detection time: ${new Date().toLocaleTimeString()}`;
-
-  // Update watch result
-  document.getElementById('w-eta').textContent  = `ETA: ${eta} min`;
-  document.getElementById('w-hosp').textContent = hosp?.name || 'Central Texas Heart & Vascular Center';
-  updateWatch('result');
 }
 
-function toggleTech() { document.getElementById('tech-detail').classList.toggle('open'); }
-function showHandoff() { showScreen('s-handoff'); updateWatch('result'); }
+// ── Downtime counter ──────────────────────────────────────────────────────
+function startDowntime() {
+  dtSec = 0;
+  const el = document.getElementById('p-downtime');
+  dtInterval = setInterval(() => {
+    dtSec++;
+    const m = Math.floor(dtSec / 60), s = String(dtSec % 60).padStart(2,'0');
+    if (el) el.textContent = `${m}:${s}`;
+  }, 1000 / speed);
+}
+
+// ── EMS ETA ───────────────────────────────────────────────────────────────
+function startETA() {
+  etaSec = 462; // 7:42
+  const el = document.getElementById('w-ems-eta');
+  etaInterval = setInterval(() => {
+    etaSec = Math.max(0, etaSec - 1);
+    const m = Math.floor(etaSec / 60), s = String(etaSec % 60).padStart(2,'0');
+    if (el) el.textContent = `${m}:${s}`;
+    if (etaSec <= 0) clearInterval(etaInterval);
+  }, 1000 / speed);
+}
+
+// ── Cancel (I'm Okay) ─────────────────────────────────────────────────────
+function cancelEmergency() {
+  killAll();
+  tint('green');
+
+  // Watch — show all-clear
+  showW('ws-dispatch');
+  document.getElementById('watch-frame').classList.remove('alert-shake');
+  document.querySelector('#ws-dispatch .wd-check-icon').textContent = '✅';
+  document.querySelector('#ws-dispatch .wd-title').textContent = 'All Clear';
+  document.querySelector('#ws-dispatch .wd-title').style.color = 'var(--green)';
+  document.querySelector('#ws-dispatch .wd-eta').textContent = 'Patient confirmed OK';
+  ['wck-1','wck-2','wck-3'].forEach(id => document.getElementById(id).classList.remove('show'));
+
+  // Phone — show all-clear screen
+  showP('ps-end');
+  document.querySelector('#ps-end .pe-title').textContent   = "All Clear — Thank you!";
+  document.querySelector('#ps-end .pe-sub').textContent     = "You confirmed you're okay.\nMonitoring has resumed.\nIf you feel unwell, press SOS.";
+  document.querySelector('#ps-end .pe-sub').style.whiteSpace = 'pre-line';
+
+  // Re-enable start after a pause so user can read the screen
+  setTimeout(() => {
+    document.getElementById('start-btn').disabled = false;
+  }, 3000);
+}
+
+// ── Reset ─────────────────────────────────────────────────────────────────
+function resetDemo() {
+  killAll();
+  showW('ws-normal'); showP('ps-normal'); tint('');
+
+  const hrEl = document.getElementById('w-hr-val');
+  hrEl.textContent = '72'; hrEl.style.color = '';
+
+  document.getElementById('w-cd-num').textContent  = '30';
+  document.getElementById('w-cd-num').classList.remove('urgent');
+  document.getElementById('p-cd-num').textContent  = '30';
+  document.getElementById('p-cd-num').className    = 'voice-timer-num';
+  document.getElementById('voice-progress').style.width = '100%';
+  document.getElementById('voice-progress').style.background = 'var(--green)';
+  document.getElementById('voice-listening').style.display   = 'block';
+  document.getElementById('voice-noresponse').style.display  = 'none';
+  document.getElementById('voice-card').classList.remove('urgent');
+
+  ['pa-1','pa-2','pa-3'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('show','done');
+  });
+  ['wck-1','wck-2','wck-3'].forEach(id => document.getElementById(id).classList.remove('show'));
+
+  document.getElementById('watch-frame').classList.remove('alert-shake');
+  document.getElementById('timeline').classList.remove('show');
+  // Reset any text mutated by cancelEmergency
+  document.querySelector('#ws-dispatch .wd-check-icon').textContent = '✅';
+  document.querySelector('#ws-dispatch .wd-title').textContent      = 'Help is on the way';
+  document.querySelector('#ws-dispatch .wd-title').style.color      = '';
+  document.querySelector('#ws-dispatch .wd-eta').textContent        = "St. Mary's Cardiac — ETA 8 min";
+  document.querySelector('#ps-end .pe-title').textContent           = 'Emergency Response Active';
+  document.querySelector('#ps-end .pe-sub').textContent             = 'Help is on the way.\nStay calm. Do not move the patient.\nUnlock the front door if possible.';
+  document.getElementById('start-btn').disabled = false;
+}
+
+// ── Speed ─────────────────────────────────────────────────────────────────
+function setSpeed(s) {
+  speed = s;
+  document.getElementById('sp1').classList.toggle('on', s === 1);
+  document.getElementById('sp2').classList.toggle('on', s === 2);
+}
 </script>
 </body>
 </html>
