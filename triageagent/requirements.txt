@@ -1,12 +1,7 @@
-# Core HTTP + retry
-requests>=2.31.0
-tenacity>=8.2.3
-
-# FHIR R4 schema validation & resource construction
-fhir.resources>=8.0.0
-
-# Date/time utils
-python-dateutil>=2.8.2
-
-# Optional: pretty CLI output for the pipeline (not required for app integration)
-rich>=13.0.0
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+anthropic>=0.28.0
+chromadb>=0.5.0
+python-dotenv>=1.0.0
+httpx>=0.27.0
+pydantic>=2.0.0

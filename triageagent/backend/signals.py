@@ -1,4 +1,8 @@
 """
 signals.py — Signal weighting and conflict detection.
-Logic populated in Step 5.
+
+TODO: Step 5 — implement:
+    compute_signal_weights(bundle: SignalBundle) -> list[SignalWeight]
+    detect_conflicts(bundle: SignalBundle) -> list[ConflictFlag]
 """
+from __future__ import annotations

@@ -7,542 +7,276 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f1117;
-    --bg-surface: #161b27;
-    --bg-card: #1e2536;
-    --border: #2a3349;
-    --text-primary: #f0f4ff;
-    --text-secondary: #8892aa;
-    --text-muted: #4a5568;
-    --accent-blue: #3b82f6;
-    --accent-calm: #1e40af;
-    --color-ok: #10b981;
-    --color-warn: #f59e0b;
-    --color-emergency: #dc2626;
-    --color-resolved: #059669;
-    --watch-bg: #000;
-    --watch-width: 260px;
-    --phone-width: 360px;
-    --bezel: 14px;
-    --radius-watch: 62px;
-    --radius-phone: 44px;
-  }
+/* ── CSS Variables ─────────────────────────────────────────────────────── */
+:root {
+  --bg:              #0f1117;
+  --bg-surface:      #161b27;
+  --bg-card:         #1e2536;
+  --border:          #2a3349;
+  --text-primary:    #f0f4ff;
+  --text-secondary:  #8892aa;
+  --text-muted:      #4a5568;
+  --accent-blue:     #3b82f6;
+  --color-ok:        #10b981;
+  --color-warn:      #f59e0b;
+  --color-emergency: #dc2626;
+  --color-resolved:  #059669;
+  --watch-width:     260px;
+  --phone-width:     360px;
+  --bezel:           14px;
+  --radius-watch:    62px;
+  --radius-phone:    44px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text-primary);font-family:'Inter',system-ui,sans-serif;
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:28px 24px 48px;overflow-x:hidden}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Header ─────────────────────────────────────────────────────────────── */
+header{text-align:center;margin-bottom:32px}
+.logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px}
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--color-emergency),#ef4444);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+h1{font-size:2rem;font-weight:700;letter-spacing:-0.03em}
+.tagline{color:var(--text-secondary);font-size:.875rem;letter-spacing:.08em;text-transform:uppercase}
 
-  body {
-    background: var(--bg);
-    color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px 24px 48px;
-    overflow-x: hidden;
-  }
+/* ── Controls ───────────────────────────────────────────────────────────── */
+.controls{display:flex;align-items:center;gap:12px;margin-bottom:40px;flex-wrap:wrap;justify-content:center}
+.btn{padding:10px 24px;border-radius:8px;border:none;font-family:inherit;font-size:.875rem;
+  font-weight:600;cursor:pointer;transition:all .15s ease;letter-spacing:.02em}
+.btn-primary{background:var(--color-emergency);color:#fff}
+.btn-primary:hover{background:#b91c1c;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border)}
+.btn-secondary:hover{color:var(--text-primary);border-color:#4a5568}
+.speed-toggle{display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.speed-btn{padding:10px 14px;background:none;border:none;color:var(--text-secondary);
+  font-family:inherit;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s}
+.speed-btn.active{background:var(--accent-blue);color:#fff}
 
-  /* ── Header ── */
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-  .logo-icon {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, var(--color-emergency), #ef4444);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-  h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    color: var(--text-primary);
-  }
-  .tagline {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
+/* ── Stage ──────────────────────────────────────────────────────────────── */
+.stage{display:flex;align-items:flex-start;justify-content:center;gap:56px;margin-bottom:40px;flex-wrap:wrap}
+.device-wrapper{display:flex;flex-direction:column;align-items:center;gap:14px}
+.device-label{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
 
-  /* ── Controls ── */
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 48px;
-  }
-  .btn {
-    padding: 10px 24px;
-    border-radius: 8px;
-    border: none;
-    font-family: inherit;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    letter-spacing: 0.02em;
-  }
-  .btn-primary {
-    background: var(--color-emergency);
-    color: #fff;
-  }
-  .btn-primary:hover { background: #b91c1c; transform: translateY(-1px); }
-  .btn-secondary {
-    background: var(--bg-card);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { color: var(--text-primary); border-color: #4a5568; }
-  .speed-toggle {
-    display: flex;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .speed-btn {
-    padding: 10px 14px;
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-family: inherit;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .speed-btn.active {
-    background: var(--accent-blue);
-    color: #fff;
-  }
+/* ── WATCH ──────────────────────────────────────────────────────────────── */
+.watch-shell{position:relative;width:var(--watch-width);height:calc(var(--watch-width)*1.22)}
+.watch-band-top,.watch-band-bottom{position:absolute;left:50%;transform:translateX(-50%);
+  width:calc(var(--watch-width) - 40px);height:68px;background:linear-gradient(180deg,#1c1c1e,#111);z-index:-1}
+.watch-band-top{bottom:calc(100% - 20px);border-radius:4px 4px 0 0;box-shadow:0 -4px 10px rgba(0,0,0,.5)}
+.watch-band-bottom{top:calc(100% - 20px);border-radius:0 0 4px 4px;box-shadow:0 4px 10px rgba(0,0,0,.5)}
+.watch-body{position:absolute;inset:0;background:linear-gradient(160deg,#2a2a2e,#1a1a1e 50%,#111);
+  border-radius:var(--radius-watch);box-shadow:0 0 0 1px #3a3a3e,0 4px 6px rgba(0,0,0,.6),0 20px 40px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.06)}
+.watch-crown{position:absolute;right:-9px;top:50%;transform:translateY(-50%) translateY(-22px);
+  width:8px;height:42px;background:linear-gradient(90deg,#3a3a3e,#555,#3a3a3e);border-radius:4px}
+.watch-btn-side{position:absolute;right:-9px;top:50%;transform:translateY(-50%) translateY(30px);
+  width:8px;height:24px;background:linear-gradient(90deg,#3a3a3e,#555,#3a3a3e);border-radius:4px}
+.watch-screen{position:absolute;inset:var(--bezel);background:#000;
+  border-radius:calc(var(--radius-watch) - var(--bezel));overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  padding:18px 14px 12px;transition:background .5s ease}
 
-  /* ── Stage ── */
-  .stage {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 64px;
-    margin-bottom: 48px;
-  }
+/* Watch content pieces */
+.watch-time-big{font-size:2.4rem;font-weight:300;color:#fff;letter-spacing:-0.02em;line-height:1;text-align:center}
+.watch-date-small{font-size:.68rem;color:#8892aa;margin-top:2px;text-align:center}
+.watch-hr-row{display:flex;align-items:center;gap:8px}
+.heart-pulse{color:var(--color-emergency);font-size:1.1rem;animation:heartbeat 1.2s ease-in-out infinite}
+@keyframes heartbeat{0%,100%{transform:scale(1)}15%{transform:scale(1.3)}30%{transform:scale(1)}45%{transform:scale(1.15)}}
+.watch-hr-num{font-size:1.6rem;font-weight:700;color:#fff;transition:color .3s}
+.watch-hr-unit{font-size:.65rem;color:#8892aa;align-self:flex-end;padding-bottom:3px}
+.watch-badge{font-size:.62rem;font-weight:500;padding:3px 10px;border-radius:20px}
+.badge-ok{color:var(--color-ok);background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3)}
+.badge-warn{color:var(--color-warn);background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3)}
+.badge-crit{color:#fff;background:rgba(220,38,38,.4);border:1px solid rgba(220,38,38,.6)}
 
-  /* ── Device labels ── */
-  .device-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-  }
-  .device-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
+/* Watch ECG */
+.ecg-wrap{width:100%;height:34px;overflow:hidden;border-radius:4px}
+.ecg-svg{width:200%;height:100%}
+.ecg-normal{animation:ecg-scroll 2.4s linear infinite}
+.ecg-vfib{animation:ecg-scroll .9s linear infinite}
+@keyframes ecg-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  /* ══════════════════════
-     APPLE WATCH MOCKUP
-  ══════════════════════ */
-  .watch-shell {
-    position: relative;
-    width: var(--watch-width);
-    height: calc(var(--watch-width) * 1.22);
-  }
+/* Watch alert */
+.watch-alert-title{font-size:.8rem;font-weight:700;text-align:center;letter-spacing:.02em}
+.watch-msg{font-size:.72rem;color:rgba(255,255,255,.8);text-align:center;line-height:1.4;padding:0 4px}
+.watch-countdown-ring{width:78px;height:78px;border-radius:50%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;border:3px solid;transition:border-color .5s,background .5s}
+.watch-countdown-num{font-size:1.9rem;font-weight:700;line-height:1}
+.watch-countdown-lbl{font-size:.45rem;color:rgba(255,255,255,.7);text-align:center;margin-top:1px}
+.watch-cpr-count{font-size:2rem;font-weight:700;color:#fff;line-height:1}
+.watch-cpr-lbl{font-size:.6rem;color:var(--text-secondary);margin-top:2px}
 
-  /* Watch body */
-  .watch-body {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, #2a2a2e 0%, #1a1a1e 50%, #111 100%);
-    border-radius: var(--radius-watch);
-    box-shadow:
-      0 0 0 1px #3a3a3e,
-      0 4px 6px rgba(0,0,0,0.6),
-      0 20px 40px rgba(0,0,0,0.8),
-      inset 0 1px 0 rgba(255,255,255,0.06);
-  }
+/* ── PHONE ──────────────────────────────────────────────────────────────── */
+.phone-shell{position:relative;width:var(--phone-width);height:calc(var(--phone-width)*2.16)}
+.phone-body{position:absolute;inset:0;background:linear-gradient(160deg,#2a2a2e,#1a1a1e 60%,#111);
+  border-radius:var(--radius-phone);box-shadow:0 0 0 1px #3a3a3e,0 4px 8px rgba(0,0,0,.6),0 30px 60px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.07)}
+.phone-btn{position:absolute;background:#2a2a2e;border-radius:2px}
+.phone-btn.vol-up{left:-4px;top:130px;width:4px;height:32px;border-radius:2px 0 0 2px}
+.phone-btn.vol-dn{left:-4px;top:172px;width:4px;height:32px;border-radius:2px 0 0 2px}
+.phone-btn.mute{left:-4px;top:96px;width:4px;height:24px;border-radius:2px 0 0 2px}
+.phone-btn.power{right:-4px;top:140px;width:4px;height:56px;border-radius:0 2px 2px 0}
+.phone-screen{position:absolute;inset:var(--bezel);background:#0d1117;
+  border-radius:calc(var(--radius-phone) - var(--bezel));overflow:hidden;display:flex;flex-direction:column;transition:background .6s ease}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:30px;background:#000;border-radius:0 0 20px 20px;z-index:10}
+.phone-notch-pill{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:26px;background:#000;border-radius:0 0 16px 16px;z-index:11}
+.phone-status-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px 4px;
+  font-size:.7rem;font-weight:600;color:#fff;position:relative;z-index:5;flex-shrink:0}
+.status-time{font-size:.8rem;font-weight:700}
+.status-icons{display:flex;gap:6px;align-items:center}
+.signal-bars{display:flex;gap:2px;align-items:flex-end;height:10px}
+.signal-bars span{width:3px;background:#fff;border-radius:1px}
+.signal-bars span:nth-child(1){height:3px}
+.signal-bars span:nth-child(2){height:5px}
+.signal-bars span:nth-child(3){height:7px}
+.signal-bars span:nth-child(4){height:10px;opacity:.4}
+.batt{width:18px;height:10px;border:1.5px solid rgba(255,255,255,.6);border-radius:2px;position:relative;display:flex;align-items:center;padding:1.5px}
+.batt::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:2px;height:5px;background:rgba(255,255,255,.4);border-radius:0 1px 1px 0}
+.batt-fill{height:100%;width:70%;background:#fff;border-radius:1px}
+.phone-content{flex:1;display:flex;flex-direction:column;padding:6px 14px 16px;overflow:hidden;transition:opacity .3s ease}
 
-  /* Digital crown */
-  .watch-crown {
-    position: absolute;
-    right: -9px;
-    top: 50%;
-    transform: translateY(-50%) translateY(-22px);
-    width: 8px;
-    height: 42px;
-    background: linear-gradient(90deg, #3a3a3e, #555, #3a3a3e);
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  }
-  .watch-button {
-    position: absolute;
-    right: -9px;
-    top: 50%;
-    transform: translateY(-50%) translateY(30px);
-    width: 8px;
-    height: 24px;
-    background: linear-gradient(90deg, #3a3a3e, #555, #3a3a3e);
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  }
+/* ── Phone views ────────────────────────────────────────────────────────── */
+/* Lock screen */
+.lock-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.lock-time{font-size:3.6rem;font-weight:200;color:#fff;letter-spacing:-0.03em;line-height:1}
+.lock-date{font-size:.9rem;color:rgba(255,255,255,.7);margin-bottom:32px}
+.app-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--color-emergency),#ef4444);
+  display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 12px rgba(220,38,38,.4)}
+.app-label{font-size:.6rem;color:rgba(255,255,255,.7);margin-top:4px;text-align:center}
 
-  /* Watch band */
-  .watch-band-top,
-  .watch-band-bottom {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(var(--watch-width) - 40px);
-    height: 70px;
-    background: linear-gradient(180deg, #1c1c1e, #111);
-    z-index: -1;
-  }
-  .watch-band-top {
-    bottom: calc(100% - 20px);
-    border-radius: 4px 4px 0 0;
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
-  }
-  .watch-band-bottom {
-    top: calc(100% - 20px);
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-  }
+/* Alert card */
+.alert-card{background:rgba(220,38,38,.12);border:1px solid rgba(220,38,38,.3);border-radius:14px;padding:16px;margin-bottom:10px}
+.alert-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.alert-icon-circle{width:36px;height:36px;border-radius:50%;background:var(--color-emergency);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.alert-title{font-size:.95rem;font-weight:700;color:#fff}
+.alert-sub{font-size:.72rem;color:var(--text-secondary)}
+.countdown-bar-wrap{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-top:8px}
+.countdown-bar-fill{height:100%;background:var(--color-emergency);border-radius:3px;transition:width 1s linear}
 
-  /* Watch screen */
-  .watch-screen {
-    position: absolute;
-    inset: var(--bezel);
-    background: var(--watch-bg);
-    border-radius: calc(var(--radius-watch) - var(--bezel));
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 16px 14px;
-  }
+/* Emergency full screen */
+.emergency-full{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:2}
+.emergency-title{font-size:1.3rem;font-weight:800;color:#fff;text-align:center;letter-spacing:.04em;line-height:1.2}
+.emergency-sub{font-size:.8rem;color:rgba(255,255,255,.8);text-align:center}
+@keyframes pulse-bg{0%,100%{background:rgba(220,38,38,.95)}50%{background:rgba(180,20,20,.8)}}
 
-  /* Watch face content */
-  .watch-time {
-    font-size: 2.4rem;
-    font-weight: 300;
-    color: #fff;
-    letter-spacing: -0.02em;
-    line-height: 1;
-  }
-  .watch-date {
-    font-size: 0.7rem;
-    color: #8892aa;
-    margin-top: 2px;
-  }
-  .watch-hr-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .heart-icon {
-    color: var(--color-emergency);
-    font-size: 1.1rem;
-    animation: heartbeat 1.2s ease-in-out infinite;
-  }
-  @keyframes heartbeat {
-    0%, 100% { transform: scale(1); }
-    15% { transform: scale(1.25); }
-    30% { transform: scale(1); }
-    45% { transform: scale(1.15); }
-  }
-  .watch-hr-val {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #fff;
-  }
-  .watch-hr-unit {
-    font-size: 0.65rem;
-    color: #8892aa;
-    align-self: flex-end;
-    padding-bottom: 3px;
-  }
-  .watch-status-ok {
-    font-size: 0.65rem;
-    font-weight: 500;
-    color: var(--color-ok);
-    background: rgba(16,185,129,0.15);
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(16,185,129,0.3);
-  }
+/* Dispatch actions */
+.dispatch-header{font-size:.72rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;letter-spacing:.05em;text-transform:uppercase}
+.action-list{display:flex;flex-direction:column;gap:6px;width:100%}
+.action-item{display:flex;align-items:flex-start;gap:10px;padding:10px 11px;background:rgba(255,255,255,.04);
+  border-radius:10px;border:1px solid rgba(255,255,255,.08);opacity:0;transform:translateY(6px);
+  transition:opacity .4s ease,transform .4s ease,border-color .4s,background .4s}
+.action-item.visible{opacity:1;transform:translateY(0)}
+.action-item.done{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.07)}
+.action-icon{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px;transition:background .3s}
+.action-item.done .action-icon{background:rgba(16,185,129,.25)}
+.action-text{flex:1}
+.action-label{font-size:.75rem;font-weight:600;color:#fff}
+.action-detail{font-size:.65rem;color:var(--text-secondary);margin-top:2px}
+.action-check{font-size:.9rem;margin-left:auto;opacity:0;transition:opacity .3s;color:var(--color-ok);flex-shrink:0;margin-top:1px}
+.action-item.done .action-check{opacity:1}
+.fhir-box{background:#0a0e17;border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:10px;
+  font-family:'JetBrains Mono',monospace;font-size:.52rem;color:#6b7fa8;line-height:1.6;
+  max-height:130px;overflow:hidden;transform:translateX(110%);transition:transform .5s cubic-bezier(.16,1,.3,1);margin-top:8px}
+.fhir-box.show{transform:translateX(0)}
+.fk{color:#60a5fa}.fv{color:#34d399}.fh{color:#fbbf24;font-weight:600}
 
-  /* ECG line */
-  .ecg-container {
-    width: 100%;
-    height: 36px;
-    overflow: hidden;
-  }
-  .ecg-svg {
-    width: 200%;
-    height: 100%;
-    animation: ecg-scroll 2.4s linear infinite;
-  }
-  @keyframes ecg-scroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
+/* Bystander alert */
+.bystander-alert{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;position:relative}
+.bystander-pulse{width:110px;height:110px;border-radius:50%;background:rgba(220,38,38,.25);
+  display:flex;align-items:center;justify-content:center;animation:bystander-ring 1.2s ease-in-out infinite}
+@keyframes bystander-ring{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,38,38,.5)}50%{transform:scale(1.08);box-shadow:0 0 0 18px rgba(220,38,38,0)}}
+.bystander-title{font-size:1rem;font-weight:800;color:#fff;text-align:center;line-height:1.3}
+.bystander-sub{font-size:.72rem;color:rgba(255,255,255,.7);text-align:center}
+.bystander-btn{padding:12px 24px;border-radius:10px;border:none;font-family:inherit;font-size:.82rem;
+  font-weight:700;cursor:pointer;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);
+  transition:all .2s;animation:btn-appear .4s ease forwards}
+.bystander-btn.auto-tap{background:rgba(255,255,255,.3);border-color:#fff;transform:scale(.96)}
+@keyframes btn-appear{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ══════════════════════
-     IPHONE MOCKUP
-  ══════════════════════ */
-  .phone-shell {
-    position: relative;
-    width: var(--phone-width);
-    height: calc(var(--phone-width) * 2.16);
-  }
+/* CPR check steps */
+.cpr-check-card{background:var(--bg-card);border-radius:14px;padding:16px;margin-bottom:10px;border:1px solid var(--border)}
+.cpr-check-title{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:12px}
+.cpr-check-btns{display:flex;gap:8px}
+.cpr-btn{flex:1;padding:10px;border-radius:8px;border:none;font-family:inherit;font-size:.75rem;
+  font-weight:600;cursor:pointer;transition:all .2s}
+.cpr-btn-no{background:rgba(220,38,38,.2);color:#f87171;border:1.5px solid rgba(220,38,38,.4)}
+.cpr-btn-yes{background:rgba(16,185,129,.15);color:#34d399;border:1.5px solid rgba(16,185,129,.3)}
+.cpr-btn.selected{transform:scale(1.04);box-shadow:0 0 0 2px #fff}
+.cpr-btn-no.selected{background:rgba(220,38,38,.5);border-color:#dc2626}
 
-  .phone-body {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(160deg, #2a2a2e 0%, #1a1a1e 60%, #111 100%);
-    border-radius: var(--radius-phone);
-    box-shadow:
-      0 0 0 1px #3a3a3e,
-      0 4px 8px rgba(0,0,0,0.6),
-      0 30px 60px rgba(0,0,0,0.8),
-      inset 0 1px 0 rgba(255,255,255,0.07);
-  }
+/* CPR Coaching */
+.cpr-coaching{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding-top:4px}
+.cpr-title-text{font-size:.85rem;font-weight:700;color:#fff;text-align:center}
+.cpr-sub-text{font-size:.68rem;color:var(--text-secondary);text-align:center}
+/* 110 BPM = 60/110 = 0.545s */
+.cpr-ring-outer{width:118px;height:118px;border-radius:50%;background:rgba(220,38,38,.12);
+  border:3px solid rgba(220,38,38,.5);display:flex;align-items:center;justify-content:center;
+  animation:cpr-pulse 0.545s ease-in-out infinite;flex-shrink:0}
+@keyframes cpr-pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(220,38,38,.5);border-color:rgba(220,38,38,.5)}
+  50%{transform:scale(1.28);box-shadow:0 0 0 16px rgba(220,38,38,0);border-color:rgba(220,38,38,.9)}}
+.cpr-ring-inner{text-align:center}
+.cpr-count-num{font-size:2rem;font-weight:800;color:#fff;line-height:1}
+.cpr-count-sub{font-size:.55rem;color:var(--text-secondary);letter-spacing:.04em}
+.cpr-row{display:flex;justify-content:space-between;align-items:center;width:100%;
+  background:rgba(255,255,255,.04);border-radius:8px;padding:7px 12px}
+.cpr-row-label{font-size:.68rem;color:var(--text-secondary)}
+.cpr-row-val{font-size:.75rem;font-weight:600;color:#fff;font-family:'JetBrains Mono',monospace}
+.cpr-handoff-btn{padding:8px 18px;border-radius:8px;border:1px solid var(--border);
+  background:rgba(255,255,255,.06);color:var(--text-secondary);font-family:inherit;font-size:.7rem;
+  cursor:pointer;transition:all .2s;align-self:center}
+.cpr-sound-btn{padding:7px 14px;border-radius:7px;border:1px solid rgba(59,130,246,.4);
+  background:rgba(59,130,246,.12);color:#93c5fd;font-family:inherit;font-size:.68rem;
+  cursor:pointer;transition:all .2s;align-self:center}
 
-  /* Side buttons */
-  .phone-btn-vol-up {
-    position: absolute;
-    left: -4px; top: 130px;
-    width: 4px; height: 32px;
-    background: #2a2a2e;
-    border-radius: 2px 0 0 2px;
-    box-shadow: -2px 0 4px rgba(0,0,0,0.5);
-  }
-  .phone-btn-vol-down {
-    position: absolute;
-    left: -4px; top: 172px;
-    width: 4px; height: 32px;
-    background: #2a2a2e;
-    border-radius: 2px 0 0 2px;
-    box-shadow: -2px 0 4px rgba(0,0,0,0.5);
-  }
-  .phone-btn-mute {
-    position: absolute;
-    left: -4px; top: 96px;
-    width: 4px; height: 24px;
-    background: #2a2a2e;
-    border-radius: 2px 0 0 2px;
-    box-shadow: -2px 0 4px rgba(0,0,0,0.5);
-  }
-  .phone-btn-power {
-    position: absolute;
-    right: -4px; top: 140px;
-    width: 4px; height: 56px;
-    background: #2a2a2e;
-    border-radius: 0 2px 2px 0;
-    box-shadow: 2px 0 4px rgba(0,0,0,0.5);
-  }
+/* Handoff */
+.handoff-banner{background:var(--color-ok);color:#fff;text-align:center;font-size:.78rem;font-weight:700;
+  padding:9px;letter-spacing:.06em;border-radius:8px;animation:banner-pulse 1.5s ease-in-out infinite}
+@keyframes banner-pulse{0%,100%{opacity:1}50%{opacity:.75}}
+.handoff-card{background:var(--bg-card);border-radius:12px;padding:14px;border:1px solid var(--border);flex:1}
+.handoff-title{font-size:.8rem;font-weight:700;color:#fff;margin-bottom:10px;letter-spacing:.02em}
+.handoff-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.handoff-row:last-child{border-bottom:none}
+.handoff-key{font-size:.68rem;color:var(--text-secondary)}
+.handoff-val{font-size:.68rem;font-weight:600;color:#fff;font-family:'JetBrains Mono',monospace}
 
-  /* Phone screen */
-  .phone-screen {
-    position: absolute;
-    inset: var(--bezel);
-    background: #0d1117;
-    border-radius: calc(var(--radius-phone) - var(--bezel));
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+/* Resolved */
+.resolved-screen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.resolved-check{width:60px;height:60px;border-radius:50%;background:rgba(5,150,105,.2);
+  border:2px solid var(--color-resolved);display:flex;align-items:center;justify-content:center;font-size:28px}
+.resolved-title{font-size:1.1rem;font-weight:700;color:var(--color-resolved)}
+.resolved-sub{font-size:.72rem;color:var(--text-secondary);text-align:center}
 
-  /* Notch */
-  .phone-notch {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 30px;
-    background: #000;
-    border-radius: 0 0 20px 20px;
-    z-index: 10;
-  }
-  .phone-notch-pill {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 26px;
-    background: #000;
-    border-radius: 0 0 16px 16px;
-    z-index: 11;
-  }
+/* ── Summary card (below devices) ───────────────────────────────────────── */
+#summary-card{max-width:860px;width:100%;background:var(--bg-card);border:1px solid var(--border);
+  border-radius:14px;padding:20px 24px;margin-bottom:24px;opacity:0;transform:translateY(12px);
+  transition:opacity .5s ease,transform .5s ease;display:none}
+#summary-card.show{display:block;opacity:1;transform:translateY(0)}
+.summary-title{font-size:.85rem;font-weight:700;color:var(--text-primary);margin-bottom:14px;letter-spacing:.03em}
+.summary-events{display:flex;flex-direction:column;gap:6px}
+.summary-event{display:flex;gap:12px;align-items:flex-start}
+.summary-ts{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent-blue);flex-shrink:0;padding-top:1px}
+.summary-text{font-size:.72rem;color:var(--text-secondary);line-height:1.4}
+.summary-text strong{color:var(--text-primary)}
 
-  /* Status bar */
-  .phone-status-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px 4px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #fff;
-    position: relative;
-    z-index: 5;
-  }
-  .status-time { font-size: 0.8rem; font-weight: 700; }
-  .status-icons { display: flex; gap: 6px; align-items: center; }
-  .signal-bar {
-    display: flex; gap: 2px; align-items: flex-end; height: 10px;
-  }
-  .signal-bar span {
-    width: 3px; background: #fff; border-radius: 1px;
-    opacity: 0.4;
-  }
-  .signal-bar span:nth-child(1) { height: 3px; opacity: 1; }
-  .signal-bar span:nth-child(2) { height: 5px; opacity: 1; }
-  .signal-bar span:nth-child(3) { height: 7px; opacity: 1; }
-  .signal-bar span:nth-child(4) { height: 10px; opacity: 0.4; }
-  .battery-icon {
-    width: 18px; height: 10px;
-    border: 1.5px solid rgba(255,255,255,0.6);
-    border-radius: 2px;
-    position: relative;
-    display: flex; align-items: center; padding: 1.5px;
-  }
-  .battery-icon::after {
-    content: '';
-    position: absolute;
-    right: -4px; top: 50%;
-    transform: translateY(-50%);
-    width: 2px; height: 5px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 0 1px 1px 0;
-  }
-  .battery-fill {
-    height: 100%; width: 70%;
-    background: #fff;
-    border-radius: 1px;
-  }
+/* ── Timeline ───────────────────────────────────────────────────────────── */
+.timeline-section{width:100%;max-width:900px;margin-bottom:20px}
+.timeline-bar{position:relative;height:6px;background:var(--bg-card);border-radius:3px;
+  margin-bottom:10px;overflow:hidden;border:1px solid var(--border)}
+.timeline-progress{position:absolute;left:0;top:0;bottom:0;width:0%;
+  background:linear-gradient(90deg,var(--accent-blue),var(--color-emergency));border-radius:3px;transition:width .4s linear}
+.timeline-phases{display:flex;justify-content:space-between}
+.phase-lbl{font-size:.62rem;font-weight:500;color:var(--text-muted);text-align:center;flex:1}
+.phase-lbl span{display:block;font-size:.58rem;opacity:.7}
+.phase-lbl.active{color:var(--color-warn)}
+.timeline-time{text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  color:var(--text-secondary);margin-top:7px}
 
-  /* Phone content area */
-  .phone-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 8px 16px 20px;
-    overflow: hidden;
-  }
+/* ── Device shake ───────────────────────────────────────────────────────── */
+@keyframes device-shake{0%,100%{transform:translateX(0)}10%,50%,90%{transform:translateX(-3px)}30%,70%{transform:translateX(3px)}}
+.shaking{animation:device-shake .4s ease-in-out}
 
-  /* Lock screen */
-  .lock-screen {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .lock-time {
-    font-size: 3.6rem;
-    font-weight: 200;
-    color: #fff;
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-  .lock-date {
-    font-size: 0.9rem;
-    color: rgba(255,255,255,0.7);
-    margin-bottom: 40px;
-  }
-  .app-icon-row {
-    display: flex;
-    gap: 16px;
-    margin-top: 20px;
-  }
-  .app-icon {
-    width: 52px; height: 52px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--color-emergency), #ef4444);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
-    box-shadow: 0 4px 12px rgba(220,38,38,0.4);
-  }
-  .app-icon-label {
-    font-size: 0.6rem;
-    color: rgba(255,255,255,0.7);
-    margin-top: 4px;
-    text-align: center;
-  }
-
-  /* ── Timeline scrubber ── */
-  .timeline-section {
-    width: 100%;
-    max-width: 900px;
-    margin-bottom: 24px;
-  }
-  .timeline-bar {
-    position: relative;
-    height: 6px;
-    background: var(--bg-card);
-    border-radius: 3px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-  .timeline-progress {
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 0%;
-    background: linear-gradient(90deg, var(--accent-blue), var(--color-emergency));
-    border-radius: 3px;
-    transition: width 0.5s linear;
-  }
-  .timeline-phases {
-    display: flex;
-    justify-content: space-between;
-  }
-  .phase-label {
-    font-size: 0.65rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-align: center;
-    flex: 1;
-  }
-  .phase-label span {
-    display: block;
-    font-size: 0.6rem;
-    color: var(--text-muted);
-    opacity: 0.7;
-  }
-  .timeline-time {
-    text-align: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-top: 8px;
-  }
-
-  /* ── Footer disclaimer ── */
-  footer {
-    margin-top: 16px;
-    text-align: center;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    max-width: 600px;
-  }
+/* ── Footer ─────────────────────────────────────────────────────────────── */
+footer{text-align:center;font-size:.68rem;color:var(--text-muted);max-width:600px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -558,59 +292,29 @@
 
 <!-- ── Controls ── -->
 <div class="controls">
-  <button class="btn btn-primary">&#9654; Start Demo</button>
-  <button class="btn btn-secondary">&#8635; Reset</button>
+  <button class="btn btn-primary" id="btn-start">&#9654; Start Demo</button>
+  <button class="btn btn-secondary" id="btn-reset">&#8635; Reset</button>
   <div class="speed-toggle">
-    <button class="speed-btn active">1x</button>
-    <button class="speed-btn">2x</button>
-    <button class="speed-btn">4x</button>
+    <button class="speed-btn active" data-speed="1">1x</button>
+    <button class="speed-btn" data-speed="2">2x</button>
+    <button class="speed-btn" data-speed="4">4x</button>
   </div>
 </div>
 
-<!-- ── Stage: both devices ── -->
+<!-- ── Stage ── -->
 <div class="stage">
 
   <!-- WATCH -->
   <div class="device-wrapper">
     <span class="device-label">Apple Watch</span>
-    <div class="watch-shell">
+    <div class="watch-shell" id="watch-shell">
       <div class="watch-band-top"></div>
       <div class="watch-band-bottom"></div>
       <div class="watch-body">
         <div class="watch-crown"></div>
-        <div class="watch-button"></div>
-        <div class="watch-screen">
-
-          <!-- Time -->
-          <div style="text-align:center;">
-            <div class="watch-time" id="watch-time">10:24</div>
-            <div class="watch-date">Friday, Apr 25</div>
-          </div>
-
-          <!-- Heart rate -->
-          <div class="watch-hr-row">
-            <span class="heart-icon">&#10084;</span>
-            <span class="watch-hr-val">72</span>
-            <span class="watch-hr-unit">BPM</span>
-          </div>
-
-          <!-- Status -->
-          <div class="watch-status-ok">All good</div>
-
-          <!-- ECG Line -->
-          <div class="ecg-container">
-            <svg class="ecg-svg" viewBox="0 0 600 40" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-              <polyline
-                points="0,20 30,20 40,20 50,5 60,35 70,20 80,20 100,20 110,20 120,5 130,35 140,20 150,20 170,20 180,5 190,35 200,20 210,20 230,20 240,5 250,35 260,20 270,20 290,20 300,5 310,35 320,20 330,20 350,20 360,5 370,35 380,20 390,20 410,20 420,5 430,35 440,20 450,20 470,20 480,5 490,35 500,20 510,20 530,20 540,5 550,35 560,20 570,20 590,20 600,20
-                         0,20 30,20 40,20 50,5 60,35 70,20 80,20 100,20 110,20 120,5 130,35 140,20 150,20 170,20 180,5 190,35 200,20 210,20 230,20 240,5 250,35 260,20 270,20 290,20 300,5 310,35 320,20 330,20 350,20 360,5 370,35 380,20 390,20 410,20 420,5 430,35 440,20 450,20 470,20 480,5 490,35 500,20 510,20 530,20 540,5 550,35 560,20 570,20 590,20 600,20"
-                fill="none"
-                stroke="#10b981"
-                stroke-width="1.5"
-                stroke-linejoin="round"
-              />
-            </svg>
-          </div>
-
+        <div class="watch-btn-side"></div>
+        <div class="watch-screen" id="watch-screen">
+          <!-- content injected by JS -->
         </div>
       </div>
     </div>
@@ -619,43 +323,26 @@
   <!-- PHONE -->
   <div class="device-wrapper">
     <span class="device-label">iPhone</span>
-    <div class="phone-shell">
+    <div class="phone-shell" id="phone-shell">
       <div class="phone-body">
-        <div class="phone-btn-mute"></div>
-        <div class="phone-btn-vol-up"></div>
-        <div class="phone-btn-vol-down"></div>
-        <div class="phone-btn-power"></div>
-
-        <div class="phone-screen">
+        <div class="phone-btn mute"></div>
+        <div class="phone-btn vol-up"></div>
+        <div class="phone-btn vol-dn"></div>
+        <div class="phone-btn power"></div>
+        <div class="phone-screen" id="phone-screen">
           <div class="phone-notch"></div>
           <div class="phone-notch-pill"></div>
-
-          <!-- Status bar -->
           <div class="phone-status-bar">
-            <span class="status-time">10:24</span>
+            <span class="status-time" id="status-time">10:24</span>
             <div class="status-icons">
-              <div class="signal-bar">
-                <span></span><span></span><span></span><span></span>
-              </div>
-              <span style="font-size:0.65rem;">5G</span>
-              <div class="battery-icon"><div class="battery-fill"></div></div>
+              <div class="signal-bars"><span></span><span></span><span></span><span></span></div>
+              <span style="font-size:.65rem">5G</span>
+              <div class="batt"><div class="batt-fill"></div></div>
             </div>
           </div>
-
-          <!-- Lock screen content -->
-          <div class="phone-content">
-            <div class="lock-screen">
-              <div class="lock-time">10:24</div>
-              <div class="lock-date">Friday, April 25</div>
-              <div class="app-icon-row">
-                <div style="text-align:center;">
-                  <div class="app-icon">&#10084;</div>
-                  <div class="app-icon-label">TriageAgent</div>
-                </div>
-              </div>
-            </div>
+          <div class="phone-content" id="phone-content">
+            <!-- content injected by JS -->
           </div>
-
         </div>
       </div>
     </div>
@@ -663,49 +350,617 @@
 
 </div>
 
-<!-- ── Timeline ── -->
+<!-- ── Summary card ── -->
+<div id="summary-card">
+  <div class="summary-title">COMPLETE EVENT TIMELINE</div>
+  <div class="summary-events" id="summary-events"></div>
+</div>
+
+<!-- ── Timeline scrubber ── -->
 <div class="timeline-section">
   <div class="timeline-bar">
     <div class="timeline-progress" id="timeline-progress"></div>
   </div>
   <div class="timeline-phases">
-    <div class="phase-label">Baseline<span>0:00</span></div>
-    <div class="phase-label">Detection<span>0:05</span></div>
-    <div class="phase-label">Confirm<span>0:15</span></div>
-    <div class="phase-label">Dispatch<span>0:20</span></div>
-    <div class="phase-label">Bystander<span>0:35</span></div>
-    <div class="phase-label">CPR<span>0:50</span></div>
-    <div class="phase-label">Handoff<span>1:30</span></div>
-    <div class="phase-label">Resolved<span>1:45</span></div>
+    <div class="phase-lbl" id="pl-0">Baseline<span>0:00</span></div>
+    <div class="phase-lbl" id="pl-1">Detection<span>0:05</span></div>
+    <div class="phase-lbl" id="pl-2">Confirm<span>0:15</span></div>
+    <div class="phase-lbl" id="pl-3">Dispatch<span>0:20</span></div>
+    <div class="phase-lbl" id="pl-4">Bystander<span>0:35</span></div>
+    <div class="phase-lbl" id="pl-5">CPR<span>0:50</span></div>
+    <div class="phase-lbl" id="pl-6">Handoff<span>1:30</span></div>
+    <div class="phase-lbl" id="pl-7">Resolved<span>1:45</span></div>
   </div>
   <div class="timeline-time" id="timeline-time">0:00</div>
 </div>
 
 <footer>
-  Demonstration only. Not a medical device. In a real emergency, call 911.
+  Demonstration only. Not a medical device. In a real emergency, call 911.<br>
+  SNOMED 410429000 — Cardiac arrest &nbsp;|&nbsp; LOINC 8867-4 — Heart rate &nbsp;|&nbsp; LOINC 59408-5 — SpO&#8322;
 </footer>
 
+<!-- ══════════════════════════════════════════════════
+     SIMULATION ENGINE
+══════════════════════════════════════════════════ -->
 <script>
-  // Speed toggle
-  document.querySelectorAll('.speed-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
+// ── State ────────────────────────────────────────────────────────────────────
+let simSec   = 0;
+let simSpeed = 1;
+let simRunning = false;
+let simInterval = null;
+let lastPhase = '';
+let compressions = 0;
+let audioCtx = null;
+let metronomePlaying = false;
+let metronomeTimer = null;
 
-  // Live clock for watch and phone
-  function updateClocks() {
-    const now = new Date();
-    const h = now.getHours().toString().padStart(2,'0');
-    const m = now.getMinutes().toString().padStart(2,'0');
-    const t = `${h}:${m}`;
-    document.getElementById('watch-time').textContent = t;
-    document.querySelector('.lock-time').textContent = t;
-    document.querySelector('.status-time').textContent = t;
+// Backend URL — set to '' to disable real API calls (pure UI demo)
+const API = 'http://localhost:8000';
+
+const TOTAL_SEC = 115;
+const TICK_MS   = 100;
+
+// Phase start times (seconds)
+const T = {
+  baseline:         0,
+  detection:        5,
+  confirm_fail:     15,
+  dispatch:         20,
+  bystander_alert:  35,
+  bystander_here:   45,
+  cpr_check1:       50,
+  cpr_check2:       55,   // auto-tap "no response" at 54
+  cpr_coaching:     60,   // auto-tap "not breathing" at 59
+  handoff:          90,
+  resolved:         105,
+};
+
+function getPhase(s) {
+  if (s < T.detection)        return 'baseline';
+  if (s < T.confirm_fail)     return 'detection';
+  if (s < T.dispatch)         return 'confirm_fail';
+  if (s < T.bystander_alert)  return 'dispatch';
+  if (s < T.bystander_here)   return 'bystander_alert';
+  if (s < T.cpr_check1)       return 'bystander_here';
+  if (s < T.cpr_check2)       return 'cpr_check1';
+  if (s < T.cpr_coaching)     return 'cpr_check2';
+  if (s < T.handoff)          return 'cpr_coaching';
+  if (s < T.resolved)         return 'handoff';
+  return 'resolved';
+}
+
+// ── SVG paths ─────────────────────────────────────────────────────────────────
+const SINUS_PTS = `0,20 30,20 40,20 48,4 56,36 64,20 74,20 100,20 110,20 118,4 126,36 134,20 144,20 170,20 180,4 188,36 196,20 206,20 232,20 242,4 250,36 258,20 268,20 294,20 304,4 312,36 320,20 330,20`;
+const VFIB_PTS  = `0,20 5,8 9,32 13,11 17,29 21,5 25,34 29,14 33,27 37,6 41,33 45,16 49,28 53,7 57,35 61,12 65,30 69,9 73,31 77,15 81,26 85,5 89,34 93,18 97,27 101,6 105,33 109,14 113,29 117,8 121,32 125,17 129,24 133,5 137,36 141,13 145,28 149,10 153,31 157,16 161,25 165,8 169,33`;
+
+function ecgSVG(pts, color, speed='normal') {
+  const doubled = pts + ' ' + pts;
+  const cls = speed === 'fast' ? 'ecg-vfib' : 'ecg-normal';
+  return `<div class="ecg-wrap"><svg class="ecg-svg ${cls}" viewBox="0 0 330 40" preserveAspectRatio="none"><polyline points="${doubled}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/></svg></div>`;
+}
+
+// ── Watch HTML builders ───────────────────────────────────────────────────────
+function watchBaseline(t) {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  return `
+    <div style="text-align:center">
+      <div class="watch-time-big">${h}:${m}</div>
+      <div class="watch-date-small">Friday, Apr 25</div>
+    </div>
+    <div class="watch-hr-row">
+      <span class="heart-pulse">&#10084;</span>
+      <span class="watch-hr-num">72</span>
+      <span class="watch-hr-unit">BPM</span>
+    </div>
+    <div class="watch-badge badge-ok">All good</div>
+    ${ecgSVG(SINUS_PTS,'#10b981')}`;
+}
+
+function watchDetection(cd) {
+  const color = cd > 10 ? '#f59e0b' : cd > 5 ? '#f97316' : '#dc2626';
+  return `
+    <div class="watch-alert-title" style="color:var(--color-emergency)">&#9888; CARDIAC EVENT</div>
+    <div class="watch-hr-row">
+      <span class="heart-pulse" style="animation-duration:.4s">&#10084;</span>
+      <span class="watch-hr-num" style="color:var(--color-emergency)">182</span>
+      <span class="watch-hr-unit">BPM</span>
+    </div>
+    <div class="watch-countdown-ring" style="border-color:${color}">
+      <div class="watch-countdown-num" id="wcd" style="color:${color}">${cd}</div>
+      <div class="watch-countdown-lbl">Tap if you're<br>okay</div>
+    </div>
+    ${ecgSVG(VFIB_PTS, '#dc2626', 'fast')}`;
+}
+
+function watchConfirmFail() {
+  return `
+    <div style="text-align:center;padding:6px 0">
+      <div class="watch-alert-title" style="color:var(--color-emergency);font-size:.9rem">No response.</div>
+      <div class="watch-badge badge-crit" style="margin-top:6px">Calling for help</div>
+    </div>
+    <div class="watch-msg" style="color:rgba(255,255,255,.9)">Alerting EMS and<br>emergency contacts</div>
+    ${ecgSVG(VFIB_PTS,'#dc2626','fast')}`;
+}
+
+function watchDispatch() {
+  return `
+    <div class="watch-badge badge-warn">ALERT SENT</div>
+    <div class="watch-msg">&#128222; EMS dispatched<br>&#127973; Cath lab activated<br>&#128241; Contacts notified</div>
+    <div class="watch-msg" style="color:rgba(255,255,255,.7);font-size:.65rem">Stay with the patient.</div>`;
+}
+
+function watchCPR(count) {
+  return `
+    <div class="watch-badge badge-crit">CPR IN PROGRESS</div>
+    <div style="text-align:center">
+      <div class="watch-cpr-count">${count}</div>
+      <div class="watch-cpr-lbl">COMPRESSIONS</div>
+    </div>
+    <div class="watch-msg" style="color:rgba(255,255,255,.8)">Push hard, push fast.</div>`;
+}
+
+function watchHandoff() {
+  return `
+    <div class="watch-badge" style="background:rgba(5,150,105,.2);color:#34d399;border:1px solid rgba(5,150,105,.4)">EMS ON SCENE</div>
+    <div class="watch-msg" style="font-size:.82rem;color:#fff;font-weight:600">Help has arrived.</div>
+    <div class="watch-msg" style="color:rgba(255,255,255,.6)">Great job. Stand by.</div>`;
+}
+
+function watchResolved() {
+  return `
+    <div class="watch-badge" style="background:rgba(5,150,105,.2);color:#34d399;border:1px solid rgba(5,150,105,.4)">RESOLVED</div>
+    <div style="text-align:center">
+      <div style="font-size:2rem">&#10003;</div>
+      <div class="watch-msg" style="color:#34d399;font-size:.75rem">Care transferred to EMS</div>
+    </div>
+    ${ecgSVG(SINUS_PTS,'#10b981')}`;
+}
+
+// ── Phone HTML builders ───────────────────────────────────────────────────────
+function phoneBaseline() {
+  const now = new Date();
+  const h = now.getHours().toString().padStart(2,'0');
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const d = new Date();
+  return `<div class="lock-screen">
+    <div class="lock-time">${h}:${m}</div>
+    <div class="lock-date">${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}</div>
+    <div style="text-align:center">
+      <div class="app-icon">&#10084;</div>
+      <div class="app-label">TriageAgent</div>
+    </div>
+  </div>`;
+}
+
+function phoneDetection(pct) {
+  const w = Math.max(0, 100 - pct).toFixed(0);
+  return `
+    <div class="alert-card">
+      <div class="alert-header">
+        <div class="alert-icon-circle">&#9888;</div>
+        <div>
+          <div class="alert-title">Cardiac Event Detected</div>
+          <div class="alert-sub">VFib pattern — confirming with wearer</div>
+        </div>
+      </div>
+      <div style="font-size:.68rem;color:var(--text-secondary);margin-bottom:6px">Heart rate: <strong style="color:#dc2626">182 BPM</strong> &nbsp;|&nbsp; SpO&#8322;: <strong style="color:#f59e0b">91%</strong></div>
+      <div class="countdown-bar-wrap">
+        <div class="countdown-bar-fill" id="cd-bar" style="width:${w}%"></div>
+      </div>
+      <div style="font-size:.62rem;color:var(--text-muted);margin-top:4px">Confirmation window — 15 seconds</div>
+    </div>
+    <div style="font-size:.7rem;color:var(--text-secondary);text-align:center;padding:8px 0">
+      Checking wearable signals... &nbsp;&#128308; Live</div>`;
+}
+
+function phoneConfirmFail() {
+  return `<div class="emergency-full" style="background:rgba(220,38,38,.95);border-radius:inherit">
+    <div style="font-size:3rem">&#128680;</div>
+    <div class="emergency-title">EMERGENCY<br>DETECTED</div>
+    <div class="emergency-sub">No response from wearer<br>Activating emergency protocol...</div>
+  </div>`;
+}
+
+function phoneDispatch(s) {
+  const rel = s - T.dispatch;
+  const a1v = rel >= 0.3,  a1d = rel >= 2.5;
+  const a2v = rel >= 4,    a2d = rel >= 6.5;
+  const a3v = rel >= 8,    a3d = rel >= 10.5;
+  const fhirShow = rel >= 11.5;
+
+  function action(visible, done, icon, label, detail) {
+    return `<div class="action-item${visible?' visible':''}${done?' done':''}">
+      <div class="action-icon">${icon}</div>
+      <div class="action-text">
+        <div class="action-label">${label}</div>
+        ${detail?`<div class="action-detail">${detail}</div>`:''}
+      </div>
+      <div class="action-check">&#10003;</div>
+    </div>`;
   }
-  updateClocks();
-  setInterval(updateClocks, 10000);
+
+  const fhirHTML = `<div class="fhir-box${fhirShow?' show':''}" id="fhir-box">
+    <span style="color:#60a5fa;font-weight:600">FHIR R4 Bundle — transmitted</span><br>
+    <span class="fk">"Patient"</span>: { <span class="fv">"name"</span>: <span class="fh">"John Doe"</span>, <span class="fv">"dob"</span>: "1975-06-15" }<br>
+    <span class="fk">"Condition"</span>: { <span class="fv">"snomed"</span>: <span class="fh">410429000</span> — <span class="fv">"Cardiac arrest"</span> }<br>
+    <span class="fk">"Observation"</span>: { <span class="fv">"loinc"</span>: <span class="fh">"8867-4"</span>, <span class="fv">"HR"</span>: 0 }<br>
+    <span class="fk">"AllergyIntol"</span>: { <span class="fv">"substance"</span>: <span class="fh">"Penicillin"</span> }<br>
+    <span class="fk">"MedStatement"</span>: { <span class="fv">"drug"</span>: <span class="fh">"Metoprolol 50mg"</span> }
+  </div>`;
+
+  return `<div class="dispatch-header">&#128204; Parallel dispatch — live</div>
+  <div class="action-list">
+    ${action(a1v, a1d, '&#128222;', 'EMS dispatch', a1d ? 'Connected &#183; Ambulance en route &#183; ETA 6 min' : 'Calling 911...')}
+    ${action(a2v, a2d, '&#127973;', 'Saint Mary\'s Hospital alerted', a2d ? 'Cath lab activating &#183; Team standing by' : 'Pre-alerting...')}
+    ${action(a3v, a3d, '&#128241;', 'Emergency contacts notified (2)', a3d ? 'Jane Doe, Dr. Sarah Chen notified' : 'Sending alerts...')}
+  </div>
+  ${fhirHTML}`;
+}
+
+function phoneBystanderAlert(autotap) {
+  return `<div class="bystander-alert">
+    <div class="bystander-pulse">
+      <div style="font-size:2.4rem">&#128680;</div>
+    </div>
+    <div class="bystander-title">MEDICAL EMERGENCY<br>CALL FOR HELP</div>
+    <div class="bystander-sub">Someone nearby may need CPR.<br>Shout for assistance.</div>
+    <button class="bystander-btn${autotap?' auto-tap':''}" id="bystander-btn">
+      &#128100; Someone is here to help
+    </button>
+  </div>`;
+}
+
+function phoneCprCheck1(autoSelect) {
+  return `<div class="cpr-check-card">
+    <div class="cpr-check-title">Step 1 — Check response</div>
+    <div style="font-size:.75rem;color:var(--text-secondary);margin-bottom:12px">Tap their shoulder firmly and shout:<br><em style="color:#fff">"Are you okay? Can you hear me?"</em></div>
+    <div class="cpr-check-btns">
+      <button class="cpr-btn cpr-btn-no${autoSelect?' selected':''}">&#10007; No response</button>
+      <button class="cpr-btn cpr-btn-yes">&#10003; They responded</button>
+    </div>
+  </div>
+  <div style="font-size:.65rem;color:var(--text-muted);text-align:center;padding:4px 0">AI is coaching you through this. Follow each step.</div>`;
+}
+
+function phoneCprCheck2(autoSelect) {
+  return `<div class="cpr-check-card">
+    <div class="cpr-check-title">Step 2 — Check breathing</div>
+    <div style="font-size:.75rem;color:var(--text-secondary);margin-bottom:12px">Tilt head back, look at their chest.<br><em style="color:#fff">Is it rising and falling normally?</em></div>
+    <div class="cpr-check-btns">
+      <button class="cpr-btn cpr-btn-no${autoSelect?' selected':''}">&#10007; Not breathing</button>
+      <button class="cpr-btn cpr-btn-yes">&#10003; Breathing normally</button>
+    </div>
+  </div>
+  <div style="font-size:.65rem;color:var(--text-muted);text-align:center">If not breathing normally — begin CPR.</div>`;
+}
+
+function phoneCprCoaching(s, count) {
+  const elapsed = s - T.cpr_coaching;
+  const etaSec  = Math.max(0, 380 - s);
+  const etaMin  = Math.floor(etaSec / 60);
+  const etaSecR = Math.round(etaSec % 60);
+  const etaStr  = `${etaMin}:${etaSecR.toString().padStart(2,'0')}`;
+  return `<div class="cpr-coaching">
+    <div class="cpr-title-text">Push hard, push fast.</div>
+    <div class="cpr-sub-text">2 inches deep &#183; 110 per minute</div>
+    <div class="cpr-ring-outer">
+      <div class="cpr-ring-inner">
+        <div class="cpr-count-num" id="cpr-count">${count}</div>
+        <div class="cpr-count-sub">COMPRESSIONS</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;width:100%">
+      <div class="cpr-row"><span class="cpr-row-label">EMS ETA</span><span class="cpr-row-val" id="ems-eta">${etaStr}</span></div>
+      <div class="cpr-row"><span class="cpr-row-label">CPR time</span><span class="cpr-row-val">${Math.floor(elapsed)}s</span></div>
+      <div class="cpr-row"><span class="cpr-row-label">Destination</span><span class="cpr-row-val" style="font-size:.65rem">Saint Mary's</span></div>
+    </div>
+    <button class="cpr-sound-btn" id="sound-btn" onclick="toggleMetronome()">&#9835; Enable metronome</button>
+    <button class="cpr-handoff-btn">Show to paramedic &#8594;</button>
+  </div>`;
+}
+
+function phoneHandoff(count) {
+  return `<div style="display:flex;flex-direction:column;gap:10px;flex:1">
+    <div class="handoff-banner">&#128661; EMS ARRIVING NOW</div>
+    <div class="handoff-card">
+      <div class="handoff-title">&#128203; Emergency Summary</div>
+      <div class="handoff-row"><span class="handoff-key">Arrest detected</span><span class="handoff-val">0:05</span></div>
+      <div class="handoff-row"><span class="handoff-key">CPR started</span><span class="handoff-val">1:00</span></div>
+      <div class="handoff-row"><span class="handoff-key">Downtime</span><span class="handoff-val">0:55</span></div>
+      <div class="handoff-row"><span class="handoff-key">Compressions</span><span class="handoff-val" id="handoff-count">${count}</span></div>
+      <div class="handoff-row"><span class="handoff-key">Hospital</span><span class="handoff-val" style="font-size:.62rem">Saint Mary's</span></div>
+      <div class="handoff-row"><span class="handoff-key">Cath Lab</span><span class="handoff-val" style="color:#10b981">ACTIVATED</span></div>
+      <div class="handoff-row"><span class="handoff-key">Allergy</span><span class="handoff-val" style="color:#f59e0b">Penicillin &#9888;</span></div>
+    </div>
+    <div style="font-size:.62rem;color:var(--text-muted);text-align:center">AI-generated summary. Not a substitute for clinical judgment.</div>
+  </div>`;
+}
+
+function phoneResolved() {
+  return `<div class="resolved-screen">
+    <div class="resolved-check">&#10003;</div>
+    <div class="resolved-title">Resolved</div>
+    <div class="resolved-sub">Care transferred to EMS<br>Great work, bystander.</div>
+  </div>`;
+}
+
+// ── Rendering ──────────────────────────────────────────────────────────────────
+function setWatch(html, bgColor) {
+  const ws = document.getElementById('watch-screen');
+  ws.style.background = bgColor || '#000';
+  ws.innerHTML = html;
+}
+
+function setPhone(html, bgColor) {
+  const ps = document.getElementById('phone-screen');
+  const pc = document.getElementById('phone-content');
+  ps.style.background = bgColor || '#0d1117';
+  pc.innerHTML = html;
+}
+
+function shake(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add('shaking');
+  setTimeout(() => el.classList.remove('shaking'), 400);
+}
+
+// ── Phase render ──────────────────────────────────────────────────────────────
+function renderPhase(phase, s) {
+  switch(phase) {
+    case 'baseline':
+      setWatch(watchBaseline(s));
+      setPhone(phoneBaseline());
+      break;
+
+    case 'detection': {
+      const cd = Math.max(0, Math.round(T.confirm_fail + T.detection - s));
+      const pct = ((s - T.detection) / (T.confirm_fail - T.detection)) * 100;
+      setWatch(watchDetection(cd), '#000');
+      setPhone(phoneDetection(pct));
+      document.getElementById('phone-screen').style.background = '#0d1117';
+      break;
+    }
+
+    case 'confirm_fail':
+      setWatch(watchConfirmFail(), '#0a0000');
+      setPhone(phoneConfirmFail(), '#dc2626');
+      shake('watch-shell');
+      shake('phone-shell');
+      break;
+
+    case 'dispatch':
+      setWatch(watchDispatch(), '#000');
+      setPhone(phoneDispatch(s));
+      break;
+
+    case 'bystander_alert': {
+      const autotap = s >= T.bystander_here - 1;
+      setWatch(watchDispatch(), '#000');
+      setPhone(phoneBystanderAlert(autotap), '#0d1117');
+      document.getElementById('phone-screen').style.background = '#6b0000';
+      break;
+    }
+
+    case 'bystander_here':
+      setWatch(watchDispatch(), '#000');
+      setPhone(phoneCprCheck1(false), '#0d1117');
+      break;
+
+    case 'cpr_check1': {
+      const autoSel = s >= T.cpr_check2 - 1;
+      setWatch(watchCPR(0), '#0a0000');
+      setPhone(phoneCprCheck1(autoSel));
+      break;
+    }
+
+    case 'cpr_check2': {
+      const autoSel2 = s >= T.cpr_coaching - 1;
+      setWatch(watchCPR(0), '#0a0000');
+      setPhone(phoneCprCheck2(autoSel2));
+      break;
+    }
+
+    case 'cpr_coaching': {
+      const count = Math.floor((s - T.cpr_coaching) * (110 / 60));
+      compressions = count;
+      setWatch(watchCPR(count), '#0a0000');
+      setPhone(phoneCprCoaching(s, count));
+      break;
+    }
+
+    case 'handoff':
+      setWatch(watchHandoff(), '#001a0a');
+      setPhone(phoneHandoff(compressions));
+      break;
+
+    case 'resolved':
+      setWatch(watchResolved(), '#001a0a');
+      setPhone(phoneResolved());
+      document.getElementById('phone-screen').style.background = '#001a0a';
+      showSummaryCard();
+      break;
+  }
+}
+
+// Dynamic updates within a phase (called every tick)
+function tickUpdate(phase, s) {
+  if (phase === 'detection') {
+    const cd = Math.max(0, Math.round(T.confirm_fail + T.detection - s));
+    const el = document.getElementById('wcd');
+    if (el) {
+      const color = cd > 10 ? '#f59e0b' : cd > 5 ? '#f97316' : '#dc2626';
+      el.textContent = cd;
+      el.style.color = color;
+      el.parentElement.style.borderColor = color;
+    }
+    const bar = document.getElementById('cd-bar');
+    if (bar) {
+      const pct = Math.max(0, 100 - ((s - T.detection) / (T.confirm_fail - T.detection)) * 100);
+      bar.style.width = pct + '%';
+    }
+  }
+  if (phase === 'cpr_coaching') {
+    const count = Math.floor((s - T.cpr_coaching) * (110 / 60));
+    compressions = count;
+    const el = document.getElementById('cpr-count');
+    if (el) el.textContent = count;
+    const etaSec  = Math.max(0, 380 - s);
+    const etaEl   = document.getElementById('ems-eta');
+    if (etaEl) etaEl.textContent = `${Math.floor(etaSec/60)}:${Math.round(etaSec%60).toString().padStart(2,'0')}`;
+  }
+  if (phase === 'handoff') {
+    const el = document.getElementById('handoff-count');
+    if (el) el.textContent = compressions;
+  }
+  if (phase === 'dispatch') {
+    // Re-render dispatch to update action visibility
+    document.getElementById('phone-content').innerHTML = phoneDispatch(s);
+  }
+}
+
+// ── Timeline ──────────────────────────────────────────────────────────────────
+const phaseTimes = [0, 5, 15, 20, 35, 50, 90, 105];
+function updateTimeline(s) {
+  document.getElementById('timeline-progress').style.width = Math.min(100, (s / TOTAL_SEC) * 100) + '%';
+  const min = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  document.getElementById('timeline-time').textContent = `${min}:${sec.toString().padStart(2,'0')}`;
+  document.getElementById('status-time').textContent = (() => {
+    const now = new Date();
+    return `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  })();
+  // Highlight active phase label
+  phaseTimes.forEach((pt, i) => {
+    const el = document.getElementById(`pl-${i}`);
+    if (!el) return;
+    const next = phaseTimes[i+1] || TOTAL_SEC;
+    el.classList.toggle('active', s >= pt && s < next);
+  });
+}
+
+// ── Summary card ──────────────────────────────────────────────────────────────
+function showSummaryCard() {
+  const card = document.getElementById('summary-card');
+  if (card.classList.contains('show')) return;
+  const events = [
+    {ts:'0:05', text:'<strong>Cardiac arrest detected</strong> — HR=0 bpm, SpO₂=72%, VFib pattern, unresponsive'},
+    {ts:'0:20', text:'<strong>EMS dispatched</strong> — ambulance en route, ETA 6 min'},
+    {ts:'0:20', text:'<strong>Saint Mary\'s Hospital alerted</strong> — cath lab activating'},
+    {ts:'0:20', text:'<strong>FHIR R4 Bundle transmitted</strong> — Patient, Condition (SNOMED 410429000), Observations, Allergies'},
+    {ts:'0:45', text:'<strong>Bystander arrived</strong> — guided through CPR protocol'},
+    {ts:'1:00', text:'<strong>CPR initiated</strong> — 110 BPM coaching, compression counter active'},
+    {ts:'1:30', text:'<strong>EMS on scene</strong> — ' + compressions + ' compressions delivered'},
+    {ts:'1:45', text:'<strong>Care transferred</strong> — TriageAgent event closed'},
+  ];
+  document.getElementById('summary-events').innerHTML = events.map(e =>
+    `<div class="summary-event"><span class="summary-ts">${e.ts}</span><span class="summary-text">${e.text}</span></div>`
+  ).join('');
+  card.classList.add('show');
+}
+
+// ── Metronome (Web Audio) ─────────────────────────────────────────────────────
+function toggleMetronome() {
+  const btn = document.getElementById('sound-btn');
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (metronomePlaying) {
+    clearInterval(metronomeTimer);
+    metronomePlaying = false;
+    if (btn) btn.textContent = '♩ Enable metronome';
+  } else {
+    metronomePlaying = true;
+    if (btn) btn.textContent = '&#9646;&#9646; Metronome on';
+    const bpm110 = (60 / 110) * 1000;
+    metronomeTimer = setInterval(() => {
+      if (!audioCtx) return;
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value = 880;
+      g.gain.setValueAtTime(0.6, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+      o.start(); o.stop(audioCtx.currentTime + 0.1);
+    }, bpm110 / simSpeed);
+  }
+}
+
+// ── Simulation tick ───────────────────────────────────────────────────────────
+function simTick() {
+  simSec += (TICK_MS / 1000) * simSpeed;
+  if (simSec >= TOTAL_SEC) {
+    simSec = TOTAL_SEC;
+    stopSim();
+  }
+
+  const phase = getPhase(simSec);
+  updateTimeline(simSec);
+
+  if (phase !== lastPhase) {
+    lastPhase = phase;
+    renderPhase(phase, simSec);
+  } else {
+    tickUpdate(phase, simSec);
+  }
+}
+
+function startSim() {
+  if (simRunning) return;
+  simRunning = true;
+  document.getElementById('btn-start').disabled = true;
+  simInterval = setInterval(simTick, TICK_MS);
+
+  // Fire real API call in background (non-blocking, just for realness)
+  if (API) {
+    fetch(`${API}/triage`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({symptoms:'cardiac arrest, unresponsive', heart_rate:0, spo2:72, fall_detected:true, motion_detected:false, patient_acknowledged:false})
+    }).then(r => r.json()).then(d => {
+      console.log('[TriageAgent] Backend response:', d.routing?.hospital_name, '|', d.routing?.eta_minutes, 'min');
+    }).catch(() => {});  // silently ignore if backend not running
+  }
+}
+
+function stopSim() {
+  clearInterval(simInterval);
+  simRunning = false;
+}
+
+function resetSim() {
+  stopSim();
+  if (metronomePlaying) toggleMetronome();
+  simSec = 0; lastPhase = ''; compressions = 0;
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('timeline-progress').style.width = '0%';
+  document.getElementById('timeline-time').textContent = '0:00';
+  document.querySelectorAll('.phase-lbl').forEach(e => e.classList.remove('active'));
+  const card = document.getElementById('summary-card');
+  card.classList.remove('show');
+  setTimeout(() => { card.style.display = 'none'; }, 500);
+  document.getElementById('phone-screen').style.background = '#0d1117';
+  renderPhase('baseline', 0);
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+document.getElementById('btn-start').addEventListener('click', startSim);
+document.getElementById('btn-reset').addEventListener('click', resetSim);
+document.querySelectorAll('.speed-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    simSpeed = parseFloat(btn.dataset.speed);
+    // Restart metronome at new speed
+    if (metronomePlaying) { toggleMetronome(); toggleMetronome(); }
+  });
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderPhase('baseline', 0);
+updateTimeline(0);
 </script>
 </body>
 </html>
