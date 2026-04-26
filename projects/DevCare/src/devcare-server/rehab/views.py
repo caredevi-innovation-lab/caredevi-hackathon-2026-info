@@ -14,7 +14,9 @@ from .serializers import (
 	RehabPlanDetailSerializer,
 	SessionCompleteSerializer,
 	SessionStartSerializer,
+	DoctorFeedbackSerializer,
 )
+from .models import DoctorFeedback
 
 
 class ExerciseTemplateListView(APIView):
@@ -243,4 +245,27 @@ class SessionDetailView(APIView):
 
 		serializer = ExerciseSessionSerializer(session)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+
+class DoctorFeedbackCreateView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	def post(self, request):
+		profile = getattr(request.user, "profile", None)
+		if not profile or profile.role != UserProfile.ROLE_DOCTOR:
+			return Response({"detail": "Only doctors can submit feedback."}, status=status.HTTP_403_FORBIDDEN)
+
+		serializer = DoctorFeedbackSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+
+		session = serializer.validated_data["session"]
+		patient = serializer.validated_data["patient"]
+		
+		if session.patient != patient:
+			return Response({"detail": "Session does not belong to the specified patient."}, status=status.HTTP_400_BAD_REQUEST)
+			
+		if DoctorFeedback.objects.filter(session=session).exists():
+			return Response({"detail": "Feedback already submitted for this session."}, status=status.HTTP_400_BAD_REQUEST)
+
+		feedback = serializer.save(doctor=request.user)
+		return Response(DoctorFeedbackSerializer(feedback).data, status=status.HTTP_201_CREATED)
 

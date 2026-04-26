@@ -11,6 +11,7 @@ from .views import (
     MySessionHistoryView,
     SessionDetailView,
     PatientSessionHistoryView,
+    DoctorFeedbackCreateView,
 )
 
 urlpatterns = [
@@ -22,6 +23,7 @@ urlpatterns = [
     path("sessions/history/", MySessionHistoryView.as_view(), name="rehab-session-history"),
     path("patient-sessions/<int:patient_id>/", PatientSessionHistoryView.as_view(), name="rehab-patient-sessions"),
     path("sessions/<int:session_id>/", SessionDetailView.as_view(), name="rehab-session-detail"),
+    path("feedback/", DoctorFeedbackCreateView.as_view(), name="rehab-feedback"),
     path(
         "sessions/<int:session_id>/complete/",
         SessionCompleteView.as_view(),
