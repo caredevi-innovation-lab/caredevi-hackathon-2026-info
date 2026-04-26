@@ -34,10 +34,12 @@ function SessionResult() {
             ...session,
             reps: totalReps,
             duration: formattedDuration,
+            durationSecs: totalDurationSecs,
             accuracy: avgScore,
-            stability: stability
+            stability: stability,
+            hasBodyScores: bps.length > 0
           };
-        });
+        }).filter(session => session.durationSecs > 0 && session.hasBodyScores);
         
         setHistory(processedData)
       })
