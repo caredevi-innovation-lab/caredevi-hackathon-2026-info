@@ -6,6 +6,7 @@ import AuthSection from "../components/AuthSection";
 import FeaturesSection from "../components/FeaturesSection";
 import HowItWorksSection from "../components/HowItWorksSection";
 import HeroSection from "../components/HeroSection";
+import FAQSection from "../components/FAQSection";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -19,6 +20,7 @@ function LandingPage() {
                 <FeaturesSection />
                 <HowItWorksSection />
                 <CTASection />
+                <FAQSection />
             </main>
             
             <Footer />

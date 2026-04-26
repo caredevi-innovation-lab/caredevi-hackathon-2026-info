@@ -242,7 +242,7 @@ function AuthSection({ onAuthSuccess, mode: propsMode, onModeChange }) {
               <p className="auth-message auth-message-success">{success}</p>
             )}
 
-            <button type="submit" className="btn-dark w-full py-4 rounded-xl flex items-center justify-center gap-2 group" disabled={loading}>
+            <button type="submit" className="btn-primary w-full py-4 rounded-xl flex items-center justify-center gap-2 group shadow-lg hover:shadow-xl" disabled={loading}>
               {loading
                 ? 'Please wait...'
                 : mode === 'register'

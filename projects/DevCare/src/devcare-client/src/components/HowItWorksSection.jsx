@@ -35,32 +35,29 @@ const steps = [
 
 function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="site-container py-20 sm:py-28">
-      <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-        <div className="max-w-xl text-left">
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-3">
+    <section id="how-it-works" className="site-container py-24 sm:py-32">
+      <div className="flex flex-col md:flex-row justify-center items-center mb-16 text-center">
+        <div className="max-w-3xl">
+          <p className="text-[12px] font-extrabold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-4">
             Process
           </p>
-          <h2 className="text-3xl font-bold sm:text-4xl text-[var(--color-primary-strong)]">
+          <h2 className="text-4xl font-bold sm:text-5xl text-[var(--color-secondary)] leading-tight">
             How DevCare Transforms Your Recovery
           </h2>
         </div>
-        <p className="max-w-sm text-left text-[var(--color-text-muted)] text-sm">
-          Simple, effective, and evidence-based. Our three-step process ensures you get clinical-grade care at home.
-        </p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-3">
+      <div className="grid gap-12 md:grid-cols-3">
         {steps.map((step) => (
-          <div key={step.number} className="relative group isolate">
-            <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#E3F2FD] text-[#1E88E5] transition-transform group-hover:scale-110">
+          <div key={step.number} className="relative group p-10 rounded-[2.5rem] bg-[var(--color-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary-soft)] hover:shadow-2xl transition-all duration-500 isolate">
+            <div className="mb-10 inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-[var(--color-primary-soft)] text-[var(--color-primary)] transition-transform duration-500 group-hover:scale-110">
               {step.icon}
             </div>
-            <div className="absolute top-0 right-0 text-6xl font-black text-[#F1F5F9] -z-10 select-none">
+            <div className="absolute top-8 right-8 text-7xl font-black text-[var(--color-primary)] opacity-30 -z-10 select-none">
               {step.number}
             </div>
-            <h3 className="text-xl font-bold mb-3 text-[#263238]">{step.title}</h3>
-            <p className="text-[var(--color-text-muted)] text-sm leading-relaxed">
+            <h3 className="text-2xl font-bold mb-4 text-[var(--color-secondary)]">{step.title}</h3>
+            <p className="text-[var(--color-text-muted)] text-base leading-relaxed">
               {step.description}
             </p>
           </div>

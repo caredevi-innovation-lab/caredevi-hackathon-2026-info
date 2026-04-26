@@ -1,3 +1,5 @@
+import React from 'react';
+
 const features = [
   {
     tag: 'AI Posture Detection',
@@ -38,50 +40,84 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section id="features" className="bg-[#F8FAFC] py-14 sm:py-24 text-center">
+    <section id="features" className="bg-white pt-12 pb-32 sm:pt-16 sm:pb-48">
       <div className="site-container">
-      <div className="mb-16">
-        <h2 className="text-3xl font-bold sm:text-4xl text-[var(--color-primary-strong)]">
-          The New Standard of Care
-        </h2>
-        <p className="mt-4 mx-auto max-w-2xl text-[var(--color-text-muted)] text-sm sm:text-base">
-          Our platform combines computer vision with clinical expertise to provide a recovery experience that is both data-driven and human-centric.
-        </p>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-3 text-left">
-        {features.map((feature) => (
-          <article
-            key={feature.title}
-            className={`elevated-card rounded-2xl border border-[var(--color-border)] p-8 ${
-              feature.dark ? 'bg-[#1a233a] text-white shadow-xl' : 'bg-white'
-            }`}
-          >
-            <div className="mb-6">{feature.icon}</div>
-            <h3 className={`text-xl font-bold ${feature.dark ? 'text-white' : 'text-[#263238]'}`}>
-              {feature.title}
-            </h3>
-            <p className={`mt-3 text-sm leading-6 ${feature.dark ? 'text-gray-300' : 'text-[#607D8B]'}`}>
-              {feature.description}
+        <div className="flex flex-col lg:flex-row justify-between items-end gap-12 mb-24">
+          <div className="max-w-2xl">
+            <p className="text-[12px] font-extrabold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-4">
+              Capabilities
             </p>
-            {feature.showProgress && (
-              <div className="mt-8 space-y-3">
-                <div className="h-1.5 w-full bg-[#ECEFF1] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#1E88E5] w-[85%]"></div>
-                </div>
-                <div className="h-1.5 w-full bg-[#ECEFF1] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#1a233a] w-[55%]"></div>
-                </div>
+            <h2 className="text-4xl font-bold sm:text-5xl text-[var(--color-secondary)] leading-tight">
+              The New Standard of <span className="text-[var(--color-primary)]">Precision Care</span>
+            </h2>
+          </div>
+          <p className="max-w-md text-[var(--color-text-muted)] text-lg leading-relaxed">
+            Our platform combines computer vision with clinical expertise to provide a recovery experience that is both data-driven and human-centric.
+          </p>
+        </div>
+
+        <div className="grid gap-10 md:grid-cols-3">
+          {features.map((feature, idx) => (
+            <article
+              key={feature.title}
+              className={`relative group p-10 rounded-[2.5rem] transition-all duration-500 overflow-hidden isolate ${
+                feature.dark 
+                ? 'bg-[var(--color-secondary)] text-white shadow-2xl scale-105 z-10' 
+                : 'bg-[#F8FAFC] border border-[var(--color-border)] hover:bg-white hover:shadow-xl'
+              }`}
+            >
+              {/* Decorative elements for dark card */}
+              {feature.dark && (
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-[var(--color-primary)] opacity-20 rounded-full blur-3xl -z-10"></div>
+              )}
+
+              <div className={`mb-8 inline-flex items-center justify-center w-16 h-16 rounded-2xl transition-transform duration-500 group-hover:scale-110 ${
+                feature.dark ? 'bg-white/10 text-white' : 'bg-white shadow-sm text-[var(--color-primary)]'
+              }`}>
+                {React.cloneElement(feature.icon, { 
+                  className: `w-8 h-8 ${feature.dark ? 'text-white' : 'text-[var(--color-primary)]'}` 
+                })}
               </div>
-            )}
-            {feature.dark && (
-              <a href="#" className="mt-8 inline-flex items-center text-sm font-bold text-white hover:underline">
-                Learn more <span className="ml-1">→</span>
-              </a>
-            )}
-          </article>
-        ))}
-      </div>
+
+              <h3 className={`text-2xl font-bold mb-4 ${feature.dark ? 'text-white' : 'text-[var(--color-secondary)]'}`}>
+                {feature.title}
+              </h3>
+              
+              <p className={`text-base leading-relaxed ${feature.dark ? 'text-gray-300' : 'text-[var(--color-text-muted)]'}`}>
+                {feature.description}
+              </p>
+
+              {feature.showProgress && (
+                <div className="mt-10 space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-[var(--color-primary)]">
+                      <span>Accuracy</span>
+                      <span>98%</span>
+                    </div>
+                    <div className="h-2 w-full bg-white rounded-full overflow-hidden shadow-inner">
+                      <div className="h-full bg-[var(--color-primary)] w-[98%] rounded-full transition-all duration-1000"></div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-[var(--color-secondary)]">
+                      <span>Recovery Rate</span>
+                      <span>85%</span>
+                    </div>
+                    <div className="h-2 w-full bg-white rounded-full overflow-hidden shadow-inner">
+                      <div className="h-full bg-[var(--color-secondary)] w-[85%] rounded-full transition-all duration-1000"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {feature.dark && (
+                <button className="mt-10 inline-flex items-center text-sm font-bold text-white hover:gap-2 transition-all">
+                  Explore Technology <span className="ml-2">→</span>
+                </button>
+              )}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   )

@@ -65,12 +65,13 @@ function Navbar() {
       { label: 'Home', href: '#home', anchor: true },
       { label: 'How it works', href: '#how-it-works', anchor: true },
       { label: 'Features', href: '#features', anchor: true },
+      { label: 'FAQ', href: '#faq', anchor: true },
     ]
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgba(242,250,248,0.9)] backdrop-blur">
-      <nav className="site-container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-[rgba(255,255,255,0.8)] backdrop-blur-md">
+      <nav className="site-container flex h-20 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="DevCare Logo" className="h-10 w-auto" />
         </Link>

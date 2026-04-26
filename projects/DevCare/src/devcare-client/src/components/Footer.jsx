@@ -3,7 +3,7 @@ import logo from '../assets/Devcare-logo.png';
 
 function Footer() {
   return (
-    <footer className="bg-white border-t border-[var(--color-border)] pt-16 pb-8">
+    <footer className="bg-white border-t border-[var(--color-border)] pt-12 pb-12">
       <div className="site-container">
         <div className="grid gap-10 md:grid-cols-4 mb-12">
           <div className="col-span-2">
@@ -18,6 +18,7 @@ function Footer() {
             <ul className="space-y-2 text-sm text-[var(--color-text-muted)]">
               <li><a href="#features" className="hover:text-[var(--color-primary)]">Features</a></li>
               <li><a href="#how-it-works" className="hover:text-[var(--color-primary)]">How it works</a></li>
+              <li><a href="#faq" className="hover:text-[var(--color-primary)]">FAQ</a></li>
               <li><a href="#auth" className="hover:text-[var(--color-primary)]">Sign Up</a></li>
             </ul>
           </div>

@@ -3,17 +3,15 @@ import heroImage from '../assets/hero-therapy.png'
 
 function HeroSection() {
   return (
-    <section id="home" className="site-container pb-14 pt-12 sm:pb-20 sm:pt-16">
+    <section id="home" className="site-container pt-44 pb-12 sm:pt-60 sm:pb-16 lg:pt-72 lg:pb-20">
       <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
         <div>
-          <p className="inline-flex rounded-md bg-[#E3F2FD] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1E88E5]">
-            Clinical Excellence
-          </p>
-          <h1 className="mt-4 text-4xl font-bold leading-tight sm:text-5xl lg:text-5xl text-[var(--color-primary-strong)]">
-            AI-Powered Precision Therapy
+
+          <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl lg:text-7xl text-[var(--color-secondary)]">
+            Recover <span className="text-[var(--color-primary)]">Smarter</span> with AI-Guided Therapy
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--color-text-muted)] sm:text-lg">
-           AI-powered posture tracking for better, faster rehabilitation at home. DevCare brings clinical care into everyday recovery.
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--color-text-muted)] sm:text-xl">
+            Professional-grade rehabilitation in the comfort of your home. Powered by advanced computer vision to track your progress in real-time.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
