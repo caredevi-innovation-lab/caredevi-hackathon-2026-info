@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your FuelMate Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="home">
+  <div class="card result-card">
+
+    <p class="badge">📊 Your Wellness Dashboard</p>
+    <h1>Your FuelMate Plan</h1>
+
+    <p>
+      FuelMate explains your nutrition numbers and gives practical food, water,
+      meal timing, sleep, and eating-out guidance.
+    </p>
+
+    <div id="results"></div>
+
+    <canvas id="macroChart"></canvas>
+
+    <div class="explain-box">
+      <h3>⏰ Smart Meal Timing</h3>
+      <p id="mealReminder"></p>
+
+      <p>
+        <strong>Suggested meal windows:</strong><br>
+        🌅 Breakfast: 7:00 – 10:00 AM<br>
+        🍛 Lunch: 12:00 – 2:30 PM<br>
+        🌙 Dinner: 6:00 – 9:00 PM
+      </p>
+    </div>
+
+    <div class="sleep-box">
+      <h3>😴 Sleep Guidance</h3>
+      <p id="sleepReminder"></p>
+
+      <p>
+        <strong>Suggested sleep goal:</strong><br>
+        🛌 Sleep: 10:00 PM – 6:00 AM<br>
+        ⏰ Aim for 7–8 hours daily
+      </p>
+    </div>
+
+    <div class="eatout-box">
+  <h3>🍽 Eating Out Guidance</h3>
+  <p>
+    Choose a food style and FuelMate will help you find nearby options that match your preference.
+  </p>
+
+  <select id="eatOutChoice">
+    <option value="healthy chinese food near me">Chinese / East Asian</option>
+    <option value="healthy indian food near me">Indian / South Asian</option>
+    <option value="healthy mexican food near me">Mexican / Latino</option>
+    <option value="healthy mediterranean food near me">Mediterranean / Middle Eastern</option>
+    <option value="healthy african food near me">African / Caribbean</option>
+    <option value="healthy american food near me">American / Western</option>
+  </select>
+
+  <button onclick="findFoodNearMe()">
+    Find Options Near Me
+  </button>
+
+  <p class="note">
+    Tip: Look for grilled protein, vegetables, soups, bowls, and controlled portions.
+  </p>
+</div>
+
+    <button onclick="window.location.href='food.html'">
+      What Should I Eat?
+    </button>
+
+    <button class="back-btn" onclick="goBack()">
+      Start Over
+    </button>
+
+  </div>
+</div>
+
+<script src="js/calculator.js"></script>
+
+</body>
+</html>
