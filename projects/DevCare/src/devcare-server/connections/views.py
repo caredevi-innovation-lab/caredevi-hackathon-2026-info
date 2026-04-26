@@ -41,7 +41,7 @@ class CreateJoinLinkView(APIView):
         )
         
         # Frontend domain simulation for hackathon demo
-        frontend_domain = "https://domain.com"
+        frontend_domain = "http://localhost:5173"
         full_url = f"{frontend_domain}/join/{token}"
         
         qr_code_base64 = generate_qr_code_base64(full_url)

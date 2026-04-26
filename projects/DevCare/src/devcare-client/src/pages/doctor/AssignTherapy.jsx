@@ -262,20 +262,25 @@ function AssignTherapy() {
               <h2 className="text-xl font-bold">Daily Recovery Roadmap</h2>
             </div>
             
-            <div className="flex gap-3 mb-8">
-              <input 
-                type="text" 
-                className="auth-input flex-1 h-[56px] border-slate-200" 
-                placeholder="e.g., Apply ice compression for 15 mins..."
-                value={newTask}
-                onChange={(e) => setNewTask(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && addTask()}
-              />
+            <div className="flex items-end gap-4 mb-8">
+              <div className="flex-1">
+                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2 ml-1">New Milestone / Task</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    className="auth-input pr-12 h-[60px] border-slate-200 shadow-sm focus:shadow-md transition-all" 
+                    placeholder="e.g., Apply ice compression for 15 mins..."
+                    value={newTask}
+                    onChange={(e) => setNewTask(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && addTask()}
+                  />
+                </div>
+              </div>
               <button 
                 onClick={addTask}
-                className="btn-dark px-8 rounded-2xl h-[56px] hover:scale-105 transition-transform"
+                className="bg-[var(--color-secondary)] text-white px-8 rounded-2xl h-[60px] flex items-center justify-center gap-2 font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95 shrink-0"
               >
-                <Plus size={20} />
+                <Plus size={20} strokeWidth={3} />
                 <span>Add Task</span>
               </button>
             </div>

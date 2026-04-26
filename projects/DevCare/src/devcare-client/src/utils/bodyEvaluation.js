@@ -78,11 +78,11 @@ export const evaluateAnkles = (angles) => {
 export const generateBodyEvaluation = (sessionData) => {
   // sessionData expects { arms: [...], shoulders: [...], hips: [...], knees: [...], ankles: [...] }
   const scores = [
-    { part: "arms", score: evaluateArms(sessionData?.arms) },
-    { part: "shoulders", score: evaluateShoulders(sessionData?.shoulders) },
-    { part: "hips", score: evaluateHips(sessionData?.hips) },
-    { part: "knees", score: evaluateKnees(sessionData?.knees) },
-    { part: "ankles", score: evaluateAnkles(sessionData?.ankles) },
+    { part: "Elbow", score: evaluateArms(sessionData?.arms) },
+    { part: "Shoulder", score: evaluateShoulders(sessionData?.shoulders) },
+    { part: "Hip", score: evaluateHips(sessionData?.hips) },
+    { part: "Knee", score: evaluateKnees(sessionData?.knees) },
+    { part: "Ankle", score: evaluateAnkles(sessionData?.ankles) },
   ];
 
   // Rank by score descending
